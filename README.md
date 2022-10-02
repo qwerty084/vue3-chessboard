@@ -48,7 +48,7 @@ app.mount('#app');
 
 Typescript Component
 
-```vue
+```typescript
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Chessboard } from 'vue3-chessboard';
@@ -69,16 +69,20 @@ function handleCheckmate(isMated: string) {
   }
 }
 
-function toggle() {
+function toggleOrientation() {
   boardAPI.value?.board.toggleOrientation();
+}
+
+function resetBoard() {
+  boardAPI.value?.resetBoard();
 }
 </script>
 
 <template>
   <main>
     <section>
-      <button @click="toggle">Toggle orientation</button>
-      <button @click="boardAPI?.resetBoard()">Reset</button>
+      <button @click="toggleOrientation">Toggle orientation</button>
+      <button @click="resetBoard">Reset</button>
     </section>
 
     <Chessboard
@@ -92,25 +96,47 @@ function toggle() {
 
 Javascript Component
 
-```vue
+```javascript
 <script setup>
 import { ref } from 'vue';
 import { Chessboard } from 'vue3-chessboard';
-
 import 'vue3-chessboard/style.css';
 
-const board = ref();
+const boardAPI = ref();
 const boardConfig = {
-  // example config
   coordinates: false,
-  autoCastle: true,
+  autoCastle: false,
 };
+
+function handleCheckmate(isMated) {
+  if (isMated === 'w') {
+    alert('Black wins!');
+  } else {
+    alert('White wins!');
+  }
+}
+
+function toggleOrientation() {
+  boardAPI.value?.board.toggleOrientation();
+}
+
+function resetBoard() {
+  boardAPI.value?.resetBoard();
+}
 </script>
 
 <template>
-  <Chessboard
-    :board-config="boardConfig"
-    @board-created="(boardApi) => (board = boardApi)"
-  ></Chessboard>
+  <main>
+    <section>
+      <button @click="toggleOrientation">Toggle orientation</button>
+      <button @click="resetBoard">Reset</button>
+    </section>
+
+    <Chessboard
+      :board-config="boardConfig"
+      @board-created="(api) => (boardAPI = api)"
+      @checkmate="handleCheckmate"
+    ></Chessboard>
+  </main>
 </template>
 ```
