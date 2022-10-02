@@ -48,7 +48,7 @@ app.mount('#app');
 
 Typescript Component
 
-```typescript
+```vue
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Chessboard } from 'vue3-chessboard';
@@ -96,7 +96,7 @@ function resetBoard() {
 
 Javascript Component
 
-```javascript
+```vue
 <script setup>
 import { ref } from 'vue';
 import { Chessboard } from 'vue3-chessboard';
