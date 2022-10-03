@@ -51,32 +51,32 @@ Example Typescript Component
 
 ```html
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { Chessboard } from 'vue3-chessboard';
-  import 'vue3-chessboard/style.css';
-  import type { ChessboardAPI } from 'vue3-chessboard';
+import { ref } from 'vue';
+import { Chessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+import type { ChessboardAPI } from 'vue3-chessboard';
 
-  const boardAPI = ref<ChessboardAPI>();
-  const boardConfig = {
-    coordinates: false,
-    autoCastle: false,
-  };
+const boardAPI = ref<ChessboardAPI>();
+const boardConfig = {
+  coordinates: false,
+  autoCastle: false,
+};
 
-  function handleCheckmate(isMated: string) {
-    if (isMated === 'w') {
-      alert('Black wins!');
-    } else {
-      alert('White wins!');
-    }
+function handleCheckmate(isMated: string) {
+  if (isMated === 'w') {
+    alert('Black wins!');
+  } else {
+    alert('White wins!');
   }
+}
 
-  function toggleOrientation() {
-    boardAPI.value?.board.toggleOrientation();
-  }
+function toggleOrientation() {
+  boardAPI.value?.board.toggleOrientation();
+}
 
-  function resetBoard() {
-    boardAPI.value?.resetBoard();
-  }
+function resetBoard() {
+  boardAPI.value?.resetBoard();
+}
 </script>
 
 <template>
@@ -99,31 +99,31 @@ Example Javascript Component
 
 ```html
 <script setup>
-  import { ref } from 'vue';
-  import { Chessboard } from 'vue3-chessboard';
-  import 'vue3-chessboard/style.css';
+import { ref } from 'vue';
+import { Chessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
 
-  const boardAPI = ref();
-  const boardConfig = {
-    coordinates: false,
-    autoCastle: false,
-  };
+const boardAPI = ref();
+const boardConfig = {
+  coordinates: false,
+  autoCastle: false,
+};
 
-  function handleCheckmate(isMated) {
-    if (isMated === 'w') {
-      alert('Black wins!');
-    } else {
-      alert('White wins!');
-    }
+function handleCheckmate(isMated) {
+  if (isMated === 'w') {
+    alert('Black wins!');
+  } else {
+    alert('White wins!');
   }
+}
 
-  function toggleOrientation() {
-    boardAPI.value?.board.toggleOrientation();
-  }
+function toggleOrientation() {
+  boardAPI.value?.board.toggleOrientation();
+}
 
-  function resetBoard() {
-    boardAPI.value?.resetBoard();
-  }
+function resetBoard() {
+  boardAPI.value?.resetBoard();
+}
 </script>
 
 <template>
