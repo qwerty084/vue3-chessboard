@@ -3,7 +3,17 @@
     "dist"
   ],
   "name": "vue3-chessboard",
-  "version": "0.0.1",
+  "keywords": [
+    "vue",
+    "chessboard",
+    "chess",
+    "vue3",
+    "lichess",
+    "chessground",
+    "chess.js",
+    "typescript"
+  ],
+  "version": "0.0.2",
   "license": "GPL-3.0",
   "type": "module",
   "exports": {
