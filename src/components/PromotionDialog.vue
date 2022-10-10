@@ -38,7 +38,12 @@ function promotionSelected(e: Event) {
 
 <template>
   <Teleport v-if="promotionColor" to="cg-board">
-    <dialog ref="dialogEl" open @click="promotionSelected">
+    <dialog
+      ref="dialogEl"
+      open
+      @click="promotionSelected"
+      @touchstart="promotionSelected"
+    >
       <div v-if="promotionColor === 'b'" class="promotion-container">
         <div class="promotion queen-w-promotion" data-piece="q"></div>
         <div class="promotion knight-w-promotion" data-piece="k"></div>

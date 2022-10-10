@@ -173,7 +173,10 @@ function loadPosition() {
 </script>
 
 <template>
-  <section aria-label="chessboard">
+  <section
+    aria-label="chessboard"
+    :class="{ disabledBoard: showPromotionDialog }"
+  >
     <div class="dialog-container">
       <PromotionDialog
         v-if="showPromotionDialog"
