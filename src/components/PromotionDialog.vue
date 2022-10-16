@@ -42,7 +42,7 @@ function promotionSelected(e: Event) {
       ref="dialogEl"
       open
       @click="promotionSelected"
-      @touchstart="promotionSelected"
+      @touchstart.passive="promotionSelected"
     >
       <div v-if="promotionColor === 'b'" class="promotion-container">
         <div class="promotion queen-w-promotion" data-piece="q"></div>

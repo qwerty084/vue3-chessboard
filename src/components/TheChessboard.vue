@@ -174,18 +174,22 @@ function loadPosition() {
 
 <template>
   <section
+    id="main-wrap"
     aria-label="chessboard"
+    class="main-wrap"
     :class="{ disabledBoard: showPromotionDialog }"
   >
-    <div class="dialog-container">
-      <PromotionDialog
-        v-if="showPromotionDialog"
-        :turn-color="game.turn()"
-        @promotion-selected="(piece) => (selectedPromotion = piece)"
-      />
-    </div>
-    <div ref="boardElement" class="cg-board-wrap">
-      <div class="cg-board"></div>
+    <div class="main-board">
+      <div class="dialog-container">
+        <PromotionDialog
+          v-if="showPromotionDialog"
+          :turn-color="game.turn()"
+          @promotion-selected="(piece) => (selectedPromotion = piece)"
+        />
+      </div>
+      <div ref="boardElement" class="cg-board-wrap">
+        <div class="cg-board"></div>
+      </div>
     </div>
   </section>
 </template>
