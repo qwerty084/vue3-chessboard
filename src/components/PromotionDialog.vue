@@ -44,17 +44,43 @@ function promotionSelected(e: Event) {
       @click="promotionSelected"
       @touchstart.passive="promotionSelected"
     >
-      <div v-if="promotionColor === 'b'" class="promotion-container">
-        <div class="promotion queen-w-promotion" data-piece="q"></div>
-        <div class="promotion knight-w-promotion" data-piece="k"></div>
-        <div class="promotion rook-w-promotion" data-piece="r"></div>
-        <div class="promotion bishop-w-promotion" data-piece="b"></div>
+      <div v-show="promotionColor === 'b'" class="promotion-container">
+        <div class="promotion queen-w-promotion">
+          <button data-piece="q">
+            <span class="sr-only">Queen</span>
+          </button>
+        </div>
+        <div class="promotion knight-w-promotion">
+          <button data-piece="n">
+            <span class="sr-only">Knight</span>
+          </button>
+        </div>
+        <div class="promotion rook-w-promotion">
+          <button data-piece="r">
+            <span class="sr-only">Rook</span>
+          </button>
+        </div>
+        <div class="promotion bishop-w-promotion">
+          <button data-piece="b">
+            <span class="sr-only">Bishop</span>
+          </button>
+        </div>
       </div>
-      <div v-if="promotionColor === 'w'" class="promotion-container">
-        <div class="promotion queen-b-promotion" data-piece="q"></div>
-        <div class="promotion knight-b-promotion" data-piece="k"></div>
-        <div class="promotion rook-b-promotion" data-piece="r"></div>
-        <div class="promotion bishop-b-promotion" data-piece="b"></div>
+      <div v-show="promotionColor === 'w'" class="promotion-container">
+        <div class="promotion queen-b-promotion">
+          <button data-piece="q">
+            <span class="sr-only">Queen</span>
+          </button>
+        </div>
+        <div class="promotion knight-b-promotion">
+          <button data-piece="n"><span class="sr-only">Knight</span></button>
+        </div>
+        <div class="promotion rook-b-promotion">
+          <button data-piece="r"><span class="sr-only">Rook</span></button>
+        </div>
+        <div class="promotion bishop-b-promotion">
+          <button data-piece="b"><span class="sr-only">Bishop</span></button>
+        </div>
       </div>
     </dialog>
   </Teleport>
