@@ -10,6 +10,8 @@ Based on [vue-chessboard](https://github.com/vitogit/vue-chessboard) a Vue2 ches
 
 ![Chessboard](https://media.giphy.com/media/lotRUKBFZr5BmqVvLg/giphy.gif)
 
+You can find the live demo [here](https://qwerty084.github.io/vue3-chessboard-demo/).
+
 ## Table of contents
 
 - [Features](#features)
