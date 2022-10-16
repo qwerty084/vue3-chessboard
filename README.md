@@ -52,12 +52,12 @@ Example Typescript Component
 ```html
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Chessboard } from 'vue3-chessboard';
+import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
-import type { ChessboardAPI } from 'vue3-chessboard';
+import type { ChessboardAPI, BoardConfig } from 'vue3-chessboard';
 
 const boardAPI = ref<ChessboardAPI>();
-const boardConfig = {
+const boardConfig: BoardConfig = {
   coordinates: false,
   autoCastle: false,
 };
@@ -81,16 +81,17 @@ function resetBoard() {
 
 <template>
   <main>
-    <section>
-      <button @click="toggleOrientation">Toggle orientation</button>
-      <button @click="resetBoard">Reset</button>
+    <section role="region" aria-label="Board Controls">
+      <button type="button" @click="toggleOrientation">
+        Toggle orientation
+      </button>
+      <button type="button" @click="resetBoard">Reset</button>
     </section>
-
-    <Chessboard
+    <TheChessboard
       :board-config="boardConfig"
       @board-created="(api) => (boardAPI = api)"
       @checkmate="handleCheckmate"
-    ></Chessboard>
+    />
   </main>
 </template>
 ```
@@ -100,7 +101,7 @@ Example Javascript Component
 ```html
 <script setup>
 import { ref } from 'vue';
-import { Chessboard } from 'vue3-chessboard';
+import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
 const boardAPI = ref();
@@ -128,23 +129,24 @@ function resetBoard() {
 
 <template>
   <main>
-    <section>
-      <button @click="toggleOrientation">Toggle orientation</button>
-      <button @click="resetBoard">Reset</button>
+    <section role="region" aria-label="Board Controls">
+      <button type="button" @click="toggleOrientation">
+        Toggle orientation
+      </button>
+      <button type="button" @click="resetBoard">Reset</button>
     </section>
-
-    <Chessboard
+    <TheChessboard
       :board-config="boardConfig"
       @board-created="(api) => (boardAPI = api)"
       @checkmate="handleCheckmate"
-    ></Chessboard>
+    />
   </main>
 </template>
 ```
 
 # Docs
 
-### Setup:
+## Setup:
 
 - Make sure you have pinia installed and included in main.js/ts
 - Include the style sheet: <br>

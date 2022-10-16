@@ -97,3 +97,5 @@ export interface BoardConfig {
     onChange?: (shapes: DrawShape[]) => void; // called after drawable shapes change
   };
 }
+
+export default BoardConfig;
