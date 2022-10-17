@@ -1,4 +1,4 @@
-import { defaultBordConfig } from '@/helper/DefaultConfig';
+import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { defineStore } from 'pinia';
 import type { BoardState } from '@/typings/BoardStore';
 
@@ -7,7 +7,7 @@ export const useBordStateStore = defineStore({
   state: (): BoardState => {
     return {
       activeGame: false,
-      boardConfig: defaultBordConfig,
+      boardConfig: defaultBoardConfig,
       showThreats: false,
     };
   },

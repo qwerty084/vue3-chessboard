@@ -9,7 +9,7 @@ import {
   isPromotion,
   countThreats,
 } from '@/helper/Board';
-import { defaultBordConfig } from '@/helper/DefaultConfig';
+import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { useBordStateStore } from '@/stores/BoardStateStore';
 import { initialPos } from '@/helper/DefaultConfig';
 import { getThreats, calculatePromotions } from '@/helper/Board';
@@ -28,7 +28,7 @@ import type { BoardConfig } from '@/typings/BoardConfig';
 const props = defineProps({
   boardConfig: {
     type: Object as () => BoardConfig,
-    default: defaultBordConfig,
+    default: defaultBoardConfig,
   },
 });
 
@@ -66,9 +66,9 @@ onMounted(() => {
     emit('boardCreated', new BoardApi(game, board, boardStore));
   }
   if (props.boardConfig) {
-    boardStore.boardConfig = { ...defaultBordConfig, ...props.boardConfig };
+    boardStore.boardConfig = { ...defaultBoardConfig, ...props.boardConfig };
   } else {
-    boardStore.boardConfig = defaultBordConfig;
+    boardStore.boardConfig = defaultBoardConfig;
   }
 });
 
