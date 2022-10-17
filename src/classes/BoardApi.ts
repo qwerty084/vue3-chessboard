@@ -27,6 +27,7 @@ export class BoardApi {
     this.game.reset();
     this.board.set(this.state.boardConfig);
     this.board.state.check = undefined;
+    this.board.selectSquare(null);
     if (this.state.showThreats) {
       this.board.setShapes(getThreats(this.game));
     }

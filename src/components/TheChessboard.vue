@@ -8,11 +8,11 @@ import {
   possibleMoves,
   isPromotion,
   countThreats,
+  getThreats,
+  calculatePromotions,
 } from '@/helper/Board';
-import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { useBordStateStore } from '@/stores/BoardStateStore';
-import { initialPos } from '@/helper/DefaultConfig';
-import { getThreats, calculatePromotions } from '@/helper/Board';
+import { initialPos, defaultBoardConfig } from '@/helper/DefaultConfig';
 import '@/assets/board.css';
 import type { Api } from 'chessground/api';
 import type {
