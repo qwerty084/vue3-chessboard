@@ -16,7 +16,7 @@ export const possibleMovesWhite: Map<Key, Key[]> = new Map([
 export const initialPos = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
 
 // lichess default conf
-export const defaultBordConfig: Config = {
+export const defaultBoardConfig: Config = {
   fen: initialPos,
   orientation: 'white',
   turnColor: 'white',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, toRef, defineAsyncComponent, watch } from 'vue';
+import { ref, onMounted, defineAsyncComponent, watch } from 'vue';
 import { Chess, type Move, type Square } from 'chess.js';
 import { Chessground } from 'chessground';
 import { BoardApi } from '@/classes/BoardApi';
@@ -8,11 +8,11 @@ import {
   possibleMoves,
   isPromotion,
   countThreats,
+  getThreats,
+  calculatePromotions,
 } from '@/helper/Board';
-import { defaultBordConfig } from '@/helper/DefaultConfig';
 import { useBordStateStore } from '@/stores/BoardStateStore';
-import { initialPos } from '@/helper/DefaultConfig';
-import { getThreats, calculatePromotions } from '@/helper/Board';
+import { initialPos, defaultBoardConfig } from '@/helper/DefaultConfig';
 import '@/assets/board.css';
 import type { Api } from 'chessground/api';
 import type {
@@ -28,7 +28,7 @@ import type { BoardConfig } from '@/typings/BoardConfig';
 const props = defineProps({
   boardConfig: {
     type: Object as () => BoardConfig,
-    default: defaultBordConfig,
+    default: defaultBoardConfig,
   },
 });
 
@@ -44,7 +44,6 @@ const PromotionDialog = defineAsyncComponent(
   () => import('./PromotionDialog.vue')
 );
 const showPromotionDialog = ref(false);
-const boardConfig = toRef(props, 'boardConfig');
 const boardElement = ref<HTMLElement | null>(null);
 const boardStore = useBordStateStore();
 const game = new Chess();
@@ -58,7 +57,7 @@ const selectedPromotion = ref<Promotion>();
 
 let board: Api | undefined;
 let promotions: Move[] = [];
-let promoteTo: Promotion = 'q';
+let promoteTo: Promotion;
 
 onMounted(() => {
   loadPosition();
@@ -66,9 +65,9 @@ onMounted(() => {
     emit('boardCreated', new BoardApi(game, board, boardStore));
   }
   if (props.boardConfig) {
-    boardStore.boardConfig = { ...defaultBordConfig, ...props.boardConfig };
+    boardStore.boardConfig = { ...defaultBoardConfig, ...props.boardConfig };
   } else {
-    boardStore.boardConfig = defaultBordConfig;
+    boardStore.boardConfig = defaultBoardConfig;
   }
 });
 
@@ -112,8 +111,11 @@ function afterMove() {
     board?.setShapes(getThreats(game));
   }
   const threats: ThreatCount =
-    countThreats(toColor(game), boardConfig.value.fen ?? initialPos, game) ||
-    {};
+    countThreats(
+      toColor(game),
+      boardStore.boardConfig.fen ?? initialPos,
+      game
+    ) || {};
   threats['history'] = game.history();
   threats['fen'] = game.fen();
 
@@ -158,8 +160,8 @@ function afterMove() {
 }
 
 function loadPosition() {
-  if (boardConfig.value.fen) {
-    game.load(boardConfig.value.fen);
+  if (boardStore.boardConfig.fen) {
+    game.load(boardStore.boardConfig.fen);
   }
   if (boardElement.value === null) return;
 
