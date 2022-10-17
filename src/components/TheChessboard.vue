@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, toRef, defineAsyncComponent, watch } from 'vue';
+import { ref, onMounted, defineAsyncComponent, watch } from 'vue';
 import { Chess, type Move, type Square } from 'chess.js';
 import { Chessground } from 'chessground';
 import { BoardApi } from '@/classes/BoardApi';
@@ -44,7 +44,6 @@ const PromotionDialog = defineAsyncComponent(
   () => import('./PromotionDialog.vue')
 );
 const showPromotionDialog = ref(false);
-const boardConfig = toRef(props, 'boardConfig');
 const boardElement = ref<HTMLElement | null>(null);
 const boardStore = useBordStateStore();
 const game = new Chess();
@@ -58,7 +57,7 @@ const selectedPromotion = ref<Promotion>();
 
 let board: Api | undefined;
 let promotions: Move[] = [];
-let promoteTo: Promotion = 'q';
+let promoteTo: Promotion;
 
 onMounted(() => {
   loadPosition();
@@ -112,8 +111,11 @@ function afterMove() {
     board?.setShapes(getThreats(game));
   }
   const threats: ThreatCount =
-    countThreats(toColor(game), boardConfig.value.fen ?? initialPos, game) ||
-    {};
+    countThreats(
+      toColor(game),
+      boardStore.boardConfig.fen ?? initialPos,
+      game
+    ) || {};
   threats['history'] = game.history();
   threats['fen'] = game.fen();
 
@@ -158,8 +160,8 @@ function afterMove() {
 }
 
 function loadPosition() {
-  if (boardConfig.value.fen) {
-    game.load(boardConfig.value.fen);
+  if (boardStore.boardConfig.fen) {
+    game.load(boardStore.boardConfig.fen);
   }
   if (boardElement.value === null) return;
 
