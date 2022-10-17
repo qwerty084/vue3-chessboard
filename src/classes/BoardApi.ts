@@ -4,6 +4,7 @@ import { possibleMoves, shortToLongColor } from '@/helper/Board';
 import type { ChessInstance } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type { BoardState } from '@/typings/BoardStore';
+import type { LichessOpening } from '@/typings/BoardAPI';
 
 /**
  * class for modifying and reading data from the board, \
@@ -118,6 +119,25 @@ export class BoardApi {
     } else {
       this.board.setShapes([]);
     }
+  }
+
+  /**
+   * returns the opening name for the current position
+   */
+  async getOpeningName() {
+    const movesArr: string[] = [];
+    const history = this.game.history({ verbose: true });
+    history.forEach((move) => {
+      movesArr.push(move.from + move.to);
+    });
+
+    const moves = movesArr.join(',');
+
+    const res = await fetch(
+      `https://explorer.lichess.ovh/masters?play=${moves}`
+    );
+    const data: LichessOpening = await res.json();
+    return data.opening.name;
   }
 }
 
