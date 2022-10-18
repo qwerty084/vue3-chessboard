@@ -30,6 +30,14 @@ const props = defineProps({
     type: Object as () => BoardConfig,
     default: defaultBoardConfig,
   },
+  onSelectCb: {
+    type: Function,
+    default: () => 1,
+  },
+  afterMoveCb: {
+    type: Function,
+    default: () => 1,
+  },
 });
 
 const emit = defineEmits<{
@@ -60,14 +68,14 @@ let promotions: Move[] = [];
 let promoteTo: Promotion;
 
 onMounted(() => {
-  loadPosition();
-  if (board) {
-    emit('boardCreated', new BoardApi(game, board, boardStore));
-  }
   if (props.boardConfig) {
     boardStore.boardConfig = { ...defaultBoardConfig, ...props.boardConfig };
   } else {
     boardStore.boardConfig = defaultBoardConfig;
+  }
+  loadPosition();
+  if (board) {
+    emit('boardCreated', new BoardApi(game, board, boardStore));
   }
 });
 
@@ -169,6 +177,14 @@ function loadPosition() {
 
   board.set({
     movable: { events: { after: changeTurn() } },
+    events: {
+      move() {
+        props.afterMoveCb();
+      },
+      select() {
+        props.onSelectCb();
+      },
+    },
   });
   afterMove();
 }
