@@ -1,6 +1,5 @@
 import { read } from 'chessground/fen';
-import { getThreats } from '@/helper/Board';
-import { possibleMoves, shortToLongColor } from '@/helper/Board';
+import { possibleMoves, shortToLongColor, getThreats } from '@/helper/Board';
 import type { ChessInstance } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type { BoardState } from '@/typings/BoardStore';
@@ -30,7 +29,7 @@ export class BoardApi {
     this.board.state.check = undefined;
     this.board.selectSquare(null);
     if (this.state.showThreats) {
-      this.board.setShapes(getThreats(this.game));
+      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
   }
 
@@ -55,7 +54,7 @@ export class BoardApi {
 
     if (this.state.showThreats) {
       // redraw threats in new position if enabled
-      this.board.setShapes(getThreats(this.game));
+      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
   }
 
@@ -98,7 +97,7 @@ export class BoardApi {
    */
   showThreats() {
     this.state.showThreats = true;
-    this.board.setShapes(getThreats(this.game));
+    this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
   }
 
   /**
@@ -115,7 +114,7 @@ export class BoardApi {
   toggleThreats() {
     this.state.showThreats = !this.state.showThreats;
     if (this.state.showThreats) {
-      this.board.setShapes(getThreats(this.game));
+      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     } else {
       this.board.setShapes([]);
     }
