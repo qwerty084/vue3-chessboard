@@ -14,7 +14,6 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'max-len': ['error', { code: 100 }],
     'no-eval': 2,
     'consistent-return': 1,
     camelcase: 2,

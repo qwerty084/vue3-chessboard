@@ -1,5 +1,4 @@
-import { SQUARES } from 'chess.js';
-import type { ChessInstance, Move } from 'chess.js';
+import { SQUARES, type ChessInstance, type Move } from 'chess.js';
 import type { Key } from 'chessground/types';
 import type { Threat, SquareKey } from '@/typings/Chessboard';
 
