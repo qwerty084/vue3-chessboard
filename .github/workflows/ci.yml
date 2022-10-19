@@ -24,3 +24,5 @@ jobs:
         run: npm run type-check
       - name: test build process
         run: npm run build
+      - name: run tests
+        run: npm run test
