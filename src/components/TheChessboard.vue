@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, defineAsyncComponent, watch } from 'vue';
 import { Chess, type Move, type Square } from 'chess.js';
-import { Chessground } from 'chessground';
+import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
 import {
   toColor,
