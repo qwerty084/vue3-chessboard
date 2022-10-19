@@ -44,7 +44,7 @@ function promotionSelected(e: Event) {
       @click="promotionSelected"
       @touchstart.passive="promotionSelected"
     >
-      <div v-show="promotionColor === 'b'" class="promotion-container">
+      <div v-if="promotionColor === 'b'" class="promotion-container">
         <div class="promotion queen-w-promotion">
           <button data-piece="q">
             <span class="sr-only">Queen</span>
@@ -66,7 +66,7 @@ function promotionSelected(e: Event) {
           </button>
         </div>
       </div>
-      <div v-show="promotionColor === 'w'" class="promotion-container">
+      <div v-if="promotionColor === 'w'" class="promotion-container">
         <div class="promotion queen-b-promotion">
           <button data-piece="q">
             <span class="sr-only">Queen</span>

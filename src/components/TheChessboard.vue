@@ -6,24 +6,21 @@ import { BoardApi } from '@/classes/BoardApi';
 import {
   toColor,
   possibleMoves,
-  isPromotion,
-  countThreats,
   getThreats,
+  isPromotion,
   calculatePromotions,
 } from '@/helper/Board';
 import { useBordStateStore } from '@/stores/BoardStateStore';
-import { initialPos, defaultBoardConfig } from '@/helper/DefaultConfig';
-import '@/assets/board.css';
+import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import type { Api } from 'chessground/api';
+import type { Key, MoveMetadata } from 'chessground/types';
+import type { BoardConfig } from '@/typings/BoardConfig';
 import type {
   Promotion,
-  ThreatCount,
   SquareKey,
   PieceColor,
   drawType,
 } from '@/typings/Chessboard';
-import type { Key, MoveMetadata } from 'chessground/types';
-import type { BoardConfig } from '@/typings/BoardConfig';
 
 const props = defineProps({
   boardConfig: {
@@ -55,12 +52,6 @@ const showPromotionDialog = ref(false);
 const boardElement = ref<HTMLElement | null>(null);
 const boardStore = useBordStateStore();
 const game = new Chess();
-
-const isCheckmate = ref(false);
-const isStalemate = ref(false);
-const isDraw = ref(false);
-const inCheck = ref(false);
-const showThreats = ref(false);
 const selectedPromotion = ref<Promotion>();
 
 let board: Api | undefined;
@@ -108,43 +99,27 @@ function changeTurn() {
         dests: possibleMoves(game),
       },
     });
-    promotions = calculatePromotions(game, promotions);
+    promotions = calculatePromotions(game.moves({ verbose: true }));
     afterMove();
   };
 }
 
 function afterMove() {
   if (typeof board === 'undefined') return;
-  if (showThreats.value) {
-    board?.setShapes(getThreats(game));
-  }
-  const threats: ThreatCount =
-    countThreats(
-      toColor(game),
-      boardStore.boardConfig.fen ?? initialPos,
-      game
-    ) || {};
-  threats['history'] = game.history();
-  threats['fen'] = game.fen();
 
   if (game.in_checkmate()) {
-    isCheckmate.value = true;
     emit('checkmate', board.state.turnColor);
   }
   if (game.in_stalemate()) {
-    isStalemate.value = true;
     emit('stalemate', true);
   }
   if (game.in_draw()) {
-    isDraw.value = true;
     emit('draw', true, '50-move rule || material');
   }
   if (game.in_threefold_repetition()) {
-    isDraw.value = true;
     emit('draw', true, 'Threefold repetition');
   }
   if (game.in_check()) {
-    inCheck.value = true;
     const currentPos = game.board();
     let kingPos: Square | undefined;
     const color = board.state.turnColor.charAt(0);
@@ -163,18 +138,17 @@ function afterMove() {
   }
 
   if (boardStore.showThreats) {
-    board.setShapes(getThreats(game));
+    board.setShapes(getThreats(game.moves({ verbose: true })));
   }
 }
 
 function loadPosition() {
+  if (boardElement.value == null) return;
   if (boardStore.boardConfig.fen) {
     game.load(boardStore.boardConfig.fen);
   }
-  if (boardElement.value === null) return;
 
-  board = Chessground(boardElement.value, props.boardConfig);
-
+  board = Chessground(boardElement.value, boardStore.boardConfig);
   board.set({
     movable: { events: { after: changeTurn() } },
     events: {
