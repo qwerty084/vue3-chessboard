@@ -11,8 +11,18 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest',
+    sourceType: 'module',
   },
   rules: {
+    'max-len': ['error', { code: 100 }],
+    'no-eval': 2,
+    'consistent-return': 1,
+    camelcase: 2,
+    'no-alert': 2,
+    eqeqeq: [2, 'smart'],
+    'func-style': [2, 'declaration'],
+    'no-duplicate-imports': 'error',
+    'no-debugger': 'error',
     'no-console': 1,
     'prettier/prettier': [
       'warn',
