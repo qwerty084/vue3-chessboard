@@ -8,7 +8,7 @@ import {
   possibleMoves,
   getThreats,
   isPromotion,
-  calculatePromotions,
+  getPossiblePromotions,
 } from '@/helper/Board';
 import { useBordStateStore } from '@/stores/BoardStateStore';
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
@@ -99,7 +99,7 @@ function changeTurn() {
         dests: possibleMoves(game),
       },
     });
-    promotions = calculatePromotions(game.moves({ verbose: true }));
+    promotions = getPossiblePromotions(game.moves({ verbose: true }));
     afterMove();
   };
 }
@@ -160,6 +160,7 @@ function loadPosition() {
       },
     },
   });
+
   afterMove();
 }
 </script>

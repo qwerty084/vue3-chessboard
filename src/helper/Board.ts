@@ -67,7 +67,7 @@ export function isPromotion(
   return filteredPromotions.length > 0;
 }
 
-export function calculatePromotions(legalMoves: Move[]) {
+export function getPossiblePromotions(legalMoves: Move[]) {
   legalMoves = legalMoves.filter((move) => move.promotion);
 
   return legalMoves;
