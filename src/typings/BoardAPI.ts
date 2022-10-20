@@ -16,7 +16,7 @@ export interface LichessOpening {
   opening: {
     eco: string;
     name: string;
-  };
+  } | null;
   topGames: [
     {
       id: string;
