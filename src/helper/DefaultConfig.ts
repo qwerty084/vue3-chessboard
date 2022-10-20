@@ -14,6 +14,8 @@ export const possibleMovesWhite: Map<Key, Key[]> = new Map([
   ['h2', ['h3', 'h4']],
 ]);
 export const initialPos = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
+export const initialPosChessJS =
+  'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 // lichess default conf
 export const defaultBoardConfig: Config = {
@@ -34,10 +36,10 @@ export const defaultBoardConfig: Config = {
     enabled: true,
     duration: 200,
   },
-  lastMove: [],
+  lastMove: undefined,
   movable: {
     free: true,
-    color: 'both',
+    color: 'white',
     showDests: true,
     dests: possibleMovesWhite,
     events: {},
