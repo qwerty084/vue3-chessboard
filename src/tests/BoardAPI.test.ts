@@ -11,7 +11,7 @@ describe.concurrent('Test the board API', () => {
   const boardApi = event?.[0][0];
 
   // get current state
-  const initialBoardConf = boardApi?.state.boardConfig;
+  const initialBoardConf = boardApi?.boardState.boardConfig;
 
   it('emits board api', () => {
     expect(boardApi).toBeTruthy();
@@ -26,7 +26,7 @@ describe.concurrent('Test the board API', () => {
   });
 
   it('has a state instance', () => {
-    expect(boardApi?.state).toBeTruthy();
+    expect(boardApi?.boardState).toBeTruthy();
   });
 
   it('resets the board', () => {
@@ -34,7 +34,7 @@ describe.concurrent('Test the board API', () => {
 
     // test chess.js
     expect(boardApi?.game.fen()).toBe(initialPosChessJS);
-    expect(boardApi?.state.boardConfig).toEqual(initialBoardConf);
+    expect(boardApi?.boardState.boardConfig).toEqual(initialBoardConf);
     expect(boardApi?.game.history().length).toBe(0);
     expect(boardApi?.game.validate_fen(boardApi?.game.fen()).valid).toBe(true);
     expect(boardApi?.game.in_check()).toBe(false);
@@ -53,7 +53,7 @@ describe.concurrent('Test the board API', () => {
 
     // test chessground & chess.js
     expect(boardApi?.board.getFen()).toBe(initialPos);
-    if (boardApi?.state.boardConfig.turnColor === 'white') {
+    if (boardApi?.boardState.boardConfig.turnColor === 'white') {
       expect(boardApi?.game.turn()).toBe('w');
       expect(boardApi.board.state.turnColor).toBe('white');
       expect(boardApi?.board.state.movable.color).toBe('white');

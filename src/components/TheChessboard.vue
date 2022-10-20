@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, defineAsyncComponent, watch } from 'vue';
+import { ref, onMounted, defineAsyncComponent, watch, reactive } from 'vue';
 import { Chess, type Move, type Square } from 'chess.js';
 import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
@@ -10,7 +10,7 @@ import {
   isPromotion,
   getPossiblePromotions,
 } from '@/helper/Board';
-import { useBordStateStore } from '@/stores/BoardStateStore';
+
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import type { Api } from 'chessground/api';
 import type { Key, MoveMetadata } from 'chessground/types';
@@ -21,6 +21,7 @@ import type {
   PieceColor,
   drawType,
 } from '@/typings/Chessboard';
+import type { BoardState } from '@/typings/BoardState';
 
 const props = defineProps({
   boardConfig: {
@@ -50,9 +51,14 @@ const PromotionDialog = defineAsyncComponent(
 );
 const showPromotionDialog = ref(false);
 const boardElement = ref<HTMLElement | null>(null);
-const boardStore = useBordStateStore();
+const boardConfig = ref<BoardConfig>({});
 const game = new Chess();
 const selectedPromotion = ref<Promotion>();
+const boardState = reactive<BoardState>({
+  showThreats: false,
+  activeGame: true,
+  boardConfig: {},
+});
 
 let board: Api | undefined;
 let promotions: Move[] = [];
@@ -60,13 +66,13 @@ let promoteTo: Promotion;
 
 onMounted(() => {
   if (props.boardConfig) {
-    boardStore.boardConfig = { ...defaultBoardConfig, ...props.boardConfig };
+    boardState.boardConfig = { ...defaultBoardConfig, ...props.boardConfig };
   } else {
-    boardStore.boardConfig = defaultBoardConfig;
+    boardState.boardConfig = defaultBoardConfig;
   }
   loadPosition();
   if (board) {
-    emit('boardCreated', new BoardApi(game, board, boardStore));
+    emit('boardCreated', new BoardApi(game, board, boardState));
   }
 });
 
@@ -137,18 +143,18 @@ function afterMove() {
     emit('check', board.state.turnColor);
   }
 
-  if (boardStore.showThreats) {
+  if (boardState.showThreats) {
     board.setShapes(getThreats(game.moves({ verbose: true })));
   }
 }
 
 function loadPosition() {
   if (boardElement.value == null) return;
-  if (boardStore.boardConfig.fen) {
-    game.load(boardStore.boardConfig.fen);
+  if (boardConfig.value.fen) {
+    game.load(boardConfig.value.fen);
   }
 
-  board = Chessground(boardElement.value, boardStore.boardConfig);
+  board = Chessground(boardElement.value, boardState.boardConfig);
   board.set({
     movable: { events: { after: changeTurn() } },
     events: {

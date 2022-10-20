@@ -40,11 +40,9 @@ main.js / main.ts
 
 ```javascript
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
 import App from './App.vue';
 
 const app = createApp(App);
-app.use(createPinia());
 
 app.mount('#app');
 ```
@@ -150,8 +148,8 @@ function resetBoard() {
 
 ## Setup:
 
-- Make sure you have pinia installed and included in main.js/ts
-- Include the style sheet: <br>
+- Just install the package and import the component in your project, like shown above.
+- Dont forget to include the stylesheet: <br>
   `import 'vue3-chessboard/style.css';`
 
 <br>
