@@ -2,7 +2,7 @@ import { read } from 'chessground/fen';
 import { possibleMoves, shortToLongColor, getThreats } from '@/helper/Board';
 import type { ChessInstance } from 'chess.js';
 import type { Api } from 'chessground/api';
-import type { BoardState } from '@/typings/BoardStore';
+import type { BoardState } from '@/typings/BoardState';
 import type { LichessOpening } from '@/typings/BoardAPI';
 
 /**
@@ -15,20 +15,18 @@ export class BoardApi {
   constructor(
     public game: ChessInstance,
     public board: Api,
-    public state: BoardState
-  ) {
-    this.board.set(this.state.boardConfig);
-  }
+    public boardState: BoardState
+  ) {}
 
   /**
    * Reset the board to the initial starting position.
    */
   resetBoard() {
     this.game.reset();
-    this.board.set(this.state.boardConfig);
+    this.board.set(this.boardState.boardConfig);
     this.board.state.check = undefined;
     this.board.selectSquare(null);
-    if (this.state.showThreats) {
+    if (this.boardState.showThreats) {
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
   }
@@ -52,7 +50,7 @@ export class BoardApi {
     this.board.state.movable.dests = possibleMoves(this.game);
     this.board.redrawAll();
 
-    if (this.state.showThreats) {
+    if (this.boardState.showThreats) {
       // redraw threats in new position if enabled
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
@@ -96,7 +94,7 @@ export class BoardApi {
    * enable drawing of threats/possible moves on the board
    */
   showThreats() {
-    this.state.showThreats = true;
+    this.boardState.showThreats = true;
     this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
   }
 
@@ -104,7 +102,7 @@ export class BoardApi {
    * disable drawing of threats/possible moves on the board
    */
   hideThreats() {
-    this.state.showThreats = false;
+    this.boardState.showThreats = false;
     this.board.setShapes([]);
   }
 
@@ -112,8 +110,8 @@ export class BoardApi {
    * toggle drawing of threats/possible moves on the board
    */
   toggleThreats() {
-    this.state.showThreats = !this.state.showThreats;
-    if (this.state.showThreats) {
+    this.boardState.showThreats = !this.boardState.showThreats;
+    if (this.boardState.showThreats) {
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     } else {
       this.board.setShapes([]);

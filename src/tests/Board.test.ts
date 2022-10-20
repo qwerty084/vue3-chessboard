@@ -1,16 +1,7 @@
 import { test, expect } from 'vitest';
-import { createPinia } from 'pinia';
-import { mount } from '@vue/test-utils';
+import { mountComponent } from './helper/Helper';
 import TheChessboard from '@/components/TheChessboard.vue';
 import type { BoardConfig } from '@/typings/BoardConfig';
-
-function mountComponent() {
-  return mount(TheChessboard, {
-    global: {
-      plugins: [createPinia()],
-    },
-  });
-}
 
 test('mount component', async () => {
   expect(TheChessboard).toBeTruthy();

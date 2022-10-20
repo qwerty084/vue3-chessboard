@@ -41,7 +41,6 @@
   "dependencies": {
     "chess.js": "^0.13.4",
     "chessground": "^8.3.5",
-    "pinia": "^2.0.23",
     "vue": "^3.2.41"
   },
   "devDependencies": {

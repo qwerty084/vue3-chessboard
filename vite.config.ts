@@ -14,11 +14,10 @@ export default defineConfig({
       formats: ['es', 'cjs', 'umd'],
     },
     rollupOptions: {
-      external: ['vue', 'pinia'],
+      external: ['vue'],
       output: {
         globals: {
           vue: 'Vue',
-          pinia: 'pinia',
         },
       },
     },
