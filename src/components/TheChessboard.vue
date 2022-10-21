@@ -13,7 +13,7 @@ import {
 
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import type { Api } from 'chessground/api';
-import type { Key, MoveMetadata } from 'chessground/types';
+import type { Key } from 'chessground/types';
 import type { BoardConfig } from '@/typings/BoardConfig';
 import type {
   Promotion,
@@ -49,7 +49,6 @@ const emit = defineEmits<{
 const PromotionDialog = defineAsyncComponent(
   () => import('./PromotionDialog.vue')
 );
-const showPromotionDialog = ref(false);
 const boardElement = ref<HTMLElement | null>(null);
 const boardConfig = ref<BoardConfig>({});
 const game = new Chess();
@@ -58,11 +57,11 @@ const boardState = reactive<BoardState>({
   showThreats: false,
   activeGame: true,
   boardConfig: {},
+  openPromotionDialog: false,
 });
 
 let board: Api | undefined;
 let promotions: Move[] = [];
-let promoteTo: Promotion;
 
 onMounted(() => {
   if (props.boardConfig) {
@@ -77,7 +76,7 @@ onMounted(() => {
 });
 
 async function onPromotion(): Promise<Promotion> {
-  showPromotionDialog.value = true;
+  boardState.openPromotionDialog = true;
   return new Promise((resolve) => {
     watch(selectedPromotion, () => {
       resolve(selectedPromotion.value);
@@ -86,16 +85,15 @@ async function onPromotion(): Promise<Promotion> {
 }
 
 function changeTurn() {
-  return async (orig: Key, dest: Key, metadata: MoveMetadata) => {
-    metadata.premove = false;
+  return async (orig: Key, dest: Key) => {
     if (isPromotion(orig as SquareKey, dest as SquareKey, promotions)) {
-      promoteTo = await onPromotion();
-      showPromotionDialog.value = false;
+      await onPromotion();
+      boardState.openPromotionDialog = false;
     }
     game.move({
       from: orig as SquareKey,
       to: dest as SquareKey,
-      promotion: promoteTo,
+      promotion: selectedPromotion.value,
     });
     board?.set({
       fen: game.fen(),
@@ -107,6 +105,8 @@ function changeTurn() {
     });
     promotions = getPossiblePromotions(game.moves({ verbose: true }));
     afterMove();
+
+    selectedPromotion.value = undefined;
   };
 }
 
@@ -176,12 +176,12 @@ function loadPosition() {
     id="main-wrap"
     aria-label="chessboard"
     class="main-wrap"
-    :class="{ disabledBoard: showPromotionDialog }"
+    :class="{ disabledBoard: boardState.openPromotionDialog }"
   >
     <div class="main-board">
       <div class="dialog-container">
         <PromotionDialog
-          v-if="showPromotionDialog"
+          v-if="boardState.openPromotionDialog"
           :turn-color="game.turn()"
           @promotion-selected="(piece) => (selectedPromotion = piece)"
         />
