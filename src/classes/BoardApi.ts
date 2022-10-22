@@ -140,6 +140,34 @@ export class BoardApi {
       return null;
     }
   }
+
+  async getOpeningDescription(maxDescriptionLength: number) {
+    const gameHistory = this.game.history({ verbose: true });
+    let moves = '';
+    let counter = 0;
+    gameHistory.forEach((move, i) => {
+      if (i % 2 === 0 || i === 0) counter++;
+      const sign = i % 2 === 0 ? '_' : '..';
+      const moveTo = `${counter}.${sign}${
+        move.san.includes('x') ? move.san : move.to
+      }/`;
+      moves += moveTo;
+    });
+    moves = moves.slice(0, -1);
+
+    try {
+      const res = await fetch(
+        `https://en.wikibooks.org/w/api.php?titles=Chess_Opening_Theory/${moves}&redirects&origin=*&action=query&prop=extracts&formatversion=2&format=json&explaintext&exchars=${maxDescriptionLength}`
+      );
+      const data = await res.json();
+      if (data.query?.pages[0]?.extract) {
+        return data.query.pages[0].extract;
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
 }
 
 export default BoardApi;
