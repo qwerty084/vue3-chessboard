@@ -66,6 +66,16 @@ describe.concurrent('Test the board API', () => {
       boardApi?.board.state.turnColor
     );
   });
+
+  // test the board api
+  it('undoes moves', () => {
+    boardApi?.game.move('e4');
+    boardApi?.undoLastMove();
+
+    expect(boardApi?.board.state.turnColor).toBe('white');
+    expect(boardApi?.game.history().length).toBe(0);
+    expect(boardApi?.game.fen()).toBe(initialPosChessJS);
+  });
 });
 
 export {};

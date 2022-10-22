@@ -1,4 +1,3 @@
-import { read } from 'chessground/fen';
 import { possibleMoves, shortToLongColor, getThreats } from '@/helper/Board';
 import type { ChessInstance } from 'chess.js';
 import type { Api } from 'chessground/api';
@@ -35,20 +34,27 @@ export class BoardApi {
    * undo last Move, if possible
    */
   undoLastMove() {
-    const lastMove = this.game.undo();
-    if (lastMove == null) return;
-    this.board.state.pieces = read(this.game.fen());
+    const undoMove = this.game.undo();
+    const lastMove = this.game.history({ verbose: true }).pop();
+    if (undoMove == null) return;
 
-    this.board.state.turnColor = shortToLongColor(lastMove.color);
-    if (history.length === 1) {
-      this.board.state.lastMove = undefined;
+    this.board.set({ fen: this.game.fen() });
+
+    if (lastMove?.color) {
+      this.board.state.turnColor = shortToLongColor(lastMove.color);
     } else {
-      this.board.state.lastMove = [lastMove?.from, lastMove?.to];
+      this.board.state.turnColor =
+        this.boardState.boardConfig.turnColor ?? 'white';
     }
 
     this.board.state.movable.color = this.board.state.turnColor;
     this.board.state.movable.dests = possibleMoves(this.game);
-    this.board.redrawAll();
+
+    if (this.game.history().length === 0 || typeof lastMove === 'undefined') {
+      this.board.state.lastMove = undefined;
+    } else {
+      this.board.state.lastMove = [lastMove?.from, lastMove?.to];
+    }
 
     if (this.boardState.showThreats) {
       // redraw threats in new position if enabled
