@@ -38,7 +38,7 @@ export const defaultBoardConfig: Config = {
   },
   lastMove: undefined,
   movable: {
-    free: true,
+    free: false,
     color: 'white',
     showDests: true,
     dests: possibleMovesWhite,
