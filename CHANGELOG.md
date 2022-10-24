@@ -1,3 +1,31 @@
+## 0.0.7 (2022-10-24)
+
+### Bug Fixes
+
+- **board:** fix undo while promoting ([90c36de](https://github.com/qwerty084/vue3-chessboard/commit/90c36deb8b2c280f8cdc562a23ee4399deccfacd))
+- **board:** fix reselect of pieces ([9dde375](https://github.com/qwerty084/vue3-chessboard/commit/9dde375188d8700ce62882e2396dd934d68fe5da))
+- **board:** fix undo not being animated ([09c888c](https://github.com/qwerty084/vue3-chessboard/commit/09c888cadfebd9293cb84c2150ed21b7f136be18))
+
+### Features
+
+- **board:** add callback functions for piece select and after move as props to board component ([d6dc946](https://github.com/qwerty084/vue3-chessboard/commit/d6dc9464463de2f1c4f850bb508df0f3a69f3c04))
+- **boardAPI:** add method getOpeningName() to retrieve opening name for the current position from lichess api ([d8457c5](https://github.com/qwerty084/vue3-chessboard/commit/d8457c503a22653628ef58a36e8f642464979ebe))
+- **boardAPI:** add method getOpeningDescription() to retrieve opening description for the current position from wikibooks.org api ([d8457c5](https://github.com/qwerty084/vue3-chessboard/commit/bb58b4b2fdb8b99f805bc506cfe3ec53dbdedd8f))
+- **boardAPI:** add makeMove() method to make a move programmatically on the board ([8215b15](https://github.com/qwerty084/vue3-chessboard/commit/8215b152b11219e8764f4473959f5dd742f81123)), closes [#18](https://github.com/qwerty084/vue3-chessboard/issues/18)
+
+### Dev
+
+- setup vitest and added some tests
+- setup github actions for pull requests (runs type check, build, eslint and tests)
+- code base cleaned up
+
+### IMPORTANT CHANGES
+
+- pinia is no longer required, it wasn't used extensivly and added unnecessary bloat ([9a177c2](https://github.com/qwerty084/vue3-chessboard/commit/9a177c2c46cfe179dac3e426bd96961ba5f4d87a))
+<br>
+<hr>
+<br>
+
 ## 0.0.6 (2022-10-18)
 
 ### Bug Fixes
