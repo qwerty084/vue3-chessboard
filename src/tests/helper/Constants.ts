@@ -1,4 +1,5 @@
 import type { Move } from 'chess.js';
+import type { SquareKey } from '@/typings/Chessboard';
 
 export const moves: Move[] = [
   {
@@ -436,4 +437,17 @@ export const possibleFirstThreatsWhite = [
   { orig: 'c3', brush: 'yellow' },
   { orig: 'f3', brush: 'yellow' },
   { orig: 'h3', brush: 'yellow' },
+];
+
+export const moveableSquaresWhite: SquareKey[] = [
+  'b1',
+  'g1',
+  'a2',
+  'b2',
+  'c2',
+  'd2',
+  'e2',
+  'f2',
+  'g2',
+  'h2',
 ];

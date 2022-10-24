@@ -1,9 +1,9 @@
 import { read } from 'chessground/fen';
 import { possibleMoves, shortToLongColor, getThreats } from '@/helper/Board';
-import type { ChessInstance } from 'chess.js';
+import type { ChessInstance, Square } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type { BoardState } from '@/typings/BoardState';
-import type { LichessOpening } from '@/typings/BoardAPI';
+import type { LichessOpening, BoardAPI } from '@/typings/BoardAPI';
 
 /**
  * class for modifying and reading data from the board, \
@@ -11,7 +11,7 @@ import type { LichessOpening } from '@/typings/BoardAPI';
  * lichess documentation: https://github.com/lichess-org/chessground/blob/master/src/api.ts \
  * chess.js documentation: https://github.com/jhlywa/chess.js/blob/master/README.md
  */
-export class BoardApi {
+export class BoardApi implements BoardAPI {
   constructor(
     public game: ChessInstance,
     public board: Api,
@@ -136,7 +136,7 @@ export class BoardApi {
       const data: LichessOpening = await res.json();
 
       return data.opening?.name ?? null;
-    } catch (_) {
+    } catch {
       return null;
     }
   }
@@ -164,8 +164,23 @@ export class BoardApi {
         return data.query.pages[0].extract;
       }
       return null;
-    } catch (_) {
+    } catch {
       return null;
+    }
+  }
+
+  makeMove(from: Square, to: Square) {
+    const move = this.game.move({ from, to });
+    if (move == null) return;
+    this.board.move(from, to);
+    this.board.state.movable.dests = possibleMoves(this.game);
+    this.board.state.turnColor = shortToLongColor(this.game.turn());
+    this.board.state.movable.color = this.board.state.turnColor;
+    this.board.state.lastMove = [from, to];
+
+    if (this.boardState.showThreats) {
+      // redraw threats in new position if enabled
+      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
   }
 }

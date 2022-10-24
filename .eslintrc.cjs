@@ -22,7 +22,7 @@ module.exports = {
     'func-style': [2, 'declaration'],
     'no-duplicate-imports': 'error',
     'no-debugger': 'error',
-    'no-console': 1,
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'prettier/prettier': [
       'warn',
       {
