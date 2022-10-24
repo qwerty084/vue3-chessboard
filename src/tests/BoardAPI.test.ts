@@ -3,12 +3,17 @@ import { mountComponent } from './helper/Helper';
 import { initialPos, initialPosChessJS } from '@/helper/DefaultConfig';
 import type { BoardApi } from '@/classes/BoardApi';
 import { read } from 'chessground/fen';
+import { randomMoveFirstMove } from '@/tests/helper/Functions';
 
 describe.concurrent('Test the board API', () => {
   const wrapper = mountComponent();
 
   const event = wrapper.emitted<BoardApi[]>('boardCreated');
   const boardApi = event?.[0][0];
+
+  if (typeof boardApi === 'undefined') {
+    throw new Error('boardApi is undefined');
+  }
 
   // get current state
   const initialBoardConf = boardApi?.boardState.boardConfig;
@@ -75,6 +80,27 @@ describe.concurrent('Test the board API', () => {
     expect(boardApi?.board.state.turnColor).toBe('white');
     expect(boardApi?.game.history().length).toBe(0);
     expect(boardApi?.game.fen()).toBe(initialPosChessJS);
+  });
+
+  it('makes a move', () => {
+    boardApi.resetBoard();
+    randomMoveFirstMove(boardApi);
+
+    expect(boardApi?.game.history().length).toBe(1);
+    expect(boardApi?.game.validate_fen(boardApi?.game.fen()).valid).toBe(true);
+    expect(boardApi?.game.in_check()).toBe(false);
+    expect(boardApi?.game.in_checkmate()).toBe(false);
+    expect(boardApi?.game.in_draw()).toBe(false);
+    expect(boardApi?.game.in_stalemate()).toBe(false);
+    expect(boardApi?.game.in_threefold_repetition()).toBe(false);
+    expect(boardApi?.game.insufficient_material()).toBe(false);
+    expect(boardApi?.game.game_over()).toBe(false);
+    expect(boardApi.board.state.turnColor).not.toBe(
+      boardApi.boardState.boardConfig.turnColor
+    );
+    expect(boardApi.board.state.movable.color).not.toBe(
+      boardApi.boardState.boardConfig.turnColor
+    );
   });
 });
 
