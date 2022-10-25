@@ -35,17 +35,11 @@ export class BoardApi implements BoardAPI {
    */
   undoLastMove() {
     const undoMove = this.game.undo();
-    const lastMove = this.game.history({ verbose: true }).pop();
     if (undoMove == null) return;
+    const lastMove = this.game.history({ verbose: true }).at(-1);
 
     this.board.set({ fen: this.game.fen() });
-
-    if (lastMove?.color) {
-      this.board.state.turnColor = shortToLongColor(lastMove.color);
-    } else {
-      this.board.state.turnColor =
-        this.boardState.boardConfig.turnColor ?? 'white';
-    }
+    this.board.state.turnColor = shortToLongColor(this.game.turn());
 
     this.board.state.movable.color = this.board.state.turnColor;
     this.board.state.movable.dests = possibleMoves(this.game);
