@@ -1,3 +1,14 @@
+## 0.0.8 (2022-10-26)
+
+### Bug Fixes
+
+- **board:** load promotion dialog synchronously([374ed67](https://github.com/qwerty084/vue3-chessboard/commit/374ed674b44ab651a13cdddf02b177b13ea7cb11))
+- **boardAPI:** fix undo method([40bb425](https://github.com/qwerty084/vue3-chessboard/commit/40bb425e86bcbb9720552343824eab451e7d26f6))
+
+<br>
+<hr>
+<br>
+
 ## 0.0.7 (2022-10-24)
 
 ### Bug Fixes
