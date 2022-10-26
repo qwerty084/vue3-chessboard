@@ -37,6 +37,10 @@ const props = defineProps({
     type: Function,
     default: () => 1,
   },
+  enableStockfish: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits<{
@@ -49,7 +53,9 @@ const emit = defineEmits<{
 
 const boardElement = ref<HTMLElement | null>(null);
 const boardConfig = ref<BoardConfig>({});
+const boardAPI = ref<BoardApi>();
 const game = new Chess();
+const stockfish = ref<Worker>();
 const selectedPromotion = ref<Promotion>();
 const boardState = reactive<BoardState>({
   showThreats: false,
@@ -57,6 +63,8 @@ const boardState = reactive<BoardState>({
   boardConfig: {},
   openPromotionDialog: false,
 });
+
+const moveArr = ref<string[]>([]);
 
 let board: Api | undefined;
 let promotions: Move[] = [];
@@ -69,7 +77,45 @@ onMounted(() => {
   }
   loadPosition();
   if (board) {
-    emit('boardCreated', new BoardApi(game, board, boardState));
+    boardAPI.value = new BoardApi(game, board, boardState);
+    emit('boardCreated', boardAPI.value);
+  }
+
+  if (props.enableStockfish) {
+    const wasmSupported =
+      typeof WebAssembly === 'object' &&
+      WebAssembly.validate(
+        Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00)
+      );
+
+    if (wasmSupported) {
+      stockfish.value = new Worker(
+        new URL('stockfish.wasm.js', import.meta.url)
+      );
+    } else {
+      stockfish.value = new Worker(new URL('./stockfish.js', import.meta.url), {
+        type: 'module',
+      });
+    }
+
+    stockfish.value.addEventListener('message', function (e) {
+      if (e.data.includes('Unknown command')) {
+        console.error('UNKNOWN COMMAND', e.data);
+      }
+      console.log(e.data);
+      const data: string = e.data;
+      if (data.includes('bestmove')) {
+        const move = data.split(' ')[1];
+        const from = move.substring(0, 2) as SquareKey;
+        const to = move.substring(2, 4) as SquareKey;
+        boardAPI.value?.showBestMove(from, to);
+      }
+    });
+
+    stockfish.value.postMessage('uci');
+    stockfish.value.postMessage('ucinewgame');
+    stockfish.value.postMessage('position startpos');
+    stockfish.value.postMessage('go depth 20');
   }
 });
 
@@ -144,6 +190,16 @@ function afterMove() {
   if (boardState.showThreats) {
     board.setShapes(getThreats(game.moves({ verbose: true })));
   }
+
+  const lastMove = game.history({ verbose: true }).at(-1);
+
+  if (!lastMove?.from || !lastMove?.to) return;
+
+  moveArr.value.push(`${lastMove.from}${lastMove.to}`);
+  stockfish.value?.postMessage(
+    `position startpos moves ${moveArr.value.join(' ')}`
+  );
+  stockfish.value?.postMessage('go depth 15');
 }
 
 function loadPosition() {

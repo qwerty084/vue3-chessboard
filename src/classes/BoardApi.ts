@@ -94,8 +94,11 @@ export class BoardApi implements BoardAPI {
    * enable drawing of threats/possible moves on the board
    */
   showThreats() {
-    this.boardState.showThreats = true;
     this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
+  }
+
+  showBestMove(orig: Square, dest: Square) {
+    this.board.setShapes([{ orig: orig, dest: dest, brush: 'paleBlue' }]);
   }
 
   /**

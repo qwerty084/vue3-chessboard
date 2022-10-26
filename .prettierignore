@@ -1,2 +1,5 @@
 dist
 README.md
+stockfish.js
+stockfish.wasm.js
+stockfish.wasm
