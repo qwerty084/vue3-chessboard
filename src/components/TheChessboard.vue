@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, defineAsyncComponent, watch, reactive } from 'vue';
+import { ref, onMounted, watch, reactive } from 'vue';
+import PromotionDialog from './PromotionDialog.vue';
 import { Chess, type Move, type Square } from 'chess.js';
 import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
@@ -46,9 +47,6 @@ const emit = defineEmits<{
   (e: 'check', isInCheck: PieceColor): void;
 }>();
 
-const PromotionDialog = defineAsyncComponent(
-  () => import('./PromotionDialog.vue')
-);
 const boardElement = ref<HTMLElement | null>(null);
 const boardConfig = ref<BoardConfig>({});
 const game = new Chess();
