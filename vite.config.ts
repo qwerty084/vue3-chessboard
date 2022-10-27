@@ -8,6 +8,7 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
   build: {
     target: 'esnext',
+    assetsDir: '',
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'TheChessboard',

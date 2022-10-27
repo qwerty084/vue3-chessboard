@@ -90,12 +90,14 @@ onMounted(() => {
 
     if (wasmSupported) {
       stockfish.value = new Worker(
-        new URL('stockfish.wasm.js', import.meta.url)
+        new URL('../workers/stockfish.wasm.js', import.meta.url),
+        { type: 'module' }
       );
     } else {
-      stockfish.value = new Worker(new URL('./stockfish.js', import.meta.url), {
-        type: 'module',
-      });
+      stockfish.value = new Worker(
+        new URL('../workers/stockfish.js', import.meta.url),
+        { type: 'module' }
+      );
     }
 
     stockfish.value.addEventListener('message', function (e) {
@@ -199,7 +201,7 @@ function afterMove() {
   stockfish.value?.postMessage(
     `position startpos moves ${moveArr.value.join(' ')}`
   );
-  stockfish.value?.postMessage('go depth 15');
+  stockfish.value?.postMessage('go depth 20');
 }
 
 function loadPosition() {
