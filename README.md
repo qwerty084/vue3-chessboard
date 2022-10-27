@@ -36,17 +36,6 @@ npm i vue3-chessboard
 
 # Usage
 
-main.js / main.ts
-
-```javascript
-import { createApp } from 'vue';
-import App from './App.vue';
-
-const app = createApp(App);
-
-app.mount('#app');
-```
-
 Example Typescript Component
 
 ```html
