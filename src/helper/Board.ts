@@ -1,6 +1,6 @@
 import { SQUARES, type ChessInstance, type Move } from 'chess.js';
 import type { Key } from 'chessground/types';
-import type { Threat, SquareKey } from '@/typings/Chessboard';
+import type { SquareKey, Threat } from '@/typings/Chessboard';
 
 export function getThreats(moves: Move[]) {
   const threats: Threat[] = [];
@@ -23,20 +23,6 @@ export function toColor(game: ChessInstance) {
 
 export function shortToLongColor(color: 'w' | 'b') {
   return color === 'w' ? 'white' : 'black';
-}
-
-export function opponentMoves(game: ChessInstance) {
-  let moves: Move[] = [];
-  const tokens = game.fen().split(' ');
-  tokens[1] = tokens[1] === 'w' ? 'b' : 'w';
-  const tokenString = tokens.join(' ');
-  const valid = game.load(tokenString);
-  if (valid) {
-    moves = game.moves({ verbose: true });
-    game.load_pgn(game.pgn());
-  }
-
-  return moves;
 }
 
 export function possibleMoves(game: ChessInstance) {
@@ -68,7 +54,5 @@ export function isPromotion(
 }
 
 export function getPossiblePromotions(legalMoves: Move[]) {
-  legalMoves = legalMoves.filter((move) => move.promotion);
-
-  return legalMoves;
+  return legalMoves.filter((move) => move.promotion);
 }

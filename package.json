@@ -41,7 +41,7 @@
   "dependencies": {
     "chess.js": "^0.13.4",
     "chessground": "^8.3.5",
-    "stockfish.js": "^10.0.2",
+    "stockfish": "^15.0.0",
     "vue": "^3.2.41"
   },
   "devDependencies": {

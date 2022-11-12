@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest';
 import { mountComponent } from './helper/Helper';
 import TheChessboard from '@/components/TheChessboard.vue';
-import type { BoardConfig } from '@/typings/BoardConfig';
+import type { BoardConfig } from '@/typings/Chessboard';
 
 test('mount component', async () => {
   expect(TheChessboard).toBeTruthy();

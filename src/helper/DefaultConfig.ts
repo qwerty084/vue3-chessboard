@@ -1,5 +1,15 @@
 import type { Key } from 'chessground/types';
 import type { Config } from 'chessground/config';
+import type {
+  AvailableStockfishOpts,
+  StockfishOpts,
+} from '@/typings/Chessboard';
+
+declare global {
+  interface Navigator {
+    deviceMemory: number;
+  }
+}
 
 export const possibleMovesWhite: Map<Key, Key[]> = new Map([
   ['b1', ['a3', 'c3']],
@@ -13,7 +23,9 @@ export const possibleMovesWhite: Map<Key, Key[]> = new Map([
   ['g2', ['g3', 'g4']],
   ['h2', ['h3', 'h4']],
 ]);
+
 export const initialPos = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
+
 export const initialPosChessJS =
   'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -90,3 +102,36 @@ export const defaultBoardConfig: Config = {
     },
   },
 };
+
+export const defaultStockfishOpts: Required<StockfishOpts> = {
+  enabled: true,
+  depth: 20,
+  analysisMode: true,
+  useNNUE: false,
+  hashSize:
+    'deviceMemory' in window.navigator
+      ? (window.navigator.deviceMemory * 1024) / 2
+      : 256,
+  threads: window.navigator.hardwareConcurrency || 1,
+  multiPV: 1,
+  skillLevel: 20,
+  limitStrength: false,
+  ponder: false,
+};
+
+export const translateStockfishOpts: AvailableStockfishOpts = {
+  analysisMode: 'UCI_AnalyseMode',
+  useNNUE: 'Use NNUE',
+  hashSize: 'Hash',
+  threads: 'Threads',
+  multiPV: 'MultiPV',
+  skillLevel: 'Skill Level',
+  limitStrength: 'UCI_LimitStrength',
+  ponder: 'Ponder',
+};
+
+export function pow2floor(n: number) {
+  let pow2 = 1;
+  while (pow2 * 2 <= n) pow2 *= 2;
+  return pow2;
+}

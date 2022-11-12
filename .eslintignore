@@ -1,3 +1,5 @@
 dist
 stockfish.js
 stockfish.wasm.js
+stockfish.asm.js
+public/engines/**

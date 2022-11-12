@@ -4,6 +4,7 @@ import PromotionDialog from './PromotionDialog.vue';
 import { Chess, type Move, type Square } from 'chess.js';
 import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
+import { Stockfish } from '@/classes/Stockfish';
 import {
   toColor,
   possibleMoves,
@@ -11,18 +12,22 @@ import {
   isPromotion,
   getPossiblePromotions,
 } from '@/helper/Board';
-
-import { defaultBoardConfig } from '@/helper/DefaultConfig';
+import {
+  defaultBoardConfig,
+  defaultStockfishOpts,
+} from '@/helper/DefaultConfig';
 import type { Api } from 'chessground/api';
 import type { Key } from 'chessground/types';
-import type { BoardConfig } from '@/typings/BoardConfig';
 import type {
+  BoardConfig,
+  BoardState,
+  StockfishOpts,
   Promotion,
   SquareKey,
   PieceColor,
   drawType,
 } from '@/typings/Chessboard';
-import type { BoardState } from '@/typings/BoardState';
+import type { StockfishClass } from '@/typings/Stockfish';
 
 const props = defineProps({
   boardConfig: {
@@ -37,9 +42,9 @@ const props = defineProps({
     type: Function,
     default: () => 1,
   },
-  enableStockfish: {
-    type: Boolean,
-    default: false,
+  stockfishOptions: {
+    type: Object as () => StockfishOpts,
+    default: defaultStockfishOpts,
   },
 });
 
@@ -55,7 +60,7 @@ const boardElement = ref<HTMLElement | null>(null);
 const boardConfig = ref<BoardConfig>({});
 const boardAPI = ref<BoardApi>();
 const game = new Chess();
-const stockfish = ref<Worker>();
+const stockfish = ref<StockfishClass>();
 const selectedPromotion = ref<Promotion>();
 const boardState = reactive<BoardState>({
   showThreats: false,
@@ -63,10 +68,7 @@ const boardState = reactive<BoardState>({
   boardConfig: {},
   openPromotionDialog: false,
 });
-
-const moveArr = ref<string[]>([]);
-
-let board: Api | undefined;
+let board: Api;
 let promotions: Move[] = [];
 
 onMounted(() => {
@@ -76,49 +78,17 @@ onMounted(() => {
     boardState.boardConfig = defaultBoardConfig;
   }
   loadPosition();
-  if (board) {
-    boardAPI.value = new BoardApi(game, board, boardState);
-    emit('boardCreated', boardAPI.value);
+
+  boardAPI.value = new BoardApi(game, board, boardState);
+  if (props.stockfishOptions.enabled) {
+    stockfish.value = new Stockfish(
+      boardAPI.value,
+      game,
+      props.stockfishOptions
+    );
+    boardAPI.value = new BoardApi(game, board, boardState, stockfish.value);
   }
-
-  if (props.enableStockfish) {
-    const wasmSupported =
-      typeof WebAssembly === 'object' &&
-      WebAssembly.validate(
-        Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00)
-      );
-
-    if (wasmSupported) {
-      stockfish.value = new Worker(
-        new URL('../workers/stockfish.wasm.js', import.meta.url),
-        { type: 'module' }
-      );
-    } else {
-      stockfish.value = new Worker(
-        new URL('../workers/stockfish.js', import.meta.url),
-        { type: 'module' }
-      );
-    }
-
-    stockfish.value.addEventListener('message', function (e) {
-      if (e.data.includes('Unknown command')) {
-        console.error('UNKNOWN COMMAND', e.data);
-      }
-      console.log(e.data);
-      const data: string = e.data;
-      if (data.includes('bestmove')) {
-        const move = data.split(' ')[1];
-        const from = move.substring(0, 2) as SquareKey;
-        const to = move.substring(2, 4) as SquareKey;
-        boardAPI.value?.showBestMove(from, to);
-      }
-    });
-
-    stockfish.value.postMessage('uci');
-    stockfish.value.postMessage('ucinewgame');
-    stockfish.value.postMessage('position startpos');
-    stockfish.value.postMessage('go depth 20');
-  }
+  emit('boardCreated', boardAPI.value);
 });
 
 async function onPromotion(): Promise<Promotion> {
@@ -157,8 +127,6 @@ function changeTurn() {
 }
 
 function afterMove() {
-  if (typeof board === 'undefined') return;
-
   if (game.in_checkmate()) {
     emit('checkmate', board.state.turnColor);
   }
@@ -193,15 +161,7 @@ function afterMove() {
     board.setShapes(getThreats(game.moves({ verbose: true })));
   }
 
-  const lastMove = game.history({ verbose: true }).at(-1);
-
-  if (!lastMove?.from || !lastMove?.to) return;
-
-  moveArr.value.push(`${lastMove.from}${lastMove.to}`);
-  stockfish.value?.postMessage(
-    `position startpos moves ${moveArr.value.join(' ')}`
-  );
-  stockfish.value?.postMessage('go depth 20');
+  stockfish.value?.sendMove();
 }
 
 function loadPosition() {
@@ -215,6 +175,8 @@ function loadPosition() {
     movable: { events: { after: changeTurn() } },
     events: {
       move() {
+        board.setAutoShapes([]);
+        stockfish.value?.postMessage('stop');
         props.afterMoveCb();
       },
       select() {
@@ -222,14 +184,11 @@ function loadPosition() {
       },
     },
   });
-
-  afterMove();
 }
 </script>
 
 <template>
   <section
-    id="main-wrap"
     aria-label="chessboard"
     class="main-wrap"
     :class="{ disabledBoard: boardState.openPromotionDialog }"
@@ -242,9 +201,13 @@ function loadPosition() {
           @promotion-selected="(piece) => (selectedPromotion = piece)"
         />
       </div>
-      <div ref="boardElement" class="cg-board-wrap">
-        <div class="cg-board"></div>
-      </div>
+      <div ref="boardElement" class="cg-board-wrap"></div>
     </div>
   </section>
 </template>
+
+<style>
+html {
+  background-color: #333;
+}
+</style>

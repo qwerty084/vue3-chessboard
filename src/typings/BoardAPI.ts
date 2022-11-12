@@ -1,6 +1,6 @@
 import type { ChessInstance, Square } from 'chess.js';
 import type { Api } from 'chessground/api';
-import type { BoardState } from './BoardState';
+import type { BoardState } from './Chessboard';
 
 export interface BoardAPI {
   game: ChessInstance;
@@ -21,6 +21,7 @@ export interface BoardAPI {
     maxDescriptionLength: number
   ) => Promise<string | null>;
   makeMove: (from: Square, to: Square) => void;
+  showBestMove: (moves: [{ orig: Square; dest: Square }]) => void;
 }
 
 export interface LichessOpening {

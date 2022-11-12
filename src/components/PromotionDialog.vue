@@ -35,44 +35,44 @@ function promotionSelected(e: Event) {
       @touchstart.passive="promotionSelected"
     >
       <div v-if="turnColor === 'w'" class="promotion-container">
-        <div class="queen-w-promotion">
+        <div class="queen white">
           <button data-piece="q">
             <span class="sr-only">Queen</span>
           </button>
         </div>
-        <div class="knight-w-promotion">
+        <div class="knight white">
           <button data-piece="n">
             <span class="sr-only">Knight</span>
           </button>
         </div>
-        <div class="rook-w-promotion">
+        <div class="rook white">
           <button data-piece="r">
             <span class="sr-only">Rook</span>
           </button>
         </div>
-        <div class="bishop-w-promotion">
+        <div class="bishop white">
           <button data-piece="b">
             <span class="sr-only">Bishop</span>
           </button>
         </div>
       </div>
       <div v-if="turnColor === 'b'" class="promotion-container">
-        <div class="queen-b-promotion">
+        <div class="queen black">
           <button data-piece="q">
             <span class="sr-only">Queen</span>
           </button>
         </div>
-        <div class="knight-b-promotion">
+        <div class="knight black">
           <button data-piece="n">
             <span class="sr-only">Knight</span>
           </button>
         </div>
-        <div class="rook-b-promotion">
+        <div class="rook black">
           <button data-piece="r">
             <span class="sr-only">Rook</span>
           </button>
         </div>
-        <div class="bishop-b-promotion">
+        <div class="bishop black">
           <button data-piece="b">
             <span class="sr-only">Bishop</span>
           </button>

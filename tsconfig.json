@@ -16,7 +16,8 @@
     "noImplicitThis": true,
     "noImplicitReturns": false,
 
-    "strict": true
+    "strict": true,
+    "typeRoots": ["./src/typings"]
   },
   "references": [
     {

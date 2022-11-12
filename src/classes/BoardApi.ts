@@ -1,8 +1,9 @@
 import { possibleMoves, shortToLongColor, getThreats } from '@/helper/Board';
 import type { ChessInstance, Square } from 'chess.js';
 import type { Api } from 'chessground/api';
-import type { BoardState } from '@/typings/BoardState';
+import type { BoardState } from '@/typings/Chessboard';
 import type { LichessOpening, BoardAPI } from '@/typings/BoardAPI';
+import type { StockfishClass } from '@/typings/Stockfish';
 
 /**
  * class for modifying and reading data from the board, \
@@ -14,7 +15,8 @@ export class BoardApi implements BoardAPI {
   constructor(
     public game: ChessInstance,
     public board: Api,
-    public boardState: BoardState
+    public boardState: BoardState,
+    public stockfish?: StockfishClass
   ) {}
 
   /**
@@ -27,6 +29,13 @@ export class BoardApi implements BoardAPI {
     this.board.selectSquare(null);
     if (this.boardState.showThreats) {
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
+    }
+
+    if (this.stockfish) {
+      this.stockfish.postMessage('ucinewgame');
+      this.stockfish.postMessage('position startpos');
+      this.stockfish.setOptions();
+      this.stockfish.postMessage(`go depth ${this.stockfish.options.depth}`);
     }
   }
 
@@ -53,6 +62,11 @@ export class BoardApi implements BoardAPI {
     if (this.boardState.showThreats) {
       // redraw threats in new position if enabled
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
+    }
+    if (this.stockfish) {
+      this.stockfish.postMessage('position fen ' + this.game.fen());
+      this.stockfish.setOptions();
+      this.stockfish.postMessage(`go depth ${this.stockfish.options.depth}`);
     }
   }
 
@@ -97,8 +111,18 @@ export class BoardApi implements BoardAPI {
     this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
   }
 
-  showBestMove(orig: Square, dest: Square) {
-    this.board.setShapes([{ orig: orig, dest: dest, brush: 'paleBlue' }]);
+  showBestMove(moves: [{ orig: Square; dest: Square }]) {
+    const lineWidths = Array.from({ length: moves.length }, (_, i) => {
+      return 15 - (i * 15) / moves.length;
+    });
+    this.board.setAutoShapes(
+      moves.map((move, i) => ({
+        orig: move.orig,
+        dest: move.dest,
+        brush: 'paleBlue',
+        modifiers: { lineWidth: lineWidths[i] },
+      }))
+    );
   }
 
   /**
