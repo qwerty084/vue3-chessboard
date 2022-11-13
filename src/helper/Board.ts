@@ -25,20 +25,6 @@ export function shortToLongColor(color: 'w' | 'b') {
   return color === 'w' ? 'white' : 'black';
 }
 
-export function opponentMoves(game: ChessInstance) {
-  let moves: Move[] = [];
-  const tokens = game.fen().split(' ');
-  tokens[1] = tokens[1] === 'w' ? 'b' : 'w';
-  const tokenString = tokens.join(' ');
-  const valid = game.load(tokenString);
-  if (valid) {
-    moves = game.moves({ verbose: true });
-    game.load_pgn(game.pgn());
-  }
-
-  return moves;
-}
-
 export function possibleMoves(game: ChessInstance) {
   const dests: Map<Key, Key[]> = new Map();
   SQUARES.forEach((s) => {

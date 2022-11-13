@@ -14,7 +14,7 @@
   "files": [
     "dist"
   ],
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "type": "module",
   "exports": {
     ".": {
@@ -28,6 +28,14 @@
     "type": "git",
     "url": "git+https://github.com/qwerty084/vue3-chessboard.git"
   },
+  "bugs": {
+    "url": "https://github.com/qwerty084/vue3-chessboard/issues",
+    "email": "lucahendrik.dev@gmail.com"
+  },
+  "author": {
+    "name": "Luca Hendrik Helms",
+    "email": "lucahendrik.dev@gmail.com"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --project tsconfig.app.json",
@@ -40,7 +48,7 @@
   "dependencies": {
     "chess.js": "^0.13.4",
     "chessground": "^8.3.5",
-    "vue": "^3.2.41"
+    "vue": "^3.2.45"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",

@@ -171,8 +171,6 @@ function loadPosition() {
 
 <template>
   <section
-    id="main-wrap"
-    aria-label="chessboard"
     class="main-wrap"
     :class="{ disabledBoard: boardState.openPromotionDialog }"
   >
@@ -184,9 +182,7 @@ function loadPosition() {
           @promotion-selected="(piece) => (selectedPromotion = piece)"
         />
       </div>
-      <div ref="boardElement" class="cg-board-wrap">
-        <div class="cg-board"></div>
-      </div>
+      <div ref="boardElement"></div>
     </div>
   </section>
 </template>
