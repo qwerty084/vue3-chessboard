@@ -1,8 +1,6 @@
 {
-  "files": [
-    "dist"
-  ],
   "name": "vue3-chessboard",
+  "version": "0.0.8",
   "keywords": [
     "vue",
     "chessboard",
@@ -13,7 +11,9 @@
     "chess.js",
     "typescript"
   ],
-  "version": "0.0.8",
+  "files": [
+    "dist"
+  ],
   "license": "GPL-3.0",
   "type": "module",
   "exports": {
@@ -23,20 +23,19 @@
     },
     "./style.css": "./dist/style.css"
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/qwerty084/vue3-chessboard.git"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vue-tsc --emitDeclarationOnly",
-    "preview": "vite preview --port 4173",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --project tsconfig.app.json",
+    "preview": "vite preview",
+    "test:unit": "vitest --environment jsdom --root src/",
     "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
     "chess.js": "^0.13.4",
@@ -45,19 +44,20 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
-    "@types/chess.js": "^0.13.3",
-    "@types/node": "^18.8.0",
+    "@types/chess.js": "^0.13.4",
+    "@types/jsdom": "^20.0.0",
+    "@types/node": "^16.11.68",
     "@vitejs/plugin-vue": "^3.1.2",
-    "@vitest/coverage-c8": "^0.24.3",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
     "@vue/test-utils": "^2.1.0",
     "@vue/tsconfig": "^0.1.3",
-    "eslint": "^8.25.0",
-    "eslint-plugin-vue": "^9.6.0",
-    "happy-dom": "^7.6.0",
+    "eslint": "^8.22.0",
+    "eslint-plugin-vue": "^9.3.0",
+    "jsdom": "^20.0.1",
     "npm-run-all": "^4.1.5",
-    "typescript": "^4.8.4",
+    "prettier": "^2.7.1",
+    "typescript": "~4.7.4",
     "vite": "^3.1.8",
     "vitest": "^0.24.3",
     "vue-tsc": "^1.0.8"
