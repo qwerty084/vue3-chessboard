@@ -5,7 +5,7 @@ import '@/assets/board.css';
 const boardAPI = ref<ChessboardAPI>();
 
 const boardConfig: BoardConfig = {
-  coordinates: false,
+  coordinates: true,
   autoCastle: false,
 };
 </script>
@@ -20,6 +20,15 @@ const boardConfig: BoardConfig = {
       <button type="button" @click="boardAPI?.undoLastMove()">Undo</button>
       <button type="button" @click="boardAPI?.toggleThreats()">Threats</button>
     </section>
-    <TheChessboard :board-config="boardConfig" />
+    <TheChessboard
+      :board-config="boardConfig"
+      @board-created="(api) => (boardAPI = api)"
+    />
   </main>
 </template>
+
+<style>
+body {
+  background-color: #222;
+}
+</style>
