@@ -1,9 +1,25 @@
+## 0.0.9 (2022-11-13)
+
+### Bug Fixes
+
+- **board:** fix coordinates when board orientation is toggled ([85ec6d5](https://github.com/qwerty084/vue3-chessboard/commit/85ec6d563f1803af5a135ab0066fb240cd729535))
+- **board:** remove duplicate styles ([85ec6d5](https://github.com/qwerty084/vue3-chessboard/commit/85ec6d563f1803af5a135ab0066fb240cd729535))
+
+### Dev
+
+- implement new tsconfig structure & update testing suite/ci ([6a4c2be](https://github.com/qwerty084/vue3-chessboard/commit/6a4c2bed7ef723dbe514f6534596fbba2caa76ae))
+- add html and App.vue for local testing ([34fb7f0](https://github.com/qwerty084/vue3-chessboard/commit/34fb7f039131e48aa8c93b5064897bfb80163d09))
+
+<br>
+<hr>
+<br>
+
 ## 0.0.8 (2022-10-26)
 
 ### Bug Fixes
 
-- **board:** load promotion dialog synchronously([374ed67](https://github.com/qwerty084/vue3-chessboard/commit/374ed674b44ab651a13cdddf02b177b13ea7cb11))
-- **boardAPI:** fix undo method([40bb425](https://github.com/qwerty084/vue3-chessboard/commit/40bb425e86bcbb9720552343824eab451e7d26f6))
+- **board:** load promotion dialog synchronously ([374ed67](https://github.com/qwerty084/vue3-chessboard/commit/374ed674b44ab651a13cdddf02b177b13ea7cb11))
+- **boardAPI:** fix undo method ([40bb425](https://github.com/qwerty084/vue3-chessboard/commit/40bb425e86bcbb9720552343824eab451e7d26f6))
 
 <br>
 <hr>

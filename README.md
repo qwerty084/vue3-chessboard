@@ -18,7 +18,7 @@ You can find the live demo [here](https://qwerty084.github.io/vue3-chessboard-de
 - [Installation](#installation)
 - [Usage](#usage)
 - [Docs](#docs)
-- [Future](#future)
+- [Roadmap](#roadmap)
 
 # Features:
 
@@ -190,7 +190,7 @@ const emit = defineEmits<{
 }>();
 ```
 
-# Future
+# Roadmap
 
 - Maybe add stockfish (see stockfish & stockfish_testing branches, Javascript and Web Assembly implementation)
 - Add more methods/features
