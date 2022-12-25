@@ -43,6 +43,7 @@ export class BoardApi implements BoardAPI {
 
     this.board.state.movable.color = this.board.state.turnColor;
     this.board.state.movable.dests = possibleMoves(this.game);
+    this.board.state.check = undefined;
 
     if (this.game.history().length === 0 || typeof lastMove === 'undefined') {
       this.board.state.lastMove = undefined;
