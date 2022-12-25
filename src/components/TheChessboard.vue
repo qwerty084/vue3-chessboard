@@ -144,6 +144,8 @@ function afterMove() {
   if (boardState.showThreats) {
     board.setShapes(getThreats(game.moves({ verbose: true })));
   }
+
+  props.afterMoveCb();
 }
 
 function loadPosition() {
@@ -156,9 +158,6 @@ function loadPosition() {
   board.set({
     movable: { events: { after: changeTurn() } },
     events: {
-      move() {
-        props.afterMoveCb();
-      },
       select() {
         props.onSelectCb();
       },
