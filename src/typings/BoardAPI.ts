@@ -1,5 +1,6 @@
-import type { ChessInstance, Square } from 'chess.js';
+import type { ChessInstance, Move, Square } from 'chess.js';
 import type { Api } from 'chessground/api';
+import type { Key } from 'chessground/types';
 import type { BoardState } from './BoardState';
 
 export interface BoardAPI {
@@ -21,6 +22,11 @@ export interface BoardAPI {
     maxDescriptionLength: number
   ) => Promise<string | null>;
   makeMove: (from: Square, to: Square) => void;
+  move: (from: Square, to: Square) => void;
+  getLastMove: () => Key[] | undefined;
+  getHistory(verbose?: boolean): string[] | Move[];
+  getTurn: () => 'white' | 'black';
+  getFen: () => string;
 }
 
 export interface LichessOpening {

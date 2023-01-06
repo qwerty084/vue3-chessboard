@@ -1,3 +1,4 @@
+import { toRaw } from 'vue';
 import { possibleMoves, shortToLongColor, getThreats } from '@/helper/Board';
 import type { ChessInstance, Square } from 'chess.js';
 import type { Api } from 'chessground/api';
@@ -21,6 +22,8 @@ export class BoardApi implements BoardAPI {
    * Reset the board to the initial starting position.
    */
   resetBoard() {
+    console.log(this.game.fen());
+    console.log(this.board.getFen());
     this.game.reset();
     this.board.set(this.boardState.boardConfig);
     this.board.state.check = undefined;
@@ -28,6 +31,8 @@ export class BoardApi implements BoardAPI {
     if (this.boardState.showThreats) {
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
+    console.log(this.game.fen());
+    console.log(this.board.getFen());
   }
 
   /**
@@ -169,6 +174,14 @@ export class BoardApi implements BoardAPI {
     }
   }
 
+  /**
+   * make a move programmatically on the board
+   *
+   * @deprecated
+   * Will be deleted in the future
+   * Please use the new move method
+   *
+   */
   makeMove(from: Square, to: Square) {
     const move = this.game.move({ from, to });
     if (move == null) return;
@@ -182,6 +195,56 @@ export class BoardApi implements BoardAPI {
       // redraw threats in new position if enabled
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
+  }
+
+  /**
+   * make a move programmatically on the board
+   */
+  move(from: Square, to: Square) {
+    const move = this.game.move({ from, to });
+    if (move == null) return;
+
+    this.board.move(from, to);
+    this.board.state.movable.dests = possibleMoves(this.game);
+    this.board.state.turnColor = shortToLongColor(this.game.turn());
+    this.board.state.movable.color = this.board.state.turnColor;
+    this.board.state.lastMove = [from, to];
+
+    if (this.boardState.showThreats) {
+      // redraw threats in new position if enabled
+      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
+    }
+  }
+
+  /**
+   * Returns the last move on the board as an array: [from, to] or undefined
+   */
+  getLastMove() {
+    return toRaw(this.board.state.lastMove);
+  }
+
+  /**
+   * Retrieves the move history.
+   *
+   * @param verbose - passing true will add more info
+   * @returns Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
+   */
+  getHistory(verbose = false) {
+    return this.game.history({ verbose: verbose });
+  }
+
+  /**
+   * Returns the current turn color, "white" or "black"
+   */
+  getTurn() {
+    return this.board.state.turnColor;
+  }
+
+  /**
+   * Returns the FEN string for the current position.
+   */
+  getFen() {
+    return this.game.fen();
   }
 }
 

@@ -11,9 +11,5 @@ export function randomMoveFirstMove(boardApi: BoardAPI) {
     ];
   const random = Math.floor(Math.random() * 2);
   const move = moves.get(randomSquare)?.[random] as SquareKey;
-  if (!move) {
-    console.warn('Random move is undefined');
-    return;
-  }
-  boardApi?.makeMove(randomSquare, move);
+  boardApi?.move(randomSquare, move);
 }

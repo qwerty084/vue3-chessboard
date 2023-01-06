@@ -102,6 +102,25 @@ describe.concurrent('Test the board API', () => {
       boardApi.boardState.boardConfig.turnColor
     );
   });
+
+  it('makes a move and undoes it', () => {
+    boardApi.resetBoard();
+    randomMoveFirstMove(boardApi);
+    boardApi.undoLastMove();
+
+    expect(boardApi?.game.history().length).toBe(0);
+    expect(boardApi?.getFen()).toBe(initialPosChessJS);
+  });
+
+  it('returns the correct turn color', () => {
+    boardApi.resetBoard();
+    randomMoveFirstMove(boardApi);
+
+    expect(boardApi?.getTurn()).toBe('black');
+
+    boardApi.undoLastMove();
+    expect(boardApi?.getTurn()).toBe('white');
+  });
 });
 
 export {};
