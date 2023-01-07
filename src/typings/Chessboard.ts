@@ -27,8 +27,6 @@ export interface ThreatCount {
   turn: 'white' | 'black';
 }
 
-export type drawType = '50-move rule || material' | 'Threefold repetition';
-
 export type SquareKey = Square & Key;
 
 export type PieceColor = 'white' | 'black';

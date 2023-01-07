@@ -17,10 +17,6 @@ export function getThreats(moves: Move[]) {
   return threats;
 }
 
-export function toColor(game: ChessInstance) {
-  return game.turn() === 'w' ? 'white' : 'black';
-}
-
 export function shortToLongColor(color: 'w' | 'b') {
   return color === 'w' ? 'white' : 'black';
 }
@@ -28,12 +24,12 @@ export function shortToLongColor(color: 'w' | 'b') {
 export function possibleMoves(game: ChessInstance) {
   const dests: Map<Key, Key[]> = new Map();
   SQUARES.forEach((s) => {
-    const ms = game.moves({ square: s, verbose: true });
+    const moves = game.moves({ square: s, verbose: true });
 
-    if (ms.length) {
+    if (moves.length) {
       dests.set(
-        ms[0].from,
-        ms.map((m) => m.to)
+        moves[0].from,
+        moves.map((m) => m.to)
       );
     }
   });
@@ -45,16 +41,13 @@ export function isPromotion(
   orig: SquareKey,
   dest: SquareKey,
   promotions: Move[]
-) {
-  const filteredPromotions = promotions.filter(
-    (move) => move.from === orig && move.to === dest
+): boolean {
+  return (
+    promotions.filter((move) => move.from === orig && move.to === dest).length >
+    0
   );
-
-  return filteredPromotions.length > 0;
 }
 
-export function getPossiblePromotions(legalMoves: Move[]) {
-  legalMoves = legalMoves.filter((move) => move.promotion);
-
-  return legalMoves;
+export function getPossiblePromotions(legalMoves: Move[]): Move[] {
+  return legalMoves.filter((move) => move.promotion);
 }

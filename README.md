@@ -185,7 +185,7 @@ const emit = defineEmits<{
   (e: 'boardCreated', boardApi: BoardApi): void;
   (e: 'checkmate', isMated: PieceColor): void;
   (e: 'stalemate', isStalemate: boolean): void;
-  (e: 'draw', isDraw: boolean, type: drawType): void;
+  (e: 'draw', isDraw: boolean): void;
   (e: 'check', isInCheck: PieceColor): void;
 }>();
 ```

@@ -1,8 +1,8 @@
-import { possibleMoves, shortToLongColor, getThreats } from '@/helper/Board';
 import type { ChessInstance, Square } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type { BoardState } from '@/typings/BoardState';
 import type { LichessOpening, BoardAPI } from '@/typings/BoardAPI';
+import { getThreats, shortToLongColor, possibleMoves } from '@/helper/Board';
 
 /**
  * class for modifying and reading data from the board, \
