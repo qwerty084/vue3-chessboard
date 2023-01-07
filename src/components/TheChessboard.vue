@@ -29,14 +29,6 @@ const props = defineProps({
     type: Object as () => BoardConfig,
     default: defaultBoardConfig,
   },
-  onSelectCb: {
-    type: Function,
-    default: () => 1,
-  },
-  afterMoveCb: {
-    type: Function,
-    default: () => 1,
-  },
 });
 
 const emit = defineEmits<{
@@ -144,8 +136,6 @@ function afterMove() {
   if (boardState.showThreats) {
     board.setShapes(getThreats(game.moves({ verbose: true })));
   }
-
-  props.afterMoveCb();
 }
 
 function loadPosition() {
@@ -157,11 +147,6 @@ function loadPosition() {
   board = Chessground(boardElement.value, boardState.boardConfig);
   board.set({
     movable: { events: { after: changeTurn() } },
-    events: {
-      select() {
-        props.onSelectCb();
-      },
-    },
   });
 
   afterMove();
