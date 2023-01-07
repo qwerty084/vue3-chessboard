@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, reactive } from 'vue';
 import PromotionDialog from './PromotionDialog.vue';
-import { Chess, type Move, type Square } from 'chess.js';
+import { Chess, type Move } from 'chess.js';
 import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
 import {
-  toColor,
   possibleMoves,
   getThreats,
   isPromotion,
@@ -16,12 +15,7 @@ import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import type { Api } from 'chessground/api';
 import type { Key } from 'chessground/types';
 import type { BoardConfig } from '@/typings/BoardConfig';
-import type {
-  Promotion,
-  SquareKey,
-  PieceColor,
-  drawType,
-} from '@/typings/Chessboard';
+import type { Promotion, SquareKey, PieceColor } from '@/typings/Chessboard';
 import type { BoardState } from '@/typings/BoardState';
 
 const props = defineProps({
@@ -35,7 +29,7 @@ const emit = defineEmits<{
   (e: 'boardCreated', boardApi: BoardApi): void;
   (e: 'checkmate', isMated: PieceColor): void;
   (e: 'stalemate', isStalemate: boolean): void;
-  (e: 'draw', isDraw: boolean, type: drawType): void;
+  (e: 'draw', isDraw: boolean): void;
   (e: 'check', isInCheck: PieceColor): void;
 }>();
 
@@ -87,9 +81,9 @@ function changeTurn() {
     });
     board?.set({
       fen: game.fen(),
-      turnColor: toColor(game),
+      turnColor: board.state.turnColor,
       movable: {
-        color: toColor(game),
+        color: board.state.turnColor,
         dests: possibleMoves(game),
       },
     });
@@ -110,27 +104,18 @@ function afterMove() {
     emit('stalemate', true);
   }
   if (game.in_draw()) {
-    emit('draw', true, '50-move rule || material');
+    emit('draw', true);
   }
   if (game.in_threefold_repetition()) {
-    emit('draw', true, 'Threefold repetition');
+    emit('draw', true);
   }
   if (game.in_check()) {
-    const currentPos = game.board();
-    let kingPos: Square | undefined;
-    const color = board.state.turnColor.charAt(0);
-    currentPos.forEach((rows) => {
-      const pos = rows.find(
-        (row) => row?.type === 'k' && row?.color === color
-      )?.square;
-      if (pos) {
-        kingPos = pos;
+    const pieces = board.state.pieces;
+    pieces.forEach((piece, key) => {
+      if (piece.role === 'king' && piece.color === board?.state.turnColor) {
+        board.state.check = key;
       }
     });
-    if (kingPos) {
-      board.state.check = kingPos;
-    }
-    emit('check', board.state.turnColor);
   }
 
   if (boardState.showThreats) {
