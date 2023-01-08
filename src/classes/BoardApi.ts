@@ -1,10 +1,16 @@
-import type { ChessInstance, Square } from 'chess.js';
+import type { ChessInstance, Move, Piece, Square, SquareColor } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type { BoardState } from '@/typings/BoardState';
-import type { LichessOpening, BoardAPI } from '@/typings/BoardAPI';
-import { getThreats, shortToLongColor, possibleMoves } from '@/helper/Board';
+import type { LichessOpening, MaterialDifference } from '@/typings/BoardAPI';
+import {
+  getThreats,
+  shortToLongColor,
+  possibleMoves,
+  roleAbbrToRole,
+} from '@/helper/Board';
 import { emitBoardEvents } from '@/helper/EmitEvents';
 import type { Emit } from '@/typings/Chessboard';
+import type { Color, Key } from 'chessground/types';
 
 /**
  * class for modifying and reading data from the board, \
@@ -12,18 +18,27 @@ import type { Emit } from '@/typings/Chessboard';
  * lichess documentation: https://github.com/lichess-org/chessground/blob/master/src/api.ts \
  * chess.js documentation: https://github.com/jhlywa/chess.js/blob/master/README.md
  */
-export class BoardApi implements BoardAPI {
+export class BoardApi {
+  private game: ChessInstance;
+  private board: Api;
+  private boardState: BoardState;
+  private emit: Emit;
   constructor(
-    public game: ChessInstance,
-    public board: Api,
-    public boardState: BoardState,
-    private emit: Emit
-  ) {}
+    game: ChessInstance,
+    board: Api,
+    boardState: BoardState,
+    emit: Emit
+  ) {
+    this.game = game;
+    this.board = board;
+    this.boardState = boardState;
+    this.emit = emit;
+  }
 
   /**
-   * Reset the board to the initial starting position.
+   * Resets the board to the initial starting position.
    */
-  resetBoard() {
+  resetBoard(): void {
     this.game.reset();
     this.board.set(this.boardState.boardConfig);
     this.board.state.check = undefined;
@@ -34,9 +49,9 @@ export class BoardApi implements BoardAPI {
   }
 
   /**
-   * undo last Move, if possible
+   * undo last move, if possible
    */
-  undoLastMove() {
+  undoLastMove(): void {
     const undoMove = this.game.undo();
     if (undoMove == null) return;
     const lastMove = this.game.history({ verbose: true }).at(-1);
@@ -64,7 +79,7 @@ export class BoardApi implements BoardAPI {
    * returns the current material count for white, black and the diff.
    * If diff > 0 white is leading, else black.
    */
-  getMaterialCount() {
+  getMaterialCount(): MaterialDifference {
     const pieces = this.board.state.pieces;
     const pieceToNum = new Map([
       ['pawn', 1],
@@ -94,26 +109,30 @@ export class BoardApi implements BoardAPI {
     return materialCount;
   }
 
+  toggleOrientation(): void {
+    this.board.toggleOrientation();
+  }
+
   /**
-   * enable drawing of threats/possible moves on the board
+   * draws arrows and circles on the board for possible moves/captures
    */
-  showThreats() {
+  drawMoves(): void {
     this.boardState.showThreats = true;
     this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
   }
 
   /**
-   * disable drawing of threats/possible moves on the board
+   * removes arrows and circles from the board for possible moves/captures
    */
-  hideThreats() {
+  hideMoves(): void {
     this.boardState.showThreats = false;
     this.board.setShapes([]);
   }
 
   /**
-   * toggle drawing of threats/possible moves on the board
+   * toggle drawing of arrows and circles on the board for possible moves/captures
    */
-  toggleThreats() {
+  toggleMoves(): void {
     this.boardState.showThreats = !this.boardState.showThreats;
     if (this.boardState.showThreats) {
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
@@ -123,9 +142,9 @@ export class BoardApi implements BoardAPI {
   }
 
   /**
-   * returns the opening name for the current position
+   * returns the opening name for the current position from lichess api
    */
-  async getOpeningName() {
+  async getOpeningName(): Promise<string | null> {
     try {
       const movesArr: string[] = [];
       const history = this.game.history({ verbose: true });
@@ -145,48 +164,188 @@ export class BoardApi implements BoardAPI {
     }
   }
 
-  async getOpeningDescription(maxDescriptionLength: number) {
-    const gameHistory = this.game.history({ verbose: true });
-    let moves = '';
-    let counter = 0;
-    gameHistory.forEach((move, i) => {
-      if (i % 2 === 0 || i === 0) counter++;
-      const sign = i % 2 === 0 ? '_' : '..';
-      const moveTo = `${counter}.${sign}${
-        move.san.includes('x') ? move.san : move.to
-      }/`;
-      moves += moveTo;
-    });
-    moves = moves.slice(0, -1);
-
-    try {
-      const res = await fetch(
-        `https://en.wikibooks.org/w/api.php?titles=Chess_Opening_Theory/${moves}&redirects&origin=*&action=query&prop=extracts&formatversion=2&format=json&explaintext&exchars=${maxDescriptionLength}`
-      );
-      const data = await res.json();
-      if (data.query?.pages[0]?.extract) {
-        return data.query.pages[0].extract;
+  /**
+   * make a move programmatically on the board
+   * @param move the san move to make like 'e4', 'O-O' or 'e8=Q'
+   * @returns true if the move was made, false if the move was illegal
+   */
+  move(move: string): boolean {
+    const m = this.game.move(move);
+    if (m == null) return false;
+    if (move === 'O-O-O' || move === 'O-O') {
+      const currentRow = m.to[1];
+      if (move === 'O-O-O') {
+        this.board.move(`a${currentRow}` as Key, `d${currentRow}` as Key);
+      } else {
+        this.board.move(`h${currentRow}` as Key, `f${currentRow}` as Key);
       }
-      return null;
-    } catch {
-      return null;
     }
-  }
 
-  makeMove(from: Square, to: Square) {
-    const move = this.game.move({ from, to });
-    if (move == null) return;
-    this.board.move(from, to);
+    // check for promotion move
+    if (m.promotion) {
+      this.board.state.pieces.set(m.to, {
+        color: shortToLongColor(m.color),
+        role: roleAbbrToRole(m.promotion),
+        promoted: true,
+      });
+      this.board.state.pieces.delete(m.from);
+    } else {
+      this.board.move(m.from, m.to);
+    }
+
     this.board.state.movable.dests = possibleMoves(this.game);
     this.board.state.turnColor = shortToLongColor(this.game.turn());
     this.board.state.movable.color = this.board.state.turnColor;
-    this.board.state.lastMove = [from, to];
+    this.board.state.lastMove = [m.from, m.to];
 
     if (this.boardState.showThreats) {
       // redraw threats in new position if enabled
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
     emitBoardEvents(this.game, this.board, this.emit);
+
+    return true;
+  }
+
+  /**
+   * returns the current turn color
+   * @returns 'white' or 'black'
+   */
+  getTurnColor(): Color {
+    return this.board.state.turnColor;
+  }
+
+  /**
+   * returns all possible moves for the current position
+   *
+   */
+  getPossibleMoves(): Map<Key, Key[]> | undefined {
+    return possibleMoves(this.game);
+  }
+
+  getCurrentTurnNumber(): number {
+    return this.game.history().length;
+  }
+
+  getLastMove(): Move | undefined {
+    return this.game.history({ verbose: true }).at(-1);
+  }
+
+  /**
+   * Retrieves the move history.
+   *
+   * @param verbose - passing true will add more info
+   * @returns Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
+   */
+  getHistory(verbose = false): Move[] | string[] {
+    return this.game.history({ verbose: verbose });
+  }
+
+  /**
+   * Returns the FEN string for the current position.
+   */
+  getFen(): string {
+    return this.game.fen();
+  }
+
+  /**
+   * Returns the board position as a 2D array.
+   */
+  getBoardPosition() {
+    return this.game.board();
+  }
+
+  /**
+   * returns the PGN string for the current position.
+   */
+  getPgn(): string {
+    return this.game.pgn();
+  }
+
+  /**
+   * returns true of false depending on if the game is over
+   */
+  getIsGameOver(): boolean {
+    return this.game.game_over();
+  }
+
+  /**
+   * returns true or false depending on if a player is checkmated
+   */
+  getIsCheckmate(): boolean {
+    return this.game.in_checkmate();
+  }
+
+  /**
+   * returns true or false depending on if a player is in stalemate
+   */
+  getIsStalemate(): boolean {
+    return this.game.in_stalemate();
+  }
+
+  /**
+   * returns true or false depending on if a game is drawn
+   */
+  getIsDraw(): boolean {
+    return this.game.in_draw();
+  }
+
+  /**
+   * returns true or false depending on if a game is drawn by threefold repetition
+   */
+  getIsThreefoldRepetition(): boolean {
+    return this.game.in_threefold_repetition();
+  }
+
+  /**
+   * returns true or false depending on if a game is drawn by insufficient material
+   */
+  getIsInsufficientMaterial(): boolean {
+    return this.game.insufficient_material();
+  }
+
+  /**
+   * returns the color of a given square
+   */
+  getSquareColor(square: string): SquareColor | null {
+    return this.game.square_color(square);
+  }
+
+  /**
+   * Returns the piece on the square or null if there is no piece
+   */
+  getSquare(square: Square): Piece | null {
+    return this.game.get(square);
+  }
+
+  /**
+   * Returns the piece on the square or null if there is no piece
+   */
+  setPosition(fen: string) {
+    this.game.load(fen);
+    // update board state
+  }
+
+  /**
+   * returns the ascii representation of the board
+   */
+  getAsciiBoard(): string {
+    return this.game.ascii();
+  }
+
+  /**
+   * puts a piece on a given square on the board
+   * returns true on success, else false
+   */
+  putPiece(piece: Piece, square: Square): boolean {
+    return this.game.put(piece, square);
+  }
+
+  /**
+   * removes all pieces from the board
+   */
+  clearBoard(): void {
+    this.game.clear();
   }
 }
 

@@ -1,5 +1,6 @@
-import type { ChessInstance, Square } from 'chess.js';
+import type { ChessInstance, Move } from 'chess.js';
 import type { Api } from 'chessground/api';
+import type { Color, Key } from 'chessground/types';
 import type { BoardState } from './BoardState';
 
 export interface BoardAPI {
@@ -14,13 +15,18 @@ export interface BoardAPI {
     materialBlack: number;
     materialDiff: number;
   };
-  showThreats: () => void;
-  toggleThreats: () => void;
+  toggleOrientation: () => void;
+  hideMoves: () => void;
+  drawMoves: () => void;
+  toggleMoves: () => void;
   getOpeningName: () => Promise<string | null>;
-  getOpeningDescription: (
-    maxDescriptionLength: number
-  ) => Promise<string | null>;
-  makeMove: (from: Square, to: Square) => void;
+  move: (move: string) => boolean;
+  getTurnColor: () => Color;
+  getPossibleMoves: () => Map<Key, Key[]> | undefined;
+  getCurrentTurnNumber: () => number;
+  getLastMove: () => Move | undefined;
+  getHistory: () => Move[] | string[];
+  getFen: () => string;
 }
 
 export interface LichessOpening {
@@ -59,4 +65,10 @@ export interface LichessOpening {
       };
     }
   ];
+}
+
+export interface MaterialDifference {
+  materialWhite: number;
+  materialBlack: number;
+  materialDiff: number;
 }
