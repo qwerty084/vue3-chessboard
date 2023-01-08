@@ -3,6 +3,8 @@ import type { Api } from 'chessground/api';
 import type { BoardState } from '@/typings/BoardState';
 import type { LichessOpening, BoardAPI } from '@/typings/BoardAPI';
 import { getThreats, shortToLongColor, possibleMoves } from '@/helper/Board';
+import { emitBoardEvents } from '@/helper/EmitEvents';
+import type { Emit } from '@/typings/Chessboard';
 
 /**
  * class for modifying and reading data from the board, \
@@ -14,7 +16,8 @@ export class BoardApi implements BoardAPI {
   constructor(
     public game: ChessInstance,
     public board: Api,
-    public boardState: BoardState
+    public boardState: BoardState,
+    private emit: Emit
   ) {}
 
   /**
@@ -183,6 +186,7 @@ export class BoardApi implements BoardAPI {
       // redraw threats in new position if enabled
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
+    emitBoardEvents(this.game, this.board, this.emit);
   }
 }
 

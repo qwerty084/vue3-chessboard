@@ -1,6 +1,6 @@
-import { SQUARES, type ChessInstance, type Move } from 'chess.js';
+import { SQUARES, type ChessInstance, type Move, type Piece } from 'chess.js';
 import type { Key } from 'chessground/types';
-import type { Threat, SquareKey } from '@/typings/Chessboard';
+import type { Threat } from '@/typings/Chessboard';
 
 export function getThreats(moves: Move[]) {
   const threats: Threat[] = [];
@@ -37,15 +37,14 @@ export function possibleMoves(game: ChessInstance) {
   return dests;
 }
 
-export function isPromotion(
-  orig: SquareKey,
-  dest: SquareKey,
-  promotions: Move[]
-): boolean {
-  return (
-    promotions.filter((move) => move.from === orig && move.to === dest).length >
-    0
-  );
+export function isPromotion(dest: Key, piece: Piece | null) {
+  if (piece?.type !== 'p') {
+    return false;
+  }
+
+  const promotionRow = piece?.color === 'w' ? '8' : '1'; // for white promotion row is 8, for black its 1
+
+  return dest[1] === promotionRow;
 }
 
 export function getPossiblePromotions(legalMoves: Move[]): Move[] {

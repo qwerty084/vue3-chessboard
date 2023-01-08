@@ -1,22 +1,17 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, reactive } from 'vue';
 import PromotionDialog from './PromotionDialog.vue';
-import { Chess, type Move } from 'chess.js';
+import { Chess, type Square } from 'chess.js';
 import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
-import {
-  possibleMoves,
-  getThreats,
-  isPromotion,
-  getPossiblePromotions,
-} from '@/helper/Board';
-
+import { possibleMoves, getThreats, isPromotion } from '@/helper/Board';
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import type { Api } from 'chessground/api';
 import type { Key } from 'chessground/types';
 import type { BoardConfig } from '@/typings/BoardConfig';
 import type { Promotion, SquareKey, PieceColor } from '@/typings/Chessboard';
 import type { BoardState } from '@/typings/BoardState';
+import { emitBoardEvents } from '@/helper/EmitEvents';
 
 const props = defineProps({
   boardConfig: {
@@ -45,7 +40,6 @@ const boardState = reactive<BoardState>({
 });
 
 let board: Api | undefined;
-let promotions: Move[] = [];
 
 onMounted(() => {
   if (props.boardConfig) {
@@ -55,7 +49,7 @@ onMounted(() => {
   }
   loadPosition();
   if (board) {
-    emit('boardCreated', new BoardApi(game, board, boardState));
+    emit('boardCreated', new BoardApi(game, board, boardState, emit));
   }
 });
 
@@ -68,17 +62,19 @@ async function onPromotion(): Promise<Promotion> {
   });
 }
 
-function changeTurn() {
+function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
   return async (orig: Key, dest: Key) => {
-    if (isPromotion(orig as SquareKey, dest as SquareKey, promotions)) {
+    if (isPromotion(dest, game.get(orig as Square))) {
       await onPromotion();
       boardState.openPromotionDialog = false;
     }
+
     game.move({
       from: orig as SquareKey,
       to: dest as SquareKey,
       promotion: selectedPromotion.value,
     });
+
     board?.set({
       fen: game.fen(),
       turnColor: board.state.turnColor,
@@ -87,43 +83,23 @@ function changeTurn() {
         dests: possibleMoves(game),
       },
     });
-    promotions = getPossiblePromotions(game.moves({ verbose: true }));
-    afterMove();
 
+    afterMove();
     selectedPromotion.value = undefined;
   };
 }
 
-function afterMove() {
+function afterMove(): void {
   if (typeof board === 'undefined') return;
 
-  if (game.in_checkmate()) {
-    emit('checkmate', board.state.turnColor);
-  }
-  if (game.in_stalemate()) {
-    emit('stalemate', true);
-  }
-  if (game.in_draw()) {
-    emit('draw', true);
-  }
-  if (game.in_threefold_repetition()) {
-    emit('draw', true);
-  }
-  if (game.in_check()) {
-    const pieces = board.state.pieces;
-    pieces.forEach((piece, key) => {
-      if (piece.role === 'king' && piece.color === board?.state.turnColor) {
-        board.state.check = key;
-      }
-    });
-  }
+  emitBoardEvents(game, board, emit);
 
   if (boardState.showThreats) {
     board.setShapes(getThreats(game.moves({ verbose: true })));
   }
 }
 
-function loadPosition() {
+function loadPosition(): void {
   if (boardElement.value == null) return;
   if (boardConfig.value.fen) {
     game.load(boardConfig.value.fen);
