@@ -6,17 +6,21 @@ import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
 import { possibleMoves, getThreats, isPromotion } from '@/helper/Board';
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
+import { emitBoardEvents } from '@/helper/EmitEvents';
 import type { Api } from 'chessground/api';
 import type { Key } from 'chessground/types';
 import type { BoardConfig } from '@/typings/BoardConfig';
 import type { Promotion, SquareKey, PieceColor } from '@/typings/Chessboard';
 import type { BoardState } from '@/typings/BoardState';
-import { emitBoardEvents } from '@/helper/EmitEvents';
 
 const props = defineProps({
   boardConfig: {
     type: Object as () => BoardConfig,
     default: defaultBoardConfig,
+  },
+  afterMoveCb: {
+    type: Function,
+    default: () => 1,
   },
 });
 
@@ -97,6 +101,8 @@ function afterMove(): void {
   if (boardState.showThreats) {
     board.setShapes(getThreats(game.moves({ verbose: true })));
   }
+
+  props.afterMoveCb();
 }
 
 function loadPosition(): void {

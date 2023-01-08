@@ -13,12 +13,11 @@ const boardConfig: BoardConfig = {
 <template>
   <main>
     <section role="region" aria-label="Board Controls">
-      <button type="button" @click="boardAPI?.board.toggleOrientation()">
+      <button type="button" @click="boardAPI?.toggleOrientation()">
         Toggle orientation
       </button>
       <button type="button" @click="boardAPI?.resetBoard()">Reset</button>
       <button type="button" @click="boardAPI?.undoLastMove()">Undo</button>
-      <button type="button" @click="boardAPI?.toggleThreats()">Threats</button>
     </section>
     <TheChessboard
       :board-config="boardConfig"

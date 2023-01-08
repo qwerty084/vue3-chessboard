@@ -21,6 +21,25 @@ export function shortToLongColor(color: 'w' | 'b') {
   return color === 'w' ? 'white' : 'black';
 }
 
+export function roleAbbrToRole(role: string) {
+  switch (role) {
+    case 'p':
+      return 'pawn';
+    case 'n':
+      return 'knight';
+    case 'b':
+      return 'bishop';
+    case 'r':
+      return 'rook';
+    case 'q':
+      return 'queen';
+    case 'k':
+      return 'king';
+    default:
+      return 'pawn';
+  }
+}
+
 export function possibleMoves(game: ChessInstance) {
   const dests: Map<Key, Key[]> = new Map();
   SQUARES.forEach((s) => {
