@@ -1,3 +1,4 @@
+import type BoardApi from '@/classes/BoardApi';
 import type { Square } from 'chess.js';
 import type { Key } from 'chessground/types';
 
@@ -30,3 +31,11 @@ export interface ThreatCount {
 export type SquareKey = Square & Key;
 
 export type PieceColor = 'white' | 'black';
+
+export interface Emit {
+  (e: 'boardCreated', boardApi: BoardApi): void;
+  (e: 'checkmate', isMated: PieceColor): void;
+  (e: 'stalemate', isStalemate: boolean): void;
+  (e: 'draw', isDraw: boolean): void;
+  (e: 'check', isInCheck: PieceColor): void;
+}
