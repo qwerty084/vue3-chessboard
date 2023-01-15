@@ -72,3 +72,13 @@ export interface MaterialDifference {
   materialBlack: number;
   materialDiff: number;
 }
+
+export type BrushColor =
+  | 'red'
+  | 'green'
+  | 'blue'
+  | 'paleBlue'
+  | 'yellow'
+  | 'paleGreen'
+  | 'paleRed'
+  | 'paleGrey';

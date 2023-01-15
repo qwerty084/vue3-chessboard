@@ -1,7 +1,11 @@
 import type { ChessInstance, Move, Piece, Square, SquareColor } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type { BoardState } from '@/typings/BoardState';
-import type { LichessOpening, MaterialDifference } from '@/typings/BoardAPI';
+import type {
+  LichessOpening,
+  MaterialDifference,
+  BrushColor,
+} from '@/typings/BoardAPI';
 import {
   getThreats,
   shortToLongColor,
@@ -127,6 +131,16 @@ export class BoardApi {
   hideMoves(): void {
     this.boardState.showThreats = false;
     this.board.setShapes([]);
+  }
+
+  drawMove(orig: Square, dest: Square, brushColor: BrushColor): void {
+    this.board.setShapes([
+      {
+        orig: orig,
+        dest: dest,
+        brush: brushColor,
+      },
+    ]);
   }
 
   /**
