@@ -1,6 +1,8 @@
 {
   "name": "vue3-chessboard",
   "version": "0.0.9",
+  "description": "vue3-chessboard is a component library for creating chess web apps with vue3",
+  "homepage": "https://qwerty084.github.io/vue3-chessboard/",
   "keywords": [
     "vue",
     "chessboard",
@@ -26,7 +28,7 @@
   "types": "./dist/src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qwerty084/vue3-chessboard.git"
+    "url": "https://github.com/qwerty084/vue3-chessboard.git"
   },
   "bugs": {
     "url": "https://github.com/qwerty084/vue3-chessboard/issues",
