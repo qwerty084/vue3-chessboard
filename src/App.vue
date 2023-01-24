@@ -11,19 +11,10 @@ const boardConfig: BoardConfig = {
 </script>
 
 <template>
-  <main>
-    <section role="region" aria-label="Board Controls">
-      <button type="button" @click="boardAPI?.toggleOrientation()">
-        Toggle orientation
-      </button>
-      <button type="button" @click="boardAPI?.resetBoard()">Reset</button>
-      <button type="button" @click="boardAPI?.undoLastMove()">Undo</button>
-    </section>
-    <TheChessboard
-      :board-config="boardConfig"
-      @board-created="(api) => (boardAPI = api)"
-    />
-  </main>
+  <TheChessboard
+    :board-config="boardConfig"
+    @board-created="(api) => (boardAPI = api)"
+  />
 </template>
 
 <style>

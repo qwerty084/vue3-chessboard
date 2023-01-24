@@ -82,3 +82,9 @@ export type BrushColor =
   | 'paleGreen'
   | 'paleRed'
   | 'paleGrey';
+
+export interface DrawShape {
+  orig: Key;
+  dest: Key;
+  brush: BrushColor;
+}
