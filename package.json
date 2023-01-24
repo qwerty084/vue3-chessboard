@@ -45,6 +45,7 @@
     "test:unit": "vitest --environment jsdom --root src/",
     "build-only": "vite build",
     "build-pages": "vite build --config pages.config.ts",
+    "format": "prettier --write src/",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
