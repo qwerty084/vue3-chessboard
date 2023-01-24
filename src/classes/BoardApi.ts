@@ -5,6 +5,7 @@ import type {
   LichessOpening,
   MaterialDifference,
   BrushColor,
+  DrawShape,
 } from '@/typings/BoardAPI';
 import {
   getThreats,
@@ -360,6 +361,10 @@ export class BoardApi {
    */
   clearBoard(): void {
     this.game.clear();
+  }
+
+  setShapes(shapes: DrawShape[]): void {
+    this.board.setShapes(shapes);
   }
 }
 
