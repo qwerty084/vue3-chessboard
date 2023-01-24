@@ -10,7 +10,7 @@ Based on [vue-chessboard](https://github.com/vitogit/vue-chessboard) a Vue2 ches
 
 ![Chessboard](https://media3.giphy.com/media/cWw6eHQ7AmjDXbWm6w/giphy.gif?cid=790b7611cce1bb251c4ae6a786ea4dc8be97b1563f59d989&rid=giphy.gif&ct=g)
 
-You can find the live demo [here](https://qwerty084.github.io/vue3-chessboard-demo/).
+You can find the demo and documentation [here](https://qwerty084.github.io/vue3-chessboard/).
 
 ## Table of contents
 
@@ -18,7 +18,6 @@ You can find the live demo [here](https://qwerty084.github.io/vue3-chessboard-de
 - [Installation](#installation)
 - [Usage](#usage)
 - [Docs](#docs)
-- [Roadmap](#roadmap)
 
 # Features:
 
@@ -131,6 +130,7 @@ function resetBoard() {
 ```
 
 # Docs
+You can find the full documentation [here](https://qwerty084.github.io/vue3-chessboard/)
 
 ## Setup:
 
@@ -190,8 +190,3 @@ const emit = defineEmits<{
 }>();
 ```
 
-# Roadmap
-
-- Maybe add stockfish (see stockfish & stockfish_testing branches, Javascript and Web Assembly implementation)
-- Add more methods/features
-- Optimize perfomance and reduce bundle size
