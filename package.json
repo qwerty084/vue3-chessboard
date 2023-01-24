@@ -1,6 +1,8 @@
 {
   "name": "vue3-chessboard",
   "version": "0.0.9",
+  "description": "vue3-chessboard is a component library for creating chess web apps with vue3",
+  "homepage": "https://qwerty084.github.io/vue3-chessboard/",
   "keywords": [
     "vue",
     "chessboard",
@@ -14,7 +16,7 @@
   "files": [
     "dist"
   ],
-  "license": "GPL-3.0-or-later",
+  "license": "GPL-3.0",
   "type": "module",
   "exports": {
     ".": {
@@ -26,7 +28,7 @@
   "types": "./dist/src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qwerty084/vue3-chessboard.git"
+    "url": "https://github.com/qwerty084/vue3-chessboard.git"
   },
   "bugs": {
     "url": "https://github.com/qwerty084/vue3-chessboard/issues",
@@ -43,6 +45,7 @@
     "test:unit": "vitest --environment jsdom --root src/",
     "build-only": "vite build",
     "build-pages": "vite build --config pages.config.ts",
+    "format": "prettier --write src/",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "docs:dev": "vitepress dev docs",
@@ -65,11 +68,11 @@
     "@vue/test-utils": "^2.1.0",
     "@vue/theme": "^1.3.0",
     "@vue/tsconfig": "^0.1.3",
-    "eslint": "^8.22.0",
-    "eslint-plugin-vue": "^9.3.0",
-    "jsdom": "^21.0.0",
+    "eslint": "^8.32.0",
+    "eslint-plugin-vue": "^9.9.0",
+    "jsdom": "^21.1.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.3",
     "typescript": "^4.9.4",
     "vite": "^4.0.4",
     "vitepress": "^1.0.0-alpha.40",
