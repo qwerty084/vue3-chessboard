@@ -364,7 +364,7 @@ cg-board .king.black {
   pointer-events: none;
 }
 
-dialog {
+.promotion-dialog {
   padding: 0.8rem;
   position: relative;
   background-color: #f0d9b5;

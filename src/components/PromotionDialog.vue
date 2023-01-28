@@ -33,6 +33,7 @@ function promotionSelected(e: Event) {
   <Teleport to="cg-board">
     <dialog
       ref="dialogEl"
+      class="promotion-dialog"
       open
       @click="promotionSelected"
       @touchstart.passive="promotionSelected"
