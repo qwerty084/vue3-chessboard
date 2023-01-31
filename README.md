@@ -1,6 +1,6 @@
 # vue3-chessboard
 
-![Tests](https://github.com/qwerty084/vue3-chessboard/workflows/Tests/badge.svg)
+![Continuous Integration](https://github.com/qwerty084/vue3-chessboard/workflows/Continuous%20Integration/badge.svg)
 
 [![npm](https://img.shields.io/npm/v/vue3-chessboard)](https://www.npmjs.com/package/vue3-chessboard)
 
