@@ -1,5 +1,7 @@
 # vue3-chessboard
 
+![Tests](https://github.com/qwerty084/vue3-chessboard/workflows/Tests/badge.svg)
+
 Vue3 chessboard component built with:
 
 - [lichess chessground](https://github.com/lichess-org/chessground)
