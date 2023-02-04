@@ -1,4 +1,12 @@
-import type { ChessInstance, Move, Piece, Square, SquareColor } from 'chess.js';
+import type {
+  ChessInstance,
+  Move,
+  Piece,
+  PieceColor,
+  PieceType,
+  Square,
+  SquareColor,
+} from 'chess.js';
 import type { Api } from 'chessground/api';
 import type { BoardState } from '@/typings/BoardState';
 import type {
@@ -204,6 +212,7 @@ export class BoardApi {
         promoted: true,
       });
       this.board.state.pieces.delete(m.from);
+      this.board.redrawAll();
     } else {
       this.board.move(m.from, m.to);
     }
@@ -238,8 +247,19 @@ export class BoardApi {
     return possibleMoves(this.game);
   }
 
+  /**
+   *
+   * @returns the current turn number
+   * @example e4 e5 -> turn number is 2 now
+   */
   getCurrentTurnNumber(): number {
-    return this.game.history().length;
+    // return Math.ceil(this.game.history().length / 2);
+    let movesLength = this.game.history().length;
+    if (movesLength % 2 === 0 && movesLength !== 0) {
+      movesLength += 1;
+    }
+
+    return Math.ceil(movesLength / 2);
   }
 
   getLastMove(): Move | undefined {
@@ -250,7 +270,7 @@ export class BoardApi {
    * Retrieves the move history.
    *
    * @param verbose - passing true will add more info
-   * @returns Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
+   * @example Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
    */
   getHistory(verbose = false): Move[] | string[] {
     return this.game.history({ verbose: verbose });
@@ -266,7 +286,11 @@ export class BoardApi {
   /**
    * Returns the board position as a 2D array.
    */
-  getBoardPosition() {
+  getBoardPosition(): ({
+    type: PieceType;
+    color: PieceColor;
+    square: Square;
+  } | null)[][] {
     return this.game.board();
   }
 
@@ -342,13 +366,6 @@ export class BoardApi {
   }
 
   /**
-   * returns the ascii representation of the board
-   */
-  getAsciiBoard(): string {
-    return this.game.ascii();
-  }
-
-  /**
    * puts a piece on a given square on the board
    * returns true on success, else false
    */
@@ -365,6 +382,41 @@ export class BoardApi {
 
   setShapes(shapes: DrawShape[]): void {
     this.board.setShapes(shapes);
+  }
+
+  /**
+   * loads a pgn into the board
+   *
+   * @param pgn - the pgn to load
+   */
+  loadPgn(pgn: string): void {
+    this.game.load_pgn(pgn);
+    this.board.set({ fen: this.game.fen() });
+    this.board.state.turnColor = shortToLongColor(this.game.turn());
+
+    this.board.state.movable.color = this.board.state.turnColor;
+    this.board.state.movable.dests = possibleMoves(this.game);
+    this.board.state.check = undefined;
+  }
+
+  /**
+   * returns the header information of the current pgn, if no pgn is loaded, returns an empty object
+   * @example {
+   * "Event": "IBM Kasparov vs. Deep Blue Rematch",
+   * "Site": "New York, NY USA",
+   * "Date": "1997.05.11",
+   * "Round": "6",
+   * "White": "Deep Blue",
+   * "Black": "Kasparov, Garry",
+   * "Opening": "Caro-Kann: 4...Nd7",
+   * "ECO": "B17",
+   * "Result": "1-0"
+   * }
+   */
+  getPgnInfo(): {
+    [key: string]: string | undefined;
+  } {
+    return this.game.header();
   }
 }
 

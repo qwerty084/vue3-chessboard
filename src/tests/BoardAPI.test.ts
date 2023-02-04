@@ -49,6 +49,27 @@ describe.concurrent('Test the board API', () => {
     boardApi.move('e5');
     expect(boardApi?.getTurnColor()).toBe('white');
   });
+
+  it('returns the current turn number', () => {
+    boardApi.resetBoard();
+
+    boardApi.move('e4');
+    expect(boardApi?.getCurrentTurnNumber()).toBe(1);
+    boardApi.undoLastMove();
+    expect(boardApi?.getCurrentTurnNumber()).toBe(0);
+    boardApi.move('e4');
+    boardApi.move('e5');
+    expect(boardApi?.getCurrentTurnNumber()).toBe(2);
+    boardApi.move('Nf3');
+    boardApi.move('Nc6');
+    expect(boardApi?.getCurrentTurnNumber()).toBe(3);
+    boardApi.move('Bc4');
+    expect(boardApi?.getCurrentTurnNumber()).toBe(3);
+    boardApi.move('Bc5');
+    expect(boardApi?.getCurrentTurnNumber()).toBe(4);
+    boardApi.resetBoard();
+    expect(boardApi?.getCurrentTurnNumber()).toBe(0);
+  });
 });
 
 export {};
