@@ -88,6 +88,7 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
     selectedPromotion.value = undefined;
 
     board?.set({
+      fen: game.fen(),
       turnColor: board.state.turnColor,
       movable: {
         color: board.state.turnColor,

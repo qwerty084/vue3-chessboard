@@ -52,6 +52,7 @@ export class BoardApi {
    */
   resetBoard(): void {
     this.game.reset();
+    this.board.redrawAll();
     this.board.set(this.boardState.boardConfig);
     this.board.state.check = undefined;
     this.board.selectSquare(null);
@@ -121,6 +122,9 @@ export class BoardApi {
     return materialCount;
   }
 
+  /**
+   * toggles the board orientation.
+   */
   toggleOrientation(): void {
     this.board.toggleOrientation();
   }
@@ -141,6 +145,9 @@ export class BoardApi {
     this.board.setShapes([]);
   }
 
+  /**
+   * draws an arrow on the board
+   */
   drawMove(orig: Square, dest: Square, brushColor: BrushColor): void {
     this.board.setShapes([
       {
@@ -261,6 +268,9 @@ export class BoardApi {
     return Math.ceil(movesLength / 2);
   }
 
+  /**
+   * returns the latest move made on the board
+   */
   getLastMove(): Move | undefined {
     return this.game.history({ verbose: true }).at(-1);
   }
@@ -379,6 +389,9 @@ export class BoardApi {
     this.game.clear();
   }
 
+  /**
+   * draw multiple arrows on the board
+   */
   setShapes(shapes: DrawShape[]): void {
     this.board.setShapes(shapes);
   }

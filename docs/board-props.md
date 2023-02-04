@@ -145,7 +145,8 @@ The board should then look like this:
 </div>
 
 <style scoped>
+
 .main-wrap {
-  max-width: 90%;
+max-width: 90%;
 }
 </style>

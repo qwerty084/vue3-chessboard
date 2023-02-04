@@ -47,11 +47,6 @@ const boardAPI = ref();
 <br>
 Here is a list of all the available methods:
 
-::: warning
-This section is still WIP. Some methods will change or be removed in v.1.0.
-Im also working on creating a better overview of the available methods!
-:::
-
 ```ts
 /**
  * Resets the board to the initial starting position.
@@ -69,6 +64,9 @@ undoLastMove(): void;
  */
 getMaterialCount(): MaterialDifference;
 
+/**
+ * toggles the board orientation.
+ */
 toggleOrientation(): void;
 
 /**
@@ -81,6 +79,9 @@ drawMoves(): void;
  */
 hideMoves(): void;
 
+/**
+ * draws an arrow on the board
+ */
 drawMove(orig: Square, dest: Square, brushColor: BrushColor): void;
 
 /**
@@ -91,36 +92,44 @@ toggleMoves(): void;
 /**
  * returns the opening name for the current position from lichess api
  */
-
 getOpeningName(): Promise<string | null>;
+
 /**
  * make a move programmatically on the board
  * @param move the san move to make like 'e4', 'O-O' or 'e8=Q'
  * @returns true if the move was made, false if the move was illegal
  */
-
 move(move: string): boolean;
+
 /**
  * returns the current turn color
  * @returns 'white' or 'black'
  */
-
 getTurnColor(): Color;
+
 /**
  * returns all possible moves for the current position
  *
  */
 getPossibleMoves(): Map<Key, Key[]> | undefined;
 
+/**
+ *
+ * @returns the current turn number
+ * @example e4 e5 -> turn number is 2 now
+ */
 getCurrentTurnNumber(): number;
 
+/**
+ * returns the latest move made on the board
+ */
 getLastMove(): Move | undefined;
 
 /**
  * Retrieves the move history.
  *
  * @param verbose - passing true will add more info
- * @returns Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
+ * @example Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
  */
 getHistory(verbose?: boolean): Move[] | string[];
 
@@ -133,8 +142,8 @@ getFen(): string;
  * Returns the board position as a 2D array.
  */
 getBoardPosition(): ({
-  type: import('chess.js').PieceType;
-  color: import('chess.js').PieceColor;
+  type: PieceType;
+  color: PieceColor;
   square: Square;
 } | null)[][];
 
@@ -189,11 +198,6 @@ getSquare(square: Square): Piece | null;
 setPosition(fen: string): void;
 
 /**
- * returns the ascii representation of the board
- */
-getAsciiBoard(): string;
-
-/**
  * puts a piece on a given square on the board
  * returns true on success, else false
  */
@@ -204,7 +208,35 @@ putPiece(piece: Piece, square: Square): boolean;
  */
 clearBoard(): void;
 
+/**
+ * draw multiple arrows on the board
+ */
 setShapes(shapes: DrawShape[]): void;
+
+/**
+ * loads a pgn into the board
+ *
+ * @param pgn - the pgn to load
+ */
+loadPgn(pgn: string): void;
+
+/**
+ * returns the header information of the current pgn, if no pgn is loaded, returns an empty object
+ * @example {
+ * "Event": "IBM Kasparov vs. Deep Blue Rematch",
+ * "Site": "New York, NY USA",
+ * "Date": "1997.05.11",
+ * "Round": "6",
+ * "White": "Deep Blue",
+ * "Black": "Kasparov, Garry",
+ * "Opening": "Caro-Kann: 4...Nd7",
+ * "ECO": "B17",
+ * "Result": "1-0"
+ * }
+ */
+getPgnInfo(): {
+  [key: string]: string | undefined;
+};
 ```
 
 ## Example Board API Usage

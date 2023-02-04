@@ -11,15 +11,13 @@ const boardConfig = {
 };
 
 async function getOpening() {
-  opening.value = await boardAPI.value.getOpeningName();
+  opening.value = await boardAPI.value?.getOpeningName();
 }
 </script>
 
 <template>
   <div>
     <p>Opening: {{ opening }}</p>
-    <p>Material:</p>
-    <p>Turn:</p>
   </div>
   <section class="sect">
     <button class="button" @click="boardAPI?.toggleOrientation()">
