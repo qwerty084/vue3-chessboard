@@ -8,7 +8,6 @@ import type {
   SquareColor,
 } from 'chess.js';
 import type { Api } from 'chessground/api';
-import type { BoardState } from '@/typings/BoardState';
 import type {
   LichessOpening,
   MaterialDifference,
@@ -22,7 +21,7 @@ import {
   roleAbbrToRole,
 } from '@/helper/Board';
 import { emitBoardEvents } from '@/helper/EmitEvents';
-import type { Emit } from '@/typings/Chessboard';
+import type { Emit, BoardState } from '@/typings/Chessboard';
 import type { Color, Key } from 'chessground/types';
 
 /**
