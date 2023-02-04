@@ -14,7 +14,7 @@ Based on [vue-chessboard](https://github.com/vitogit/vue-chessboard) a Vue2 ches
 
 ![Chessboard](https://media3.giphy.com/media/cWw6eHQ7AmjDXbWm6w/giphy.gif?cid=790b7611cce1bb251c4ae6a786ea4dc8be97b1563f59d989&rid=giphy.gif&ct=g)
 
-You can find the demo and documentation [here](https://qwerty084.github.io/vue3-chessboard/).
+You can find the demo and full documentation [here](https://qwerty084.github.io/vue3-chessboard/).
 
 ## Table of contents
 
@@ -31,6 +31,7 @@ You can find the demo and documentation [here](https://qwerty084.github.io/vue3-
 - Show material count
 - Promotion dialog window
 - Fully typed API/Custom Events
+- and many more...
 
 # Installation
 
@@ -66,13 +67,13 @@ function handleCheckmate(isMated: string) {
 
 <template>
   <main>
-    <section role="region" aria-label="Board Controls">
-      <button type="button" @click="boardAPI?.board.toggleOrientation()">
+    <section>
+      <button @click="boardAPI?.toggleOrientation()">
         Toggle orientation
       </button>
-      <button type="button" @click="boardAPI?.resetBoard()">Reset</button>
-      <button type="button" @click="boardAPI?.undoLastMove()">Undo</button>
-      <button type="button" @click="boardAPI?.toggleThreats()">Threats</button>
+      <button @click="boardAPI?.resetBoard()">Reset</button>
+      <button @click="boardAPI?.undoLastMove()">Undo</button>
+      <button @click="boardAPI?.toggleMoves()">Threats</button>
     </section>
     <TheChessboard
       :board-config="boardConfig"
@@ -104,25 +105,17 @@ function handleCheckmate(isMated) {
     alert('White wins!');
   }
 }
-
-function toggleOrientation() {
-  boardAPI.value?.board.toggleOrientation();
-}
-
-function resetBoard() {
-  boardAPI.value?.resetBoard();
-}
 </script>
 
 <template>
   <main>
-    <section role="region" aria-label="Board Controls">
-      <button type="button" @click="boardAPI?.board.toggleOrientation()">
+    <section>
+      <button @click="boardAPI?.toggleOrientation()">
         Toggle orientation
       </button>
-      <button type="button" @click="boardAPI?.resetBoard()">Reset</button>
-      <button type="button" @click="boardAPI?.undoLastMove()">Undo</button>
-      <button type="button" @click="boardAPI?.toggleThreats()">Threats</button>
+      <button @click="boardAPI?.resetBoard()">Reset</button>
+      <button @click="boardAPI?.undoLastMove()">Undo</button>
+      <button @click="boardAPI?.toggleMoves()">Threats</button>
     </section>
     <TheChessboard
       :board-config="boardConfig"
@@ -134,7 +127,7 @@ function resetBoard() {
 ```
 
 # Docs
-You can find the full documentation [here](https://qwerty084.github.io/vue3-chessboard/)
+You can find the full documentation [here](https://qwerty084.github.io/vue3-chessboard/).
 
 ## Setup:
 
@@ -159,18 +152,7 @@ The chessboard component provides a class based API to interact with the chessbo
 
 #### Available methods:
 
-- resetBoard() - Resets the board to the initial position
-- undoLastMove() - Undo the last move
-- getMaterialCount() - Returns the material count of both sides
-- showThreats() - Shows all possible moves/threats
-- hideThreats() - Hides all possible moves/threats
-- toggleThreats() - Toggles possible moves/threats
-- getOpeningName() - Get the opening name for the current position from lichess api
-- getOpeningDescription() - Get description of current position from wikibooks.org
-- makeMove() - Make a move programmatically on the board
-
-Additionally the chessground & chess.js instances are available via the board property.
-You can find the available methods for the chessground instance [here](https://github.com/lichess-org/chessground/blob/master/src/api.ts) and the available methods for the chess.js instance [here](https://github.com/jhlywa/chess.js/blob/master/README.md).
+For a full list of available methods please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html).
 
 <br>
 
