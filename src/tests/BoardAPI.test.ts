@@ -1,6 +1,6 @@
 import { expect, it, describe } from 'vitest';
 import { mountComponent } from './helper/Helper';
-import { initialPos, initialPosChessJS } from '@/helper/DefaultConfig';
+import { initialPos } from '@/helper/DefaultConfig';
 import type { BoardApi } from '@/classes/BoardApi';
 
 describe.concurrent('Test the board API', () => {

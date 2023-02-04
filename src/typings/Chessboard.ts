@@ -1,6 +1,7 @@
 import type BoardApi from '@/classes/BoardApi';
 import type { Square } from 'chess.js';
 import type { Key } from 'chessground/types';
+import type { BoardConfig } from './BoardConfig';
 
 export interface possibleMoves {
   [key: string]: {
@@ -38,4 +39,11 @@ export interface Emit {
   (e: 'stalemate', isStalemate: boolean): void;
   (e: 'draw', isDraw: boolean): void;
   (e: 'check', isInCheck: PieceColor): void;
+}
+
+export interface BoardState {
+  boardConfig: BoardConfig;
+  showThreats: boolean;
+  activeGame: boolean;
+  openPromotionDialog: boolean;
 }
