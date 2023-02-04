@@ -5,11 +5,6 @@
 Vue3-chessboard is a component library for vue 3 written in TypeScript, using the <a href="https://github.com/lichess-org/chessground">lichess chessground</a> and <a href="https://github.com/jhlywa/chess.js">chess.js</a> for the board logic.
 <br>
 
-::: warning
-This library and documentation is still in early development.
-I'm currently working on version 1.0, a lot will change from the current version 0.9.
-:::
-
 ## Installation
 
 ::: code-group

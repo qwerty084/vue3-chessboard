@@ -9,9 +9,9 @@ const svgPath = ref(null);
 
 function setSvgPath() {
   if (theme.isDark.value) {
-    svgPath.value = '/github-mark-white.svg';
+    svgPath.value = '/vue3-chessboard/github-mark-white.svg';
   } else {
-    svgPath.value = '/github-mark.svg';
+    svgPath.value = '/vue3-chessboard/github-mark.svg';
   }
 }
 
@@ -71,17 +71,20 @@ function wtf(x) {
 </div>
 
 <div class="svg-container">
-  <a href="https://github.com/qwerty084/vue3-chessboard" target="_blank" rel="noreferrer">
-    <img :src="svgPath" alt="github repository" title="GitHub Repository" />
+  <a v-show="theme.isDark" href="https://github.com/qwerty084/vue3-chessboard" target="_blank" rel="noreferrer">
+    <img src="/github-mark-white.svg" alt="github repository" title="GitHub Repository" />
+  </a>
+  <a v-show="!theme.isDark" href="https://github.com/qwerty084/vue3-chessboard" target="_blank" rel="noreferrer">
+    <img src="/github-mark.svg" alt="github repository" title="GitHub Repository" />
   </a>
   <a href="https://www.npmjs.com/package/vue3-chessboard" target="_blank" rel="noreferrer" >
     <img src="/npm.svg" alt="NPM Package" title="NPM Package" class="npm-svg" />
   </a>
 </div>
 
-<p class="version-number">version 0.0.9</p>
+<p class="version-number">version 1.0.0</p>
 
-<style scoped>
+<style>
 h1 {
   font-size: 48px !important;
   background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
@@ -114,5 +117,10 @@ h1 {
 .version-number {
   text-align: center;
   margin-top: 2rem;
+}
+
+.promotion-container {
+  background-position: center;
+  background-repeat: no-repeat;
 }
 </style>
