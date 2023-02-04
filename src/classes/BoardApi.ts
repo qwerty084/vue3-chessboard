@@ -247,8 +247,19 @@ export class BoardApi {
     return possibleMoves(this.game);
   }
 
+  /**
+   *
+   * @returns the current turn number
+   * @example e4 e5 -> turn number is 2 now
+   */
   getCurrentTurnNumber(): number {
-    return this.game.history().length;
+    // return Math.ceil(this.game.history().length / 2);
+    let movesLength = this.game.history().length;
+    if (movesLength % 2 === 0 && movesLength !== 0) {
+      movesLength += 1;
+    }
+
+    return Math.ceil(movesLength / 2);
   }
 
   getLastMove(): Move | undefined {
@@ -259,7 +270,7 @@ export class BoardApi {
    * Retrieves the move history.
    *
    * @param verbose - passing true will add more info
-   * @returns Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
+   * @example Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
    */
   getHistory(verbose = false): Move[] | string[] {
     return this.game.history({ verbose: verbose });
