@@ -165,6 +165,7 @@ You can listen for events on the chessboard component. The following events are 
 - stalemate - Emitted when a player is stalemated
 - draw - Emitted when the game is drawn
 - check - Emitted when a player is checked
+- promotion - Emitted when a player promotes
 
 ```Typescript
 const emit = defineEmits<{
@@ -173,6 +174,7 @@ const emit = defineEmits<{
   (e: 'stalemate', isStalemate: boolean): void;
   (e: 'draw', isDraw: boolean): void;
   (e: 'check', isInCheck: PieceColor): void;
+  (e: 'promotion', promotion: PromotionEvent): void;
 }>();
 ```
 

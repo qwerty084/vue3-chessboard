@@ -21,7 +21,7 @@ import {
   roleAbbrToRole,
 } from '@/helper/Board';
 import { emitBoardEvents } from '@/helper/EmitEvents';
-import type { Emit, BoardState } from '@/typings/Chessboard';
+import type { Emit, BoardState, PromotedTo } from '@/typings/Chessboard';
 import type { Color, Key } from 'chessground/types';
 
 /**
@@ -219,6 +219,12 @@ export class BoardApi {
       });
       this.board.state.pieces.delete(m.from);
       this.board.redrawAll();
+      const promotedTo = m.promotion.toUpperCase() as PromotedTo;
+      this.emit('promotion', {
+        color: this.board?.state.turnColor === 'white' ? 'black' : 'white',
+        promotedTo: promotedTo,
+        sanMove: m.san,
+      });
     } else {
       this.board.move(m.from, m.to);
     }
