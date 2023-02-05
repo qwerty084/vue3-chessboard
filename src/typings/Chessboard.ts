@@ -39,6 +39,7 @@ export interface Emit {
   (e: 'stalemate', isStalemate: boolean): void;
   (e: 'draw', isDraw: boolean): void;
   (e: 'check', isInCheck: PieceColor): void;
+  (e: 'promotion', promotion: PromotionEvent): void;
 }
 
 export interface BoardState {
@@ -47,3 +48,11 @@ export interface BoardState {
   activeGame: boolean;
   openPromotionDialog: boolean;
 }
+
+export interface PromotionEvent {
+  color: PieceColor;
+  sanMove: string;
+  promotedTo: 'Q' | 'B' | 'R' | 'N';
+}
+
+export type PromotedTo = PromotionEvent['promotedTo'];

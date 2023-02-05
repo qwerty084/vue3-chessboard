@@ -15,6 +15,8 @@ import type {
   SquareKey,
   PieceColor,
   BoardState,
+  PromotionEvent,
+  PromotedTo,
 } from '@/typings/Chessboard';
 
 const props = defineProps({
@@ -30,6 +32,7 @@ const emit = defineEmits<{
   (e: 'stalemate', isStalemate: boolean): void;
   (e: 'draw', isDraw: boolean): void;
   (e: 'check', isInCheck: PieceColor): void;
+  (e: 'promotion', promotion: PromotionEvent): void;
 }>();
 
 let board: Api | undefined;
@@ -78,6 +81,16 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
     if (isPromotion(dest, game.get(orig as Square))) {
       await onPromotion();
       boardState.openPromotionDialog = false;
+      const promotedTo = selectedPromotion.value?.toUpperCase() as PromotedTo;
+      const sanMove = `${orig[0]}x${dest}=${promotedTo}`;
+      const promotionColor =
+        board?.state.turnColor === 'white' ? 'black' : 'white';
+
+      emit('promotion', {
+        color: promotionColor,
+        sanMove,
+        promotedTo: promotedTo,
+      });
     }
 
     game.move({
