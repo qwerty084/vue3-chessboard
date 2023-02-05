@@ -154,8 +154,6 @@ The chessboard component provides a class based API to interact with the chessbo
 
 For a full list of available methods please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html).
 
-<br>
-
 ### Custom Events
 
 You can listen for events on the chessboard component. The following events are available:
