@@ -37,16 +37,24 @@ Now you can start developing 🚀
 
 ## Creating a Pull Request
 
-After adding your feature/bug fix please run the following npm scripts to format your code and run the linter.
+After adding your feature/bug fix please run the following scripts.
+
+format your code
 
 ```sh
 npm run format
 ```
 
-and
+lint your changes
 
 ```sh
 npm run lint
+```
+
+test your changes
+
+```sh
+npm run test:unit
 ```
 
 Then create a branch with a fitting name, commit and push your changes.
