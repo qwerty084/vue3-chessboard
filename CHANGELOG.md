@@ -1,3 +1,11 @@
+## 1.0.0 (2023-02-05)
+
+### v1.0.0. includes some breaking changes. Only breaking changes will be listed here. Refer to the new documentation to update your app to v1.0.0
+
+- callback functions as props have been removed. Take a look at the [documentation](https://qwerty084.github.io/vue3-chessboard/callbacks.html) to see how to register callbacks in v1.0.0.
+- board and game from the boardAPI have been made private. You need to use the corresponding method to achieve the same result. Visit the [docs](https://qwerty084.github.io/vue3-chessboard/board-api.html) to get an overview of all available methods.
+- If you encounter any issues visit the [docs](https://qwerty084.github.io/vue3-chessboard/) or open an [issue](https://github.com/qwerty084/vue3-chessboard/issues/new/choose).
+
 ## 0.0.9 (2022-11-13)
 
 ### Bug Fixes
