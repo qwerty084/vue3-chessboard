@@ -141,9 +141,9 @@ describe.concurrent('Test the board events', () => {
   });
 
   it('emits move event', () => {
-    boardApi.resetBoard();
+    boardApi?.resetBoard();
 
-    boardApi.move('e4');
+    boardApi?.move('e4');
     expect(wrapper.emitted('move')).toBeTruthy();
   });
 });
