@@ -53,7 +53,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
-    "chess.js": "^0.13.4",
+    "chess.js": "^1.0.0-beta.3",
     "chessground": "^8.3.7",
     "vue": "^3.2.47"
   },
@@ -68,7 +68,7 @@
     "@vue/test-utils": "^2.1.0",
     "@vue/theme": "^1.3.0",
     "@vue/tsconfig": "^0.1.3",
-    "eslint": "^8.32.0",
+    "eslint": "^8.34.0",
     "eslint-plugin-vue": "^9.9.0",
     "jsdom": "^21.1.0",
     "npm-run-all": "^4.1.5",

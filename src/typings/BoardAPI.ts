@@ -1,10 +1,10 @@
-import type { ChessInstance, Move } from 'chess.js';
+import type { Chess, Move } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type { Color, Key } from 'chessground/types';
 import type { BoardState } from './Chessboard';
 
 export interface BoardAPI {
-  game: ChessInstance;
+  game: Chess;
   board: Api;
   boardState: BoardState;
 

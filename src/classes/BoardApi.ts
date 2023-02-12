@@ -1,12 +1,4 @@
-import type {
-  ChessInstance,
-  Move,
-  Piece,
-  PieceColor,
-  PieceType,
-  Square,
-  SquareColor,
-} from 'chess.js';
+import type { Chess, Move, Piece, Square } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type {
   LichessOpening,
@@ -31,16 +23,11 @@ import type { Color, Key } from 'chessground/types';
  * chess.js documentation: https://github.com/jhlywa/chess.js/blob/master/README.md
  */
 export class BoardApi {
-  private game: ChessInstance;
+  private game: Chess;
   private board: Api;
   private boardState: BoardState;
   private emit: Emit;
-  constructor(
-    game: ChessInstance,
-    board: Api,
-    boardState: BoardState,
-    emit: Emit
-  ) {
+  constructor(game: Chess, board: Api, boardState: BoardState, emit: Emit) {
     this.game = game;
     this.board = board;
     this.boardState = boardState;
@@ -301,11 +288,7 @@ export class BoardApi {
   /**
    * Returns the board position as a 2D array.
    */
-  getBoardPosition(): ({
-    type: PieceType;
-    color: PieceColor;
-    square: Square;
-  } | null)[][] {
+  getBoardPosition() {
     return this.game.board();
   }
 
@@ -320,49 +303,49 @@ export class BoardApi {
    * returns true of false depending on if the game is over
    */
   getIsGameOver(): boolean {
-    return this.game.game_over();
+    return this.game.isGameOver();
   }
 
   /**
    * returns true or false depending on if a player is checkmated
    */
   getIsCheckmate(): boolean {
-    return this.game.in_checkmate();
+    return this.game.isCheckmate();
   }
 
   /**
    * returns true or false depending on if a player is in stalemate
    */
   getIsStalemate(): boolean {
-    return this.game.in_stalemate();
+    return this.game.isStalemate();
   }
 
   /**
    * returns true or false depending on if a game is drawn
    */
   getIsDraw(): boolean {
-    return this.game.in_draw();
+    return this.game.isDraw();
   }
 
   /**
    * returns true or false depending on if a game is drawn by threefold repetition
    */
   getIsThreefoldRepetition(): boolean {
-    return this.game.in_threefold_repetition();
+    return this.game.isThreefoldRepetition();
   }
 
   /**
    * returns true or false depending on if a game is drawn by insufficient material
    */
   getIsInsufficientMaterial(): boolean {
-    return this.game.insufficient_material();
+    return this.game.isInsufficientMaterial();
   }
 
   /**
    * returns the color of a given square
    */
-  getSquareColor(square: string): SquareColor | null {
-    return this.game.square_color(square);
+  getSquareColor(square: Square) {
+    return this.game.squareColor(square);
   }
 
   /**
@@ -408,7 +391,7 @@ export class BoardApi {
    * @param pgn - the pgn to load
    */
   loadPgn(pgn: string): void {
-    this.game.load_pgn(pgn);
+    this.game.loadPgn(pgn);
     this.board.set({ fen: this.game.fen() });
     this.board.state.turnColor = shortToLongColor(this.game.turn());
 

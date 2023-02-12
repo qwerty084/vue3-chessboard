@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { PieceColor } from 'chess.js';
 import type { Promotion } from '@/typings/Chessboard';
+import type { Color } from 'chess.js';
 
 defineProps({
   turnColor: {
-    type: String as () => PieceColor,
+    type: String as () => Color,
     required: true,
   },
 });
