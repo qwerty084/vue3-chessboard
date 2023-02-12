@@ -139,6 +139,13 @@ describe.concurrent('Test the board events', () => {
     expect(wrapper.emitted('draw')).toBeTruthy();
     expect(wrapper.emitted('check')).toBeTruthy();
   });
+
+  it('emits move event', () => {
+    boardApi?.resetBoard();
+
+    boardApi?.move('e4');
+    expect(wrapper.emitted('move')).toBeTruthy();
+  });
 });
 
 export {};

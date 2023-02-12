@@ -24,4 +24,6 @@ export function emitBoardEvents(game: Chess, board: Api, emit: Emit) {
   if (game.isStalemate()) {
     emit('stalemate', true);
   }
+
+  emit('move', game.history({ verbose: true }).at(-1));
 }
