@@ -17,6 +17,7 @@ import type {
   BoardState,
   PromotionEvent,
   PromotedTo,
+  MoveEvent,
 } from '@/typings/Chessboard';
 
 const props = defineProps({
@@ -33,6 +34,7 @@ const emit = defineEmits<{
   (e: 'draw', isDraw: boolean): void;
   (e: 'check', isInCheck: PieceColor): void;
   (e: 'promotion', promotion: PromotionEvent): void;
+  (e: 'move', move: MoveEvent): void;
 }>();
 
 let board: Api | undefined;
@@ -116,6 +118,8 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
     if (boardState.showThreats) {
       board.setShapes(getThreats(game.moves({ verbose: true })));
     }
+
+    emit('move', game.history({ verbose: true }).at(-1));
   };
 }
 </script>

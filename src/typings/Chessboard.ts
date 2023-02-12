@@ -1,5 +1,5 @@
 import type BoardApi from '@/classes/BoardApi';
-import type { Square } from 'chess.js';
+import type { Move, Square } from 'chess.js';
 import type { Key } from 'chessground/types';
 import type { BoardConfig } from './BoardConfig';
 
@@ -56,3 +56,9 @@ export interface PromotionEvent {
 }
 
 export type PromotedTo = PromotionEvent['promotedTo'];
+
+export type MoveEvent =
+  | (Move & {
+      fen: string;
+    })
+  | undefined;
