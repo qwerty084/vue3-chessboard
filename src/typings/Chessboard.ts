@@ -40,6 +40,7 @@ export interface Emit {
   (e: 'draw', isDraw: boolean): void;
   (e: 'check', isInCheck: PieceColor): void;
   (e: 'promotion', promotion: PromotionEvent): void;
+  (e: 'move', move: MoveEvent): void;
 }
 
 export interface BoardState {
