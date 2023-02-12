@@ -1,4 +1,4 @@
-import { SQUARES, type ChessInstance, type Move, type Piece } from 'chess.js';
+import { SQUARES, type Chess, type Move, type Piece } from 'chess.js';
 import type { Key } from 'chessground/types';
 import type { Threat } from '@/typings/Chessboard';
 
@@ -40,7 +40,7 @@ export function roleAbbrToRole(role: string) {
   }
 }
 
-export function possibleMoves(game: ChessInstance) {
+export function possibleMoves(game: Chess) {
   const dests: Map<Key, Key[]> = new Map();
   SQUARES.forEach((s) => {
     const moves = game.moves({ square: s, verbose: true });

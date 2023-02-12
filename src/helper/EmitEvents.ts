@@ -1,9 +1,9 @@
 import type { Emit } from '@/typings/Chessboard';
-import type { ChessInstance } from 'chess.js';
+import type { Chess } from 'chess.js';
 import type { Api } from 'chessground/api';
 
-export function emitBoardEvents(game: ChessInstance, board: Api, emit: Emit) {
-  if (game.in_check()) {
+export function emitBoardEvents(game: Chess, board: Api, emit: Emit) {
+  if (game.inCheck()) {
     const pieces = board.state.pieces;
     pieces.forEach((piece, key) => {
       if (piece.role === 'king' && piece.color === board?.state.turnColor) {
@@ -13,15 +13,15 @@ export function emitBoardEvents(game: ChessInstance, board: Api, emit: Emit) {
     });
   }
 
-  if (game.in_checkmate()) {
+  if (game.isCheckmate()) {
     emit('checkmate', board.state.turnColor);
   }
 
-  if (game.in_draw()) {
+  if (game.isDraw()) {
     emit('draw', true);
   }
 
-  if (game.in_stalemate()) {
+  if (game.isStalemate()) {
     emit('stalemate', true);
   }
 }
