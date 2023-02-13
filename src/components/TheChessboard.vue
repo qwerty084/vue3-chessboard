@@ -118,8 +118,6 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
     if (boardState.showThreats) {
       board.setShapes(getThreats(game.moves({ verbose: true })));
     }
-
-    emit('move', game.history({ verbose: true }).at(-1));
   };
 }
 </script>
