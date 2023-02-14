@@ -1,6 +1,6 @@
 import { expect, it, describe } from 'vitest';
 import { mountComponent } from './helper/Helper';
-import { initialPos } from '@/helper/DefaultConfig';
+import { initialPosChessJS } from '@/helper/DefaultConfig';
 import type { BoardApi } from '@/classes/BoardApi';
 
 describe.concurrent('Test the board API', () => {
@@ -24,7 +24,7 @@ describe.concurrent('Test the board API', () => {
     boardApi?.resetBoard();
 
     // test chess.js
-    expect(boardApi?.getFen()).toBe(initialPos);
+    expect(boardApi?.getFen()).toBe(initialPosChessJS);
     expect(boardApi?.getCurrentTurnNumber()).toBe(0);
   });
 
@@ -35,7 +35,7 @@ describe.concurrent('Test the board API', () => {
 
     expect(boardApi?.getTurnColor()).toBe('white');
     expect(boardApi?.getCurrentTurnNumber()).toBe(0);
-    expect(boardApi?.getFen()).toBe(initialPos);
+    expect(boardApi?.getFen()).toBe(initialPosChessJS);
   });
 
   it('returns the current turn color', () => {
