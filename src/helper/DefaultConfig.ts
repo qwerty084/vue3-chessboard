@@ -19,7 +19,7 @@ export const initialPosChessJS =
 
 // lichess default conf
 export const defaultBoardConfig: Config = {
-  fen: initialPosChessJS,
+  fen: initialPos,
   orientation: 'white',
   turnColor: 'white',
   coordinates: true,

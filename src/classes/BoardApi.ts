@@ -282,7 +282,7 @@ export class BoardApi {
    * Returns the FEN string for the current position.
    */
   getFen(): string {
-    return this.board.getFen();
+    return this.game.fen();
   }
 
   /**
