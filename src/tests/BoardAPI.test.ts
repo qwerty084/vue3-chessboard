@@ -70,6 +70,23 @@ describe.concurrent('Test the board API', () => {
     boardApi.resetBoard();
     expect(boardApi?.getCurrentTurnNumber()).toBe(0);
   });
+
+  it('should update board with pgnt', () => {
+    const pgn = '1. e4 e5';
+
+    boardApi.loadPgn(pgn);
+
+    expect(boardApi?.getPgn()).toBe(pgn);
+    expect(boardApi?.board.getFen()).toBe(boardApi?.getFen().split(' ')[0]);
+  });
+
+  it('should udpate board with fen', () => {
+    const fen = '8/8/4k3/8/4K3/8/8/8 w - - 0 1';
+
+    boardApi.setPosition(fen);
+
+    expect(boardApi?.board.getFen()).toBe(fen.split(' ')[0]);
+  });
 });
 
 export {};

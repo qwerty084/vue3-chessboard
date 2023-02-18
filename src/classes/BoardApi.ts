@@ -356,11 +356,11 @@ export class BoardApi {
   }
 
   /**
-   * Returns the piece on the square or null if there is no piece
+   * loads a fen into the board
    */
   setPosition(fen: string) {
     this.game.load(fen);
-    // update board state
+    this.updateGameState();
   }
 
   /**
@@ -392,6 +392,13 @@ export class BoardApi {
    */
   loadPgn(pgn: string): void {
     this.game.loadPgn(pgn);
+    this.updateGameState();
+  }
+
+  /**
+   * apply the fen game on the board
+   */
+  updateGameState(): void {
     this.board.set({ fen: this.game.fen() });
     this.board.state.turnColor = shortToLongColor(this.game.turn());
 
