@@ -71,13 +71,13 @@ describe.concurrent('Test the board API', () => {
     expect(boardApi?.getCurrentTurnNumber()).toBe(0);
   });
 
-  it('should update board with pgnt', () => {
+  it('should update board with pgn', () => {
     const pgn = '1. e4 e5';
 
     boardApi.loadPgn(pgn);
 
     expect(boardApi?.getPgn()).toBe(pgn);
-    expect(boardApi?.board.getFen()).toBe(boardApi?.getFen().split(' ')[0]);
+    expect(boardApi.getTurnColor()).toBe('white');
   });
 
   it('should udpate board with fen', () => {
@@ -85,7 +85,8 @@ describe.concurrent('Test the board API', () => {
 
     boardApi.setPosition(fen);
 
-    expect(boardApi?.board.getFen()).toBe(fen.split(' ')[0]);
+    expect(boardApi?.getFen()).toBe(fen);
+    expect(boardApi.getIsDraw()).toBe(true);
   });
 });
 
