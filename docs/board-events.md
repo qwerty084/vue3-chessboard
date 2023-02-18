@@ -8,6 +8,7 @@ const boardAPI2 = ref(null);
 const boardAPI3 = ref(null);
 const boardAPI4 = ref(null);
 const boardAPI5 = ref(null);
+const move = ref();
 
 const runningStalemate = ref(false);
 const runningDraw = ref(false);
@@ -109,6 +110,8 @@ const emit = defineEmits<{
   (e: 'stalemate', isStalemate: boolean): void; // just emits stalemate, the value is not interesting
   (e: 'draw', isDraw: boolean): void; // same for draw
   (e: 'check', isInCheck: PieceColor): void; // emits color who is in check
+  (e: 'promotion', promotion: PromotionEvent): void; // emits information about the promotion
+  (e: 'move', move: MoveEvent): void; // emits information about the move
 }>();
 ```
 
@@ -169,6 +172,57 @@ function handleCheck(isInCheck) {
     :board-config=boardConfig
     @board-created="(api) => (boardAPI = api)"
     @check="handleCheck"
+  />
+</div>
+
+## move Event
+
+You can listen of moves on the board and get information about the move
+
+::: code-group
+
+```vue [TypeScript]
+<script setup lang="ts">
+import { ref } from 'vue';
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+function handleMove(move) {
+  console.log(move);
+}
+</script>
+
+<template>
+  <TheChessboard @move="handleMove" />
+</template>
+```
+
+```vue [JavaScript]
+<script setup>
+import { ref } from 'vue';
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+function handleMove(move) {
+  console.log(move);
+}
+
+<template>
+  <TheChessboard @move="handleMove" />
+</template>
+</script>
+```
+
+:::
+
+<div class="move-container">
+  <p>Move:</p>
+  <pre>{{ move }}</pre>
+</div>
+<div class="chessboard">
+  <TheChessboard
+    :board-config=boardConfig
+    @move="(m) => (move = m)"
   />
 </div>
 
@@ -416,5 +470,9 @@ function handleDraw() {
   .chessboard .main-wrap {
     width: 99%;
     max-width: 600px;
+  }
+
+  .move-container {
+    min-height: 250px;
   }
 </style>
