@@ -1,3 +1,31 @@
+## 1.1.1 (2023-02-18)
+
+### Bug Fixes
+
+- fix setPosition() and loadPgn() in boardApi ([2137d1d](https://github.com/qwerty084/vue3-chessboard/commit/2137d1d4c259f986297b650ebc439f2399480ff5)) @[mateusocb](https://github.com/mateusocb)
+
+<br>
+<hr>
+<br>
+
+## 1.1.0 (2023-02-17)
+
+### Features
+
+- added new move event ([41bff37](https://github.com/qwerty084/vue3-chessboard/commit/41bff37c85a911cfc4ead2cf514253fa8c8075ab))
+
+### Bug Fixes
+
+- fixed bug in inital fen ([b272ec7](https://github.com/qwerty084/vue3-chessboard/commit/b272ec7eb0903d242f8d28e581d611442b6ea10f))
+
+### Other
+
+- dependency version updates
+
+<br>
+<hr>
+<br>
+
 ## 1.0.0 (2023-02-05)
 
 ### v1.0.0. includes some breaking changes. Only breaking changes will be listed here. Refer to the new documentation to update your app to v1.0.0
