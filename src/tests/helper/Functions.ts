@@ -1,7 +1,7 @@
 import { moveableSquaresWhite } from './Constants';
-import type { BoardAPI } from '@/typings/BoardAPI';
+import type { BoardApi } from '@/classes/BoardApi';
 
-export function randomMoveFirstMove(boardApi: BoardAPI) {
+export function randomMoveFirstMove(boardApi: BoardApi) {
   const randomSquare =
     moveableSquaresWhite[
       Math.floor(Math.random() * moveableSquaresWhite.length)
