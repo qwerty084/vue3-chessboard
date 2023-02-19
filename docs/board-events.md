@@ -126,10 +126,10 @@ Hit the play button, to see the events in action.
 
 ```vue [TypeScript]
 <script setup lang="ts">
-import { TheChessboard } from 'vue3-chessboard';
+import { TheChessboard, type PieceColor } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handleCheck(isInCheck) {
+function handleCheck(isInCheck: PieceColor) {
   alert(`${isInCheck} is in Check`);
 }
 </script>
@@ -183,11 +183,10 @@ You can listen of moves on the board and get information about the move
 
 ```vue [TypeScript]
 <script setup lang="ts">
-import { ref } from 'vue';
-import { TheChessboard } from 'vue3-chessboard';
+import { TheChessboard, type MoveEvent } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handleMove(move) {
+function handleMove(move: MoveEvent) {
   console.log(move);
 }
 </script>
@@ -232,10 +231,10 @@ function handleMove(move) {
 
 ```vue [TypeScript]
 <script setup lang="ts">
-import { TheChessboard } from 'vue3-chessboard';
+import { TheChessboard, type PieceColor } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handleCheck(isMated) {
+function handleCheckmate(isMated: PieceColor) {
   alert(`${isMated} is mated`);
 }
 </script>
@@ -287,11 +286,11 @@ function handleCheck(isMated) {
 
 ```vue [TypeScript]
 <script setup lang="ts">
-import { TheChessboard } from 'vue3-chessboard';
+import { TheChessboard, type PromotionEvent } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handlePromotion(e: unknown) {
-  console.log(e);
+function handlePromotion(promotion: PromotionEvent) {
+  console.log(promotion);
 }
 </script>
 
@@ -452,7 +451,7 @@ function handleDraw() {
   />
 </div>
 
-<style scoped>
+<style>
   .flex {
     display: flex;
     align-items: center;
@@ -460,9 +459,11 @@ function handleDraw() {
     margin-bottom: 0.5rem;
     margin-left: 1rem;
   }
+
   .w-6 {
     width: 24px;
   }
+
   .h-6 {
     width: 24px;
   }

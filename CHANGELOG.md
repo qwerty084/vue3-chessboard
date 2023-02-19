@@ -1,3 +1,21 @@
+## 1.1.2 (2023-02-19)
+
+### Breaking
+
+- if you are using TypeScript you need to change the type import "ChessboardAPI" to "BoardApi" ([fbcd3c9](https://github.com/qwerty084/vue3-chessboard/commit/732ec72c3ced28e6e767ef42318651142d197418))
+
+### Bug Fixes
+
+- export all available types from the library ([b4d1315](https://github.com/qwerty084/vue3-chessboard/commit/b4d131586ab9b86b2fe919e346149adf309e6109))
+
+### Other
+
+- reduced bundle size ([787c87e](https://github.com/qwerty084/vue3-chessboard/commit/787c87ede6a9155d2e3c5911af32ebe7c93d8886))
+
+<br>
+<hr>
+<br>
+
 ## 1.1.1 (2023-02-18)
 
 ### Bug Fixes
