@@ -1,33 +1,4 @@
-import type { Chess, Move } from 'chess.js';
-import type { Api } from 'chessground/api';
-import type { Color, Key } from 'chessground/types';
-import type { BoardState } from './Chessboard';
-
-export interface BoardAPI {
-  game: Chess;
-  board: Api;
-  boardState: BoardState;
-
-  resetBoard: () => void;
-  undoLastMove: () => void;
-  getMaterialCount: () => {
-    materialWhite: number;
-    materialBlack: number;
-    materialDiff: number;
-  };
-  toggleOrientation: () => void;
-  hideMoves: () => void;
-  drawMoves: () => void;
-  toggleMoves: () => void;
-  getOpeningName: () => Promise<string | null>;
-  move: (move: string) => boolean;
-  getTurnColor: () => Color;
-  getPossibleMoves: () => Map<Key, Key[]> | undefined;
-  getCurrentTurnNumber: () => number;
-  getLastMove: () => Move | undefined;
-  getHistory: () => Move[] | string[];
-  getFen: () => string;
-}
+import type { Key } from 'chessground/types';
 
 export interface LichessOpening {
   white: number;
