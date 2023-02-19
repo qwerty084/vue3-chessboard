@@ -14,11 +14,10 @@ Here is an example:
 ```vue [TypeScript]
 <script setup lang="ts">
 import { ref } from 'vue';
-import { TheChessboard } from 'vue3-chessboard';
+import { TheChessboard, type BoardApi } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
-import type { ChessboardAPI } from 'vue3-chessboard';
 
-const boardAPI = ref<ChessboardAPI>();
+const boardAPI = ref<BoardApi>();
 </script>
 
 <template>
