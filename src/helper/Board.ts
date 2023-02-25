@@ -42,8 +42,9 @@ export function roleAbbrToRole(role: string) {
 
 export function possibleMoves(game: Chess) {
   const dests: Map<Key, Key[]> = new Map();
-  SQUARES.forEach((s) => {
-    const moves = game.moves({ square: s, verbose: true });
+
+  for (const square of SQUARES) {
+    const moves = game.moves({ square, verbose: true });
 
     if (moves.length) {
       dests.set(
@@ -51,7 +52,7 @@ export function possibleMoves(game: Chess) {
         moves.map((m) => m.to)
       );
     }
-  });
+  }
 
   return dests;
 }
