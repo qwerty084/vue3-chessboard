@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { TheChessboard, type BoardApi } from '../dist/vue3-chessboard';
-import '../dist/style.css';
 
 const boardAPI = ref<BoardApi>();
 const opening = ref('');
-const boardConfig = {
-  coordinates: false,
-  autoCastle: false,
-};
 
 async function getOpening() {
   opening.value = await boardAPI.value?.getOpeningName();
@@ -28,10 +23,7 @@ async function getOpening() {
     <button class="button" @click="boardAPI?.toggleMoves()">Threats</button>
     <button class="button" @click="getOpening">Opening</button>
   </section>
-  <TheChessboard
-    :board-config="boardConfig"
-    @board-created="(api) => (boardAPI = api)"
-  />
+  <TheChessboard @board-created="(api) => (boardAPI = api)" />
 </template>
 
 <style scoped>
