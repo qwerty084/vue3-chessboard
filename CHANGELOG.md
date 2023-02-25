@@ -1,3 +1,9 @@
+## 1.1.3 (2023-02-25)
+
+- remove event data from draw and stalemate events
+- update foreach to for of loop
+- improve coordinates
+
 ## 1.1.2 (2023-02-19)
 
 ### Breaking
