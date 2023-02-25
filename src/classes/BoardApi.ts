@@ -162,15 +162,12 @@ export class BoardApi {
    */
   async getOpeningName(): Promise<string | null> {
     try {
-      const movesArr: string[] = [];
-      const history = this.game.history({ verbose: true });
-      history.forEach((move) => {
-        movesArr.push(move.from + move.to);
-      });
-      const moves = movesArr.join(',');
-
+      const history = this.game
+        .history({ verbose: true })
+        .map((move) => move.lan)
+        .join(',');
       const res = await fetch(
-        `https://explorer.lichess.ovh/masters?play=${moves}`
+        `https://explorer.lichess.ovh/masters?play=${history}`
       );
       const data: LichessOpening = await res.json();
 
