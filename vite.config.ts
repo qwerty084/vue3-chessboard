@@ -10,7 +10,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'TheChessboard',
-      formats: ['es', 'cjs', 'umd'],
+      formats: ['es'],
     },
     rollupOptions: {
       external: ['vue'],
