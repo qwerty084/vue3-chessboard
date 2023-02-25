@@ -96,13 +96,13 @@ export class BoardApi {
       materialDiff: 0,
     };
 
-    pieces.forEach((piece) => {
-      if (piece.color === 'white') {
-        materialCount.materialWhite += pieceToNum.get(piece.role) || 0;
+    for (const piece of pieces) {
+      if (piece[1].color === 'white') {
+        materialCount.materialWhite += pieceToNum.get(piece[1].role) || 0;
       } else {
-        materialCount.materialBlack += pieceToNum.get(piece.role) || 0;
+        materialCount.materialBlack += pieceToNum.get(piece[1].role) || 0;
       }
-    });
+    }
     materialCount.materialDiff =
       materialCount.materialWhite - materialCount.materialBlack;
 
