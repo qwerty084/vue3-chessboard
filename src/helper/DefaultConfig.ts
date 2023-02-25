@@ -22,7 +22,7 @@ export const defaultBoardConfig: Config = {
   fen: initialPos,
   orientation: 'white',
   turnColor: 'white',
-  coordinates: true,
+  coordinates: false,
   autoCastle: true,
   viewOnly: false,
   disableContextMenu: false,
@@ -34,7 +34,7 @@ export const defaultBoardConfig: Config = {
   },
   animation: {
     enabled: true,
-    duration: 200,
+    duration: 300,
   },
   lastMove: undefined,
   movable: {
