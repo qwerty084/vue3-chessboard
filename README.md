@@ -169,11 +169,10 @@ You can listen for events on the chessboard component. The following events are 
 const emit = defineEmits<{
   (e: 'boardCreated', boardApi: BoardApi): void;
   (e: 'checkmate', isMated: PieceColor): void;
-  (e: 'stalemate', isStalemate: boolean): void;
-  (e: 'draw', isDraw: boolean): void;
+  (e: 'stalemate'): void;
+  (e: 'draw'): void;
   (e: 'check', isInCheck: PieceColor): void;
   (e: 'promotion', promotion: PromotionEvent): void;
   (e: 'move', move: MoveEvent): void;
 }>();
 ```
-

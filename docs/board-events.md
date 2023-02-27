@@ -102,8 +102,8 @@ Here you can see the vue.js defineEmits:
 const emit = defineEmits<{
   (e: 'boardCreated', boardApi: BoardApi): void; // emits boardAPI
   (e: 'checkmate', isMated: PieceColor): void; // emits the color of the mated player
-  (e: 'stalemate', isStalemate: boolean): void; // just emits stalemate, the value is not interesting
-  (e: 'draw', isDraw: boolean): void; // same for draw
+  (e: 'stalemate'): void; // just emits stalemate, the value is not interesting
+  (e: 'draw'): void; // same for draw
   (e: 'check', isInCheck: PieceColor): void; // emits color who is in check
   (e: 'promotion', promotion: PromotionEvent): void; // emits information about the promotion
   (e: 'move', move: MoveEvent): void; // emits information about the move
