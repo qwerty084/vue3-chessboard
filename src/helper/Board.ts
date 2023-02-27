@@ -4,7 +4,8 @@ import type { Threat } from '@/typings/Chessboard';
 
 export function getThreats(moves: Move[]) {
   const threats: Threat[] = [];
-  moves.forEach((move) => {
+
+  for (const move of moves) {
     threats.push({ orig: move.to, brush: 'yellow' });
     if (move['captured']) {
       threats.push({ orig: move.from, dest: move.to, brush: 'red' });
@@ -12,7 +13,7 @@ export function getThreats(moves: Move[]) {
     if (move['san'].includes('+')) {
       threats.push({ orig: move.from, dest: move.to, brush: 'blue' });
     }
-  });
+  }
 
   return threats;
 }
@@ -42,8 +43,9 @@ export function roleAbbrToRole(role: string) {
 
 export function possibleMoves(game: Chess) {
   const dests: Map<Key, Key[]> = new Map();
-  SQUARES.forEach((s) => {
-    const moves = game.moves({ square: s, verbose: true });
+
+  for (const square of SQUARES) {
+    const moves = game.moves({ square, verbose: true });
 
     if (moves.length) {
       dests.set(
@@ -51,7 +53,7 @@ export function possibleMoves(game: Chess) {
         moves.map((m) => m.to)
       );
     }
-  });
+  }
 
   return dests;
 }

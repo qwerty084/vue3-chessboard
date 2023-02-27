@@ -96,13 +96,13 @@ export class BoardApi {
       materialDiff: 0,
     };
 
-    pieces.forEach((piece) => {
-      if (piece.color === 'white') {
-        materialCount.materialWhite += pieceToNum.get(piece.role) || 0;
+    for (const piece of pieces) {
+      if (piece[1].color === 'white') {
+        materialCount.materialWhite += pieceToNum.get(piece[1].role) || 0;
       } else {
-        materialCount.materialBlack += pieceToNum.get(piece.role) || 0;
+        materialCount.materialBlack += pieceToNum.get(piece[1].role) || 0;
       }
-    });
+    }
     materialCount.materialDiff =
       materialCount.materialWhite - materialCount.materialBlack;
 
@@ -162,15 +162,12 @@ export class BoardApi {
    */
   async getOpeningName(): Promise<string | null> {
     try {
-      const movesArr: string[] = [];
-      const history = this.game.history({ verbose: true });
-      history.forEach((move) => {
-        movesArr.push(move.from + move.to);
-      });
-      const moves = movesArr.join(',');
-
+      const history = this.game
+        .history({ verbose: true })
+        .map((move) => move.lan)
+        .join(',');
       const res = await fetch(
-        `https://explorer.lichess.ovh/masters?play=${moves}`
+        `https://explorer.lichess.ovh/masters?play=${history}`
       );
       const data: LichessOpening = await res.json();
 
