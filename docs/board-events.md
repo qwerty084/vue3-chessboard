@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 import { TheChessboard } from '../dist/vue3-chessboard';
-import '../dist/style.css';
 
 const boardAPI = ref(null);
 const boardAPI2 = ref(null);
@@ -79,10 +78,6 @@ function handleCheck(isInCheck) {
 
 function handleCheckmate(isMated) {
   setTimeout(() => alert(`${isMated} is mated`), 200);
-}
-
-function handleStalemate() {
-  setTimeout(() => alert('Stalemate'), 200);
 }
 
 function handleDraw() {
@@ -450,30 +445,3 @@ function handleDraw() {
     @draw="handleDraw"
   />
 </div>
-
-<style>
-  .flex {
-    display: flex;
-    align-items: center;
-    gap: 2%;
-    margin-bottom: 0.5rem;
-    margin-left: 1rem;
-  }
-
-  .w-6 {
-    width: 24px;
-  }
-
-  .h-6 {
-    width: 24px;
-  }
-
-  .chessboard .main-wrap {
-    width: 99%;
-    max-width: 600px;
-  }
-
-  .move-container {
-    min-height: 250px;
-  }
-</style>

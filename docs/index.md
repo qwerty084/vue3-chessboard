@@ -2,7 +2,6 @@
 import { ref, watch, onMounted } from 'vue';
 import { useData } from 'vitepress';
 import { TheChessboard } from '../dist/vue3-chessboard';
-import '../dist/style.css';
 
 const theme = useData();
 const svgPath = ref(null);
@@ -24,10 +23,6 @@ watch(theme.isDark, () => {
 });
 
 const boardAPI = ref();
-const boardConfig = {
-  coordinates: false,
-  autoCastle: false,
-};
 
 function handleCheckmate(isMated) {
   if (isMated === 'w') {
@@ -47,15 +42,6 @@ function resetBoard() {
   boardAPI.value?.resetBoard();
 }
 
-function test(x) {
-  console.log(x.target);
-}
-
-function wtf(x) {
-  console.log(x.target);
-}
-
-
 </script>
 
 # Vue3-Chessboard
@@ -64,7 +50,6 @@ function wtf(x) {
 
 <div class="chessboard">
   <TheChessboard
-    :board-config="boardConfig"
     @board-created="(api) => (boardAPI = api)"
     @checkmate="handleCheckmate"
   />
@@ -82,45 +67,4 @@ function wtf(x) {
   </a>
 </div>
 
-<p class="version-number">version 1.0.0</p>
-
-<style>
-h1 {
-  font-size: 48px !important;
-  background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.chessboard {
-  margin-top: 10%;
-}
-
-.svg-container {
-  margin-top: 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10%;
-}
-
-.svg-container img {
-  max-width: 36px;
-  height: auto;
-}
-
-.svg-container .npm-svg {
-  max-width: 60px;
-}
-
-.version-number {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-.promotion-container {
-  background-position: center;
-  background-repeat: no-repeat;
-}
-</style>
+<p class="version-number">v1.1.3</p>

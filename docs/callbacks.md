@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 import { TheChessboard } from '../dist/vue3-chessboard';
-import '../dist/style.css';
 
 const boardConfig = {
   coordinates: false,

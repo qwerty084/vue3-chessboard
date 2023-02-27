@@ -16,7 +16,15 @@ export default {
       },
       {
         text: 'Events',
-        items: [{ text: 'Board Events', link: '/board-events' }],
+        items: [
+          { text: 'Available Events', link: '/events/board-events' },
+          { text: 'Board Created', link: '/events/board-created' },
+          { text: 'Checkmate', link: '/events/checkmate' },
+          { text: 'Stalemate', link: '/events/stalemate' },
+          { text: 'Check', link: '/events/check' },
+          { text: 'Move', link: '/events/move' },
+          { text: 'Promotion', link: '/events/promotion' },
+        ],
       },
       {
         text: 'Board API',

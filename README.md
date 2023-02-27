@@ -165,7 +165,7 @@ You can listen for events on the chessboard component. The following events are 
 - check - Emitted when a player is checked
 - promotion - Emitted when a player promotes
 
-```Typescript
+```ts
 const emit = defineEmits<{
   (e: 'boardCreated', boardApi: BoardApi): void;
   (e: 'checkmate', isMated: PieceColor): void;
