@@ -1,3 +1,4 @@
 src/assets/** linguist-vendored
 .eslintrc.cjs linguist-vendored
 index.html linguist-vendored
+format.sh linguist-vendored
