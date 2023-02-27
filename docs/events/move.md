@@ -1,10 +1,3 @@
-<script setup>
-import { ref } from 'vue';
-import { TheChessboard } from '../../dist/vue3-chessboard';
-
-const move = ref();
-</script>
-
 # Move Event
 
 <br>
@@ -68,13 +61,3 @@ function handleMove(move) {
 ```
 
 :::
-
-<div class="chessboard">
-  <TheChessboard
-    @move="(m) => (move = m)"
-  />
-</div>
-<div class="move-container">
-  <p>Move:</p>
-  <pre>{{ move }}</pre>
-</div>
