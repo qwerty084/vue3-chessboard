@@ -1,14 +1,13 @@
 <script setup>
+import { ref } from 'vue';
+import { TheChessboard } from '../../dist/vue3-chessboard';
+
 const boardAPI2 = ref(null);
 const boardAPI3 = ref(null);
 const boardAPI4 = ref(null);
-
-
 const runningDraw = ref(false);
 const checkMoves = ['e4', 'f5', 'Qh5'];
-
 const drawMoves = ["e4", "e5", "Nf3", "Nc6", "Bb5", "Nf6", "O-O", "Nxe4", "d4", "Nd6", "Bxc6", "dxc6", "dxe5", "Nf5", "Qxd8+", "Kxd8", "h3", "Ke8", "Nc3", "h5", "Bf4", "Be7", "Rad1", "Be6", "Ng5", "Rh6", "g3", "Bxg5", "Bxg5", "Rg6", "h4", "f6", "exf6", "gxf6", "Bf4", "Nxh4", "f3", "Rd8", "Kf2", "Rxd1", "Nxd1", "Nf5", "Rh1", "Bxa2", "Rxh5", "Be6", "g4", "Nd6", "Rh7", "Nf7", "Ne3", "Kd8", "Nf5", "c5", "Ng3", "Ne5", "Rh8+", "Rg8", "Bxe5", "fxe5", "Rh5", "Bxg4", "fxg4", "Rxg4", "Rxe5", "b6", "Ne4", "Rh4", "Ke2", "Rh6", "b3", "Kd7", "Kd2", "Kc6", "Nc3", "a6", "Re4", "Rh2+", "Kc1", "Rh1+", "Kb2", "Rh6", "Nd1", "Rg6", "Ne3", "Rh6", "Re7", "Rh2", "Re6+", "Kb7", "Kc3", "Rh4", "Kb2", "Rh2", "Nd5", "Rd2", "Nf6", "Rf2", "Kc3", "Rf4", "Ne4", "Rh4", "Nf2", "Rh2", "Rf6", "Rh7", "Nd3", "Rh3", "Kd2", "Rh2+", "Rf2", "Rh4", "c4", "Rh3", "Kc2", "Rh7", "Nb2", "Rh5", "Re2", "Rg5", "Nd1", "b5", "Nc3", "c6", "Ne4", "Rh5", "Nf6", "Rg5", "Re7+", "Kb6", "Nd7+", "Ka5", "Re4", "Rg2+", "Kc1", "Rg1+", "Kd2", "Rg2+", "Ke1", "bxc4", "Rxc4", "Rg3", "Nxc5", "Kb5", "Rc2", "a5", "Kf2", "Rh3", "Rc1", "Kb4", "Ke2", "Rc3", "Nd3+", "Kxb3", "Ra1", "Kc4", "Nf2", "Kb5", "Rb1+", "Kc4", "Ne4", "Ra3", "Nd2+", "Kd5","Rh1", "a4", "Rh5+", "Kd4", "Rh4+", "Kc5", "Kd1", "Kb5", "Kc2", "Rg3", "Ne4", "Rg2+", "Kd3", "a3", "Nc3+", "Kb6", "Ra4", "a2", "Nxa2", "Rg3+", "Kc2", "Rg2+", "Kb3", "Rg3+", "Nc3", "Rh3", "Rb4+", "Kc7", "Rg4", "Rh7", "Kc4", "Rf7", "Rg5", "Kb6", "Na4+", "Kc7", "Kc5", "Kd7", "Kb6", "Rf1", "Nc5+", "Ke7", "Kxc6", "Rd1", "Rg6", "Kf7", "Rh6", "Rg1", "Kd5", "Rg5+", "Kd4", "Rg6", "Rh1", "Rg2", "Ne4", "Ra2", "Rf1+", "Ke7", "Nc3", "Rh2", "Nd5+", "Kd6", "Rf6+", "Kd7", "Nf4", "Rh1", "Rg6", "Rd1+", "Nd3", "Ke7", "Ra6", "Kd7", "Ke4", "Ke7", "Rc6", "Kd7", "Rc1", "Rxc1", "Nxc1"];
-
 
 function emitDraw() {
   runningDraw.value = true;
