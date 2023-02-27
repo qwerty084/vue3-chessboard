@@ -21,6 +21,7 @@ export default {
           { text: 'Board Created', link: '/events/board-created' },
           { text: 'Checkmate', link: '/events/checkmate' },
           { text: 'Stalemate', link: '/events/stalemate' },
+          { text: 'Draw', link: '/events/draw' },
           { text: 'Check', link: '/events/check' },
           { text: 'Move', link: '/events/move' },
           { text: 'Promotion', link: '/events/promotion' },
