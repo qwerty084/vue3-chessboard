@@ -1,0 +1,12 @@
+{
+	"name": "vue3-chessboard",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
+	"postCreateCommand": "npm i",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"Vue.volar", "Vue.vscode-typescript-vue-plugin", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode"
+			]
+		}
+	}
+}
