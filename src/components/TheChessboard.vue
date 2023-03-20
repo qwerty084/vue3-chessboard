@@ -80,16 +80,18 @@ async function onPromotion(): Promise<Promotion> {
 
 function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
   return async (orig: Key, dest: Key) => {
+    if (typeof board === 'undefined') {
+      console.error('vue3-chessboard: No board element found');
+      return;
+    }
     if (isPromotion(dest, game.get(orig as Square))) {
       await onPromotion();
       boardState.openPromotionDialog = false;
       const promotedTo = selectedPromotion.value?.toUpperCase() as PromotedTo;
       const sanMove = `${orig[0]}x${dest}=${promotedTo}`;
-      const promotionColor =
-        board?.state.turnColor === 'white' ? 'black' : 'white';
 
       emit('promotion', {
-        color: promotionColor,
+        color: board.state.turnColor,
         sanMove,
         promotedTo: promotedTo,
       });
@@ -102,7 +104,10 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
     });
     selectedPromotion.value = undefined;
 
-    board?.set({
+    board.set({
+      animation: {
+        enabled: false,
+      },
       fen: game.fen(),
       turnColor: board.state.turnColor,
       movable: {
@@ -111,7 +116,11 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       },
     });
 
-    if (typeof board === 'undefined') return;
+    board.set({
+      animation: {
+        enabled: true,
+      },
+    });
 
     emitBoardEvents(game, board, emit);
 
