@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, reactive } from 'vue';
+import { ref, onMounted, watch, type PropType } from 'vue';
 import PromotionDialog from './PromotionDialog.vue';
-import { Chess, type Square } from 'chess.js';
+import { Chess, type Color, type Square } from 'chess.js';
 import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
 import { possibleMoves, getThreats, isPromotion } from '@/helper/Board';
@@ -22,7 +22,7 @@ import type {
 
 const props = defineProps({
   boardConfig: {
-    type: Object as () => BoardConfig,
+    type: Object as PropType<BoardConfig>,
     default: defaultBoardConfig,
   },
 });
@@ -41,41 +41,47 @@ let board: Api | undefined;
 const boardElement = ref<HTMLElement | null>(null);
 const boardConfig = ref<BoardConfig>({});
 const game = new Chess();
+const currentTurn = ref<Color>('w');
 const selectedPromotion = ref<Promotion>();
-const boardState = reactive<BoardState>({
+const boardState = ref<BoardState>({
   showThreats: false,
-  activeGame: true,
   boardConfig: {},
   openPromotionDialog: false,
 });
 
 onMounted(() => {
-  if (props.boardConfig) {
-    boardState.boardConfig = { ...defaultBoardConfig, ...props.boardConfig };
-  } else {
-    boardState.boardConfig = defaultBoardConfig;
+  if (boardElement.value == null) {
+    throw new Error('vue3-chessboard: Failed to mount board.');
   }
 
-  if (boardElement.value == null) return;
+  if (props.boardConfig) {
+    boardState.value.boardConfig = {
+      ...defaultBoardConfig,
+      ...props.boardConfig,
+    };
+  } else {
+    boardState.value.boardConfig = defaultBoardConfig;
+  }
+
   if (boardConfig.value.fen) {
     game.load(boardConfig.value.fen);
   }
 
-  board = Chessground(boardElement.value, boardState.boardConfig);
+  board = Chessground(boardElement.value, boardState.value.boardConfig);
   board.set({
     movable: { events: { after: changeTurn() }, dests: possibleMoves(game) },
   });
 
-  emit('boardCreated', new BoardApi(game, board, boardState, emit));
+  currentTurn.value = game.turn();
+  emit('boardCreated', new BoardApi(game, board, boardState.value, emit));
 });
 
 async function onPromotion(): Promise<Promotion> {
-  boardState.openPromotionDialog = true;
-  return new Promise((resolve) => {
-    watch(selectedPromotion, () => {
-      resolve(selectedPromotion.value);
-    });
-  });
+  currentTurn.value = game.turn();
+  boardState.value.openPromotionDialog = true;
+  return new Promise((resolve) =>
+    watch(selectedPromotion, () => resolve(selectedPromotion.value))
+  );
 }
 
 function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
@@ -86,7 +92,7 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
     }
     if (isPromotion(dest, game.get(orig as Square))) {
       await onPromotion();
-      boardState.openPromotionDialog = false;
+      boardState.value.openPromotionDialog = false;
       const promotedTo = selectedPromotion.value?.toUpperCase() as PromotedTo;
       const sanMove = `${orig[0]}x${dest}=${promotedTo}`;
 
@@ -124,7 +130,7 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
 
     emitBoardEvents(game, board, emit);
 
-    if (boardState.showThreats) {
+    if (boardState.value.showThreats) {
       board.setShapes(getThreats(game.moves({ verbose: true })));
     }
   };
@@ -140,7 +146,7 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       <div class="dialog-container">
         <PromotionDialog
           v-if="boardState.openPromotionDialog"
-          :turn-color="game.turn()"
+          :turn-color="currentTurn"
           @promotion-selected="(piece) => (selectedPromotion = piece)"
         />
       </div>

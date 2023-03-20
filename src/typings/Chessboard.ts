@@ -46,7 +46,6 @@ export interface Emit {
 export interface BoardState {
   boardConfig: BoardConfig;
   showThreats: boolean;
-  activeGame: boolean;
   openPromotionDialog: boolean;
 }
 

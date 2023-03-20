@@ -249,7 +249,6 @@ export class BoardApi {
    * @example e4 e5 -> turn number is 2 now
    */
   getCurrentTurnNumber(): number {
-    // return Math.ceil(this.game.history().length / 2);
     let movesLength = this.game.history().length;
     if (movesLength % 2 === 0 && movesLength !== 0) {
       movesLength += 1;
@@ -398,10 +397,9 @@ export class BoardApi {
   updateGameState(): void {
     this.board.set({ fen: this.game.fen() });
     this.board.state.turnColor = shortToLongColor(this.game.turn());
-
     this.board.state.movable.color = this.board.state.turnColor;
     this.board.state.movable.dests = possibleMoves(this.game);
-    this.board.state.check = undefined;
+    emitBoardEvents(this.game, this.board, this.emit);
   }
 
   /**
