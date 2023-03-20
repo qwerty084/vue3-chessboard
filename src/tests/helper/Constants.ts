@@ -3,6 +3,8 @@ import type { SquareKey } from '@/typings/Chessboard';
 
 export const possibleFirstMovesWhite: Move[] = [
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'a2',
     to: 'a3',
@@ -12,6 +14,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'a2a3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'a2',
     to: 'a4',
@@ -21,6 +25,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'a2a4',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'b2',
     to: 'b3',
@@ -30,6 +36,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'b2b3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'b2',
     to: 'b4',
@@ -39,6 +47,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'b2b4',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'c2',
     to: 'c3',
@@ -48,6 +58,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'c2c3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'c2',
     to: 'c4',
@@ -57,6 +69,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'c2c4',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'd2',
     to: 'd3',
@@ -66,6 +80,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'd2d3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'd2',
     to: 'd4',
@@ -75,6 +91,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'd2d4',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'e2',
     to: 'e3',
@@ -84,6 +102,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'e2e3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'e2',
     to: 'e4',
@@ -93,6 +113,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'e2e4',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'f2',
     to: 'f3',
@@ -102,6 +124,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'f2f3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'f2',
     to: 'f4',
@@ -111,6 +135,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'f2f4',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'g2',
     to: 'g3',
@@ -120,6 +146,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'g2g3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'g2',
     to: 'g4',
@@ -129,6 +157,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'g2g4',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'h2',
     to: 'h3',
@@ -138,6 +168,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'h2h3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'h2',
     to: 'h4',
@@ -147,6 +179,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'h2h4',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'b1',
     to: 'a3',
@@ -156,6 +190,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'b1a3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'b1',
     to: 'c3',
@@ -165,6 +201,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'b1c3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'g1',
     to: 'f3',
@@ -174,6 +212,8 @@ export const possibleFirstMovesWhite: Move[] = [
     lan: 'g1f3',
   },
   {
+    before: '',
+    after: '',
     color: 'w',
     from: 'g1',
     to: 'h3',

@@ -45,6 +45,12 @@ format your code
 npm run format
 ```
 
+type check your code
+
+```sh
+npm run type-check
+```
+
 lint your changes
 
 ```sh
