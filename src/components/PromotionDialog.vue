@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, type PropType } from 'vue';
 import type { Promotion } from '@/typings/Chessboard';
 import type { Color } from 'chess.js';
 
 defineProps({
   turnColor: {
-    type: String as () => Color,
+    type: String as PropType<Color>,
     required: true,
   },
 });
@@ -40,46 +40,30 @@ function promotionSelected(e: Event) {
     >
       <div v-if="turnColor === 'w'" class="promotion-container">
         <div class="queen white">
-          <button data-piece="q">
-            <span class="sr-only">Queen</span>
-          </button>
+          <button data-piece="q" aria-label="Queen"></button>
         </div>
         <div class="knight white">
-          <button data-piece="n">
-            <span class="sr-only">Knight</span>
-          </button>
+          <button data-piece="n" aria-label="Knight"></button>
         </div>
         <div class="rook white">
-          <button data-piece="r">
-            <span class="sr-only">Rook</span>
-          </button>
+          <button data-piece="r" aria-label="Rook"></button>
         </div>
         <div class="bishop white">
-          <button data-piece="b">
-            <span class="sr-only">Bishop</span>
-          </button>
+          <button data-piece="b" aria-label="Bishop"></button>
         </div>
       </div>
-      <div v-if="turnColor === 'b'" class="promotion-container">
+      <div v-else class="promotion-container">
         <div class="queen black">
-          <button data-piece="q">
-            <span class="sr-only">Queen</span>
-          </button>
+          <button data-piece="q" aria-label="Queen"></button>
         </div>
         <div class="knight black">
-          <button data-piece="n">
-            <span class="sr-only">Knight</span>
-          </button>
+          <button data-piece="n" aria-label="Knight"></button>
         </div>
         <div class="rook black">
-          <button data-piece="r">
-            <span class="sr-only">Rook</span>
-          </button>
+          <button data-piece="r" aria-label="Rook"></button>
         </div>
         <div class="bishop black">
-          <button data-piece="b">
-            <span class="sr-only">Bishop</span>
-          </button>
+          <button data-piece="b" aria-label="Bishop"></button>
         </div>
       </div>
     </dialog>
