@@ -8,9 +8,9 @@ const svgPath = ref(null);
 
 function setSvgPath() {
   if (theme.isDark.value) {
-    svgPath.value = '/vue3-chessboard/github-mark-white.svg';
+    svgPath.value = '/github-mark-white.svg';
   } else {
-    svgPath.value = '/vue3-chessboard/github-mark.svg';
+    svgPath.value = '/github-mark.svg';
   }
 }
 
@@ -57,10 +57,7 @@ function resetBoard() {
 
 <div class="svg-container">
   <a v-show="theme.isDark" href="https://github.com/qwerty084/vue3-chessboard" target="_blank" rel="noreferrer">
-    <img src="/github-mark-white.svg" alt="github repository" title="GitHub Repository" />
-  </a>
-  <a v-show="!theme.isDark" href="https://github.com/qwerty084/vue3-chessboard" target="_blank" rel="noreferrer">
-    <img src="/github-mark.svg" alt="github repository" title="GitHub Repository" />
+    <img :src="svgPath" alt="github repository" title="GitHub Repository" />
   </a>
   <a href="https://www.npmjs.com/package/vue3-chessboard" target="_blank" rel="noreferrer" >
     <img src="/npm.svg" alt="NPM Package" title="NPM Package" class="npm-svg" />

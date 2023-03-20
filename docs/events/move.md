@@ -11,17 +11,18 @@ defineEmits<{
   (e: 'move', move: MoveEvent): void;
 }>();
 
-export type MoveEvent = {
-  fen: string;
-  color: 'b' | 'w';
-  from: string;
-  to: string;
-  piece: 'p' | 'n' | 'b' | 'r' | 'q' | 'k';
-  captured?: 'p' | 'n' | 'b' | 'r' | 'q' | 'k' | undefined;
-  promotion?: 'p' | 'n' | 'b' | 'r' | 'q' | 'k' | undefined;
+type MoveEvent = {
+  color: Color;
+  from: Square;
+  to: Square;
+  piece: PieceSymbol;
+  captured?: PieceSymbol;
+  promotion?: PieceSymbol;
   flags: string;
   san: string;
   lan: string;
+  before: string;
+  after: string;
 };
 ```
 

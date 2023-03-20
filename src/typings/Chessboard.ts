@@ -57,8 +57,4 @@ export interface PromotionEvent {
 
 export type PromotedTo = PromotionEvent['promotedTo'];
 
-export type MoveEvent =
-  | (Move & {
-      fen: string;
-    })
-  | undefined;
+export type MoveEvent = Move;

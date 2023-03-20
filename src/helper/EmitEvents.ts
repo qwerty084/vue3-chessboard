@@ -25,5 +25,8 @@ export function emitBoardEvents(game: Chess, board: Api, emit: Emit) {
     emit('stalemate', true);
   }
 
-  emit('move', game.history({ verbose: true }).at(-1));
+  const lastMove = game.history({ verbose: true }).pop();
+  if (typeof lastMove !== 'undefined') {
+    emit('move', lastMove);
+  }
 }
