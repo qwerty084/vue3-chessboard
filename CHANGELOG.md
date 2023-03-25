@@ -1,3 +1,7 @@
+## 1.1.5 (2023-03-25)
+
+- update all dependencies
+
 ## 1.1.4 (2023-03-25)
 
 ### Bug Fixes
