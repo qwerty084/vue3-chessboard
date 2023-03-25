@@ -249,12 +249,7 @@ export class BoardApi {
    * @example e4 e5 -> turn number is 2 now
    */
   getCurrentTurnNumber(): number {
-    let movesLength = this.game.history().length;
-    if (movesLength % 2 === 0 && movesLength !== 0) {
-      movesLength += 1;
-    }
-
-    return Math.ceil(movesLength / 2);
+    return Math.ceil(this.game.history().length / 2);
   }
 
   /**
