@@ -1,3 +1,18 @@
+## 1.1.5 (2023-03-25)
+
+- update all dependencies
+
+## 1.1.4 (2023-03-25)
+
+### Bug Fixes
+
+- emit check event on pgn load when in check ([1c9cebf](https://github.com/qwerty084/vue3-chessboard/pull/152/commits/1c9cebf6b3e52375b9d95610a9f3ec9d08e5aeed))
+
+### Features
+
+- improve promotion animation ([c22b6a3](https://github.com/qwerty084/vue3-chessboard/pull/151/commits/c22b6a300b54358fae05bad7a5d5bbab06050034))
+- added new turn number method ([ce6fdce](https://github.com/qwerty084/vue3-chessboard/pull/155/commits/ce6fdce26c3e4dadb46b5e8fbc20eea25e91ab6b))
+
 ## 1.1.3 (2023-02-25)
 
 - remove event data from draw and stalemate events
