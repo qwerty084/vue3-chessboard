@@ -246,9 +246,23 @@ export class BoardApi {
   /**
    *
    * @returns the current turn number
-   * @example e4 e5 -> turn number is 2 now
+   * @example e4 e5 -> turn number is 2
    */
   getCurrentTurnNumber(): number {
+    let movesLength = this.game.history().length;
+    if (movesLength % 2 === 0 && movesLength !== 0) {
+      movesLength += 1;
+    }
+
+    return Math.ceil(movesLength / 2);
+  }
+
+  /**
+   *
+   * @returns the turn number of the last move
+   * @example e4 e5 -> turn number is 1 | e4 e5 Nf3 -> turn number is 2
+   */
+  getLastMoveTurnNumber(): number {
     return Math.ceil(this.game.history().length / 2);
   }
 

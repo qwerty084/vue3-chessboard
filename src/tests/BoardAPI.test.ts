@@ -71,6 +71,20 @@ describe.concurrent('Test the board API', () => {
     expect(boardApi?.getCurrentTurnNumber()).toBe(0);
   });
 
+  it('returns the turn number of last move', () => {
+    boardApi.resetBoard();
+    boardApi.move('e4');
+    expect(boardApi?.getLastMoveTurnNumber()).toBe(1);
+    boardApi.move('e5');
+    expect(boardApi?.getLastMoveTurnNumber()).toBe(1);
+    boardApi.move('Nf3');
+    expect(boardApi?.getLastMoveTurnNumber()).toBe(2);
+    boardApi.move('Nc6');
+    expect(boardApi?.getLastMoveTurnNumber()).toBe(2);
+    boardApi.resetBoard();
+    expect(boardApi?.getLastMoveTurnNumber()).toBe(0);
+  });
+
   it('should update board with pgn', () => {
     const pgn = '1. e4 e5';
 
