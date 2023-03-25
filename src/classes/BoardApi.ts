@@ -277,7 +277,6 @@ export class BoardApi {
    * Retrieves the move history.
    *
    * @param verbose - passing true will add more info
-   * @example Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
    */
   getHistory(verbose = false): Move[] | string[] {
     return this.game.history({ verbose: verbose });
