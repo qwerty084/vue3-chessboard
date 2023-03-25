@@ -5,17 +5,13 @@ on: [push, pull_request]
 jobs:
   tests:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [19.x, 18.x, 16.x]
-
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
+
       - name: npm install
         run: npm ci
       - name: check code style
