@@ -17,6 +17,10 @@ export interface Threat {
 
 export type Promotion = 'q' | 'n' | 'b' | 'r' | undefined;
 
+export type SquareColor = 'light' | 'dark' | null;
+
+export type Piece = 'pawn' | 'knight' | 'bishop' | 'rook' | 'queen' | 'king';
+
 export interface ThreatCount {
   checks_white: number;
   checks_black: number;

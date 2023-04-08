@@ -1,8 +1,8 @@
 import { SQUARES, type Chess, type Move, type Piece } from 'chess.js';
-import type { Key } from 'chessground/types';
-import type { Threat } from '@/typings/Chessboard';
+import type { Color, Key } from 'chessground/types';
+import type { Threat, Piece as PieceType } from '@/typings/Chessboard';
 
-export function getThreats(moves: Move[]) {
+export function getThreats(moves: Move[]): Threat[] {
   const threats: Threat[] = [];
 
   for (const move of moves) {
@@ -18,11 +18,11 @@ export function getThreats(moves: Move[]) {
   return threats;
 }
 
-export function shortToLongColor(color: 'w' | 'b') {
+export function shortToLongColor(color: 'w' | 'b'): Color {
   return color === 'w' ? 'white' : 'black';
 }
 
-export function roleAbbrToRole(role: string) {
+export function roleAbbrToRole(role: string): PieceType {
   switch (role) {
     case 'p':
       return 'pawn';
@@ -41,7 +41,7 @@ export function roleAbbrToRole(role: string) {
   }
 }
 
-export function possibleMoves(game: Chess) {
+export function possibleMoves(game: Chess): Map<Key, Key[]> {
   const dests: Map<Key, Key[]> = new Map();
 
   for (const square of SQUARES) {
@@ -58,7 +58,7 @@ export function possibleMoves(game: Chess) {
   return dests;
 }
 
-export function isPromotion(dest: Key, piece: Piece | null) {
+export function isPromotion(dest: Key, piece: Piece | null): boolean {
   if (piece?.type !== 'p') {
     return false;
   }
