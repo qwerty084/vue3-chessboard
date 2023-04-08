@@ -16,12 +16,13 @@ const emit = defineEmits<{
 
 const dialogEl = ref<HTMLDialogElement | null>(null);
 
-function promotionSelected(e: Event) {
+function promotionSelected(e: Event): void {
   if (e.target == null) {
     return;
   }
-  const clickedEl = e.target as HTMLDivElement;
-  const promotionValue = clickedEl.getAttribute('data-piece');
+  const promotionValue = (e.target as HTMLDivElement).getAttribute(
+    'data-piece'
+  );
   if (promotionValue != null) {
     dialogEl.value?.close();
     emit('promotionSelected', promotionValue as Promotion);

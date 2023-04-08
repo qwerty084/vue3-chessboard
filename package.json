@@ -47,7 +47,7 @@
     "build-pages": "vite build --config pages.config.ts",
     "format": "prettier --write src/",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --ignore-path .eslintignore",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs --base=/vue3-chessboard/",
     "docs:preview": "vitepress preview docs"

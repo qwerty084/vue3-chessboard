@@ -2,7 +2,7 @@ import type { Emit } from '@/typings/Chessboard';
 import type { Chess } from 'chess.js';
 import type { Api } from 'chessground/api';
 
-export function emitBoardEvents(game: Chess, board: Api, emit: Emit) {
+export function emitBoardEvents(game: Chess, board: Api, emit: Emit): void {
   if (game.inCheck()) {
     const pieces = board.state.pieces;
     pieces.forEach((piece, key) => {

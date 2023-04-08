@@ -1,4 +1,11 @@
-import type { Chess, Move, Piece, Square } from 'chess.js';
+import type {
+  Chess,
+  Move,
+  Piece,
+  PieceSymbol,
+  Square,
+  Color as ShortColor,
+} from 'chess.js';
 import type { Api } from 'chessground/api';
 import type {
   LichessOpening,
@@ -13,7 +20,12 @@ import {
   roleAbbrToRole,
 } from '@/helper/Board';
 import { emitBoardEvents } from '@/helper/EmitEvents';
-import type { Emit, BoardState, PromotedTo } from '@/typings/Chessboard';
+import type {
+  Emit,
+  BoardState,
+  PromotedTo,
+  SquareColor,
+} from '@/typings/Chessboard';
 import type { Color, Key } from 'chessground/types';
 
 /**
@@ -292,7 +304,11 @@ export class BoardApi {
   /**
    * Returns the board position as a 2D array.
    */
-  getBoardPosition() {
+  getBoardPosition(): ({
+    square: Square;
+    type: PieceSymbol;
+    color: ShortColor;
+  } | null)[][] {
     return this.game.board();
   }
 
@@ -348,7 +364,7 @@ export class BoardApi {
   /**
    * returns the color of a given square
    */
-  getSquareColor(square: Square) {
+  getSquareColor(square: Square): SquareColor {
     return this.game.squareColor(square);
   }
 
@@ -362,7 +378,7 @@ export class BoardApi {
   /**
    * loads a fen into the board
    */
-  setPosition(fen: string) {
+  setPosition(fen: string): void {
     this.game.load(fen);
     this.updateGameState();
   }

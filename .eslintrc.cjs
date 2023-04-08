@@ -20,6 +20,7 @@ module.exports = {
     'no-alert': 2,
     eqeqeq: [2, 'smart'],
     'func-style': [2, 'declaration'],
+    '@typescript-eslint/explicit-function-return-type': 'error',
     'no-duplicate-imports': 'error',
     'no-debugger': 'error',
     'no-console': ['error', { allow: ['warn', 'error'] }],
