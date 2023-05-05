@@ -68,21 +68,21 @@ function handleCheckmate(isMated: string) {
 </script>
 
 <template>
-  <main>
-    <section>
+  <section>
+    <div>
       <button @click="boardAPI?.toggleOrientation()">
         Toggle orientation
       </button>
       <button @click="boardAPI?.resetBoard()">Reset</button>
       <button @click="boardAPI?.undoLastMove()">Undo</button>
       <button @click="boardAPI?.toggleMoves()">Threats</button>
-    </section>
+    </div>
     <TheChessboard
       :board-config="boardConfig"
       @board-created="(api) => (boardAPI = api)"
       @checkmate="handleCheckmate"
     />
-  </main>
+  </section>
 </template>
 ```
 
@@ -110,21 +110,21 @@ function handleCheckmate(isMated) {
 </script>
 
 <template>
-  <main>
-    <section>
+  <section>
+    <div>
       <button @click="boardAPI?.toggleOrientation()">
         Toggle orientation
       </button>
       <button @click="boardAPI?.resetBoard()">Reset</button>
       <button @click="boardAPI?.undoLastMove()">Undo</button>
       <button @click="boardAPI?.toggleMoves()">Threats</button>
-    </section>
+    </div>
     <TheChessboard
       :board-config="boardConfig"
       @board-created="(api) => (boardAPI = api)"
       @checkmate="handleCheckmate"
     />
-  </main>
+  </section>
 </template>
 ```
 
@@ -134,7 +134,7 @@ You can find the full documentation [here](https://qwerty084.github.io/vue3-ches
 ## Setup:
 
 - Just install the package and import the component in your project, like shown above.
-- Dont forget to include the stylesheet: <br>
+- Don't forget to include the stylesheet: <br>
   `import 'vue3-chessboard/style.css';`
 
 <br>

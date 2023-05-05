@@ -346,7 +346,7 @@ cg-board .king.black {
 }
 
 .promotion-dialog {
-  padding: 0.8rem;
+  padding: 0.4rem 0.8rem 0.8rem 0.8rem;
   position: relative;
   background-color: #f0d9b5;
   top: 40%;
@@ -359,27 +359,13 @@ cg-board .king.black {
   border: 2px solid #333;
 }
 
-.promotion-container {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-.promotion-container button {
+.promotion-dialog button {
   pointer-events: all;
   background: none;
   border: none;
   cursor: pointer;
   width: 100%;
   height: 100%;
-}
-
-.promotion-container div {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
 }
 
 .dialog-container {

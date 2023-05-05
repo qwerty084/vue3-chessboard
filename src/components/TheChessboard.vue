@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, type PropType } from 'vue';
 import PromotionDialog from './PromotionDialog.vue';
-import { Chess, type Color, type Square } from 'chess.js';
+import { Chess, type Square } from 'chess.js';
 import { Chessground } from 'chessground/chessground';
 import { BoardApi } from '@/classes/BoardApi';
-import { possibleMoves, getThreats, isPromotion } from '@/helper/Board';
+import {
+  possibleMoves,
+  getThreats,
+  isPromotion,
+  shortToLongColor,
+} from '@/helper/Board';
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { emitBoardEvents } from '@/helper/EmitEvents';
 import type { Api } from 'chessground/api';
@@ -23,7 +28,7 @@ import type {
 const props = defineProps({
   boardConfig: {
     type: Object as PropType<BoardConfig>,
-    default: defaultBoardConfig,
+    default: null,
   },
 });
 
@@ -41,7 +46,7 @@ let board: Api | undefined;
 const boardElement = ref<HTMLElement | null>(null);
 const boardConfig = ref<BoardConfig>({});
 const game = new Chess();
-const currentTurn = ref<Color>('w');
+const currentTurn = ref<PieceColor>('white');
 const selectedPromotion = ref<Promotion>();
 const boardState = ref<BoardState>({
   showThreats: false,
@@ -72,12 +77,12 @@ onMounted(() => {
     movable: { events: { after: changeTurn() }, dests: possibleMoves(game) },
   });
 
-  currentTurn.value = game.turn();
+  currentTurn.value = shortToLongColor(game.turn());
   emit('boardCreated', new BoardApi(game, board, boardState.value, emit));
 });
 
 async function onPromotion(): Promise<Promotion> {
-  currentTurn.value = game.turn();
+  currentTurn.value = shortToLongColor(game.turn());
   boardState.value.openPromotionDialog = true;
   return new Promise((resolve) =>
     watch(selectedPromotion, () => resolve(selectedPromotion.value))
