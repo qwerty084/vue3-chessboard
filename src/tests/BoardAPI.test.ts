@@ -13,9 +13,6 @@ describe.concurrent('Test the board API', () => {
     throw new Error('boardApi is undefined');
   }
 
-  // get current state
-  // const initialBoardConf = boardApi?.boardState.boardConfig;
-
   it('emits board api', () => {
     expect(boardApi).toBeTruthy();
   });
@@ -94,7 +91,7 @@ describe.concurrent('Test the board API', () => {
     expect(boardApi.getTurnColor()).toBe('white');
   });
 
-  it('should udpate board with fen', () => {
+  it('should update board with fen', () => {
     const fen = '8/8/4k3/8/4K3/8/8/8 w - - 0 1';
 
     boardApi.setPosition(fen);

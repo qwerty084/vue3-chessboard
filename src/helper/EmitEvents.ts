@@ -5,16 +5,16 @@ import type { Api } from 'chessground/api';
 export function emitBoardEvents(game: Chess, board: Api, emit: Emit): void {
   if (game.inCheck()) {
     const pieces = board.state.pieces;
-    pieces.forEach((piece, key) => {
+    for (const [key, piece] of pieces) {
       if (piece.role === 'king' && piece.color === board?.state.turnColor) {
         board.state.check = key;
         emit('check', board.state.turnColor);
+        if (game.isCheckmate()) {
+          emit('checkmate', board.state.turnColor);
+        }
+        return;
       }
-    });
-  }
-
-  if (game.isCheckmate()) {
-    emit('checkmate', board.state.turnColor);
+    }
   }
 
   if (game.isDraw()) {
