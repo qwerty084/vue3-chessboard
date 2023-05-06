@@ -28,7 +28,7 @@ import type {
 const props = defineProps({
   boardConfig: {
     type: Object as PropType<BoardConfig>,
-    default: null,
+    default: defaultBoardConfig,
   },
 });
 
