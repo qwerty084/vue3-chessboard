@@ -75,7 +75,6 @@ onMounted(() => {
   board = Chessground(boardElement.value, boardState.value.boardConfig);
   board.set({
     movable: { events: { after: changeTurn() }, dests: possibleMoves(game) },
-    turnColor: shortToLongColor(game.turn())
   });
 
   currentTurn.value = shortToLongColor(game.turn());

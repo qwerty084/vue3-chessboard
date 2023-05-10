@@ -91,14 +91,25 @@ describe.concurrent('Test the board API', () => {
     expect(boardApi.getTurnColor()).toBe('white');
   });
 
-  it('should update board with fen', () => {
+  it('should update board with fen turn white', () => {
     const fen = '8/8/4k3/8/4K3/8/8/8 w - - 0 1';
 
     boardApi.setPosition(fen);
 
     expect(boardApi?.getFen()).toBe(fen);
     expect(boardApi.getIsDraw()).toBe(true);
+    expect(boardApi.getTurnColor()).toBe('white');
+  });
+
+  it('should update board with fen turn black', () => {
+    const fen = 'rnbqkbnr/ppp2ppp/3P4/8/8/8/PPP1PPPP/RNBQKBNR b KQkq - 0 3';
+
+    boardApi.setPosition(fen);
+
+    expect(boardApi?.getFen()).toBe(fen);
+    expect(boardApi.getIsDraw()).toBe(false);
+    expect(boardApi.getTurnColor()).toBe('black');
   });
 });
 
-export {};
+export { };
