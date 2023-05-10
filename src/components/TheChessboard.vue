@@ -122,7 +122,6 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       fen: game.fen(),
       turnColor: board.state.turnColor,
       movable: {
-        color: board.state.turnColor,
         dests: possibleMoves(game),
       },
     });
