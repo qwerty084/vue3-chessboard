@@ -1,3 +1,10 @@
+## 1.1.6 (2023-05-13)
+
+### Bug fixes
+
+- export types correctly ([ee1e400](https://github.com/qwerty084/vue3-chessboard/commit/ee1e4009a6149360e686f07d26ab9ad7730b67fe))
+- fix board config merge ([8d4c24b](https://github.com/qwerty084/vue3-chessboard/commit/8d4c24b7d4f0ec841b49bc57a598ecc94dd777a7))
+
 ## 1.1.5 (2023-03-25)
 
 - update all dependencies
