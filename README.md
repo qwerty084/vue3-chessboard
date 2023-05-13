@@ -50,9 +50,9 @@ Example Typescript Component
 import { ref } from 'vue';
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
-import type { ChessboardAPI, BoardConfig } from 'vue3-chessboard';
+import type { BoardApi, BoardConfig } from 'vue3-chessboard';
 
-const boardAPI = ref<ChessboardAPI>();
+const boardAPI = ref<BoardApi>();
 const boardConfig: BoardConfig = {
   coordinates: false,
   autoCastle: false,
