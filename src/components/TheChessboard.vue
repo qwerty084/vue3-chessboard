@@ -44,7 +44,6 @@ const emit = defineEmits<{
 
 let board: Api | undefined;
 const boardElement = ref<HTMLElement | null>(null);
-const boardConfig = ref<BoardConfig>({});
 const game = new Chess();
 const currentTurn = ref<PieceColor>('white');
 const selectedPromotion = ref<Promotion>();
@@ -68,10 +67,15 @@ onMounted(() => {
     boardState.value.boardConfig = defaultBoardConfig;
   }
 
-  if (boardConfig.value.fen) {
-    game.load(boardConfig.value.fen);
+  if (props.boardConfig.fen) {
+    game.load(props.boardConfig.fen);
+    boardState.value.boardConfig.turnColor = shortToLongColor(game.turn());
+    boardState.value.boardConfig.check = game.inCheck();
+    boardState.value.boardConfig.movable = {
+      color: boardState.value.boardConfig.turnColor,
+      dests: possibleMoves(game),
+    };
   }
-
   board = Chessground(boardElement.value, boardState.value.boardConfig);
   board.set({
     movable: { events: { after: changeTurn() }, dests: possibleMoves(game) },
@@ -79,6 +83,7 @@ onMounted(() => {
 
   currentTurn.value = shortToLongColor(game.turn());
   emit('boardCreated', new BoardApi(game, board, boardState.value, emit));
+  emitBoardEvents(game, board, emit);
 });
 
 async function onPromotion(): Promise<Promotion> {
