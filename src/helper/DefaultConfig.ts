@@ -13,8 +13,7 @@ export const possibleMovesWhite: Map<Key, Key[]> = new Map([
   ['g2', ['g3', 'g4']],
   ['h2', ['h3', 'h4']],
 ]);
-export const initialPos = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
-export const initialPosChessJS =
+export const initialPos =
   'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 // lichess default conf
