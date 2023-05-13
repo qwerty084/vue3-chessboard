@@ -21,7 +21,8 @@
   "exports": {
     ".": {
       "import": "./dist/vue3-chessboard.js",
-      "require": "./dist/vue3-chessboard.cjs"
+      "require": "./dist/vue3-chessboard.cjs",
+      "types": "./dist/src/index.d.ts"
     },
     "./style.css": "./dist/style.css"
   },
