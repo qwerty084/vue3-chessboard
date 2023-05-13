@@ -71,3 +71,14 @@ export function isPromotion(dest: Key, piece: Piece | null): boolean {
 export function getPossiblePromotions(legalMoves: Move[]): Move[] {
   return legalMoves.filter((move) => move.promotion);
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function merge(target: any, source: any): any {
+  for (const key of Object.keys(source)) {
+    if (source[key] instanceof Object)
+      Object.assign(source[key], merge(target[key], source[key]));
+  }
+
+  Object.assign(target || {}, source);
+  return target;
+}

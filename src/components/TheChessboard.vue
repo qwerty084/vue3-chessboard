@@ -9,6 +9,7 @@ import {
   getThreats,
   isPromotion,
   shortToLongColor,
+  merge,
 } from '@/helper/Board';
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { emitBoardEvents } from '@/helper/EmitEvents';
@@ -59,10 +60,7 @@ onMounted(() => {
   }
 
   if (props.boardConfig) {
-    boardState.value.boardConfig = {
-      ...defaultBoardConfig,
-      ...props.boardConfig,
-    };
+    boardState.value.boardConfig = merge(defaultBoardConfig, props.boardConfig);
   } else {
     boardState.value.boardConfig = defaultBoardConfig;
   }

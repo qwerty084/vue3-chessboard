@@ -418,7 +418,7 @@ export class BoardApi {
   /**
    * apply the fen game on the board
    */
-  updateGameState(): void {
+  private updateGameState(): void {
     this.board.set({ fen: this.game.fen() });
     this.board.state.turnColor = shortToLongColor(this.game.turn());
     this.board.state.movable.color = this.board.state.turnColor;
