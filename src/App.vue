@@ -8,11 +8,11 @@ const boardConfig: BoardConfig = {
   coordinates: true,
   autoCastle: false,
 };
-const playerColor: 'white' | 'black' | 'both' | undefined = undefined
+const playerColor: 'white' | 'black' | 'both' | undefined = undefined;
 </script>
 
 <template>
-  <TheChessboard 
+  <TheChessboard
     :board-config="boardConfig"
     :player-color="playerColor"
     @board-created="(api) => (boardAPI = api)"
