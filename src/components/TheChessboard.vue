@@ -31,6 +31,12 @@ const props = defineProps({
     type: Object as PropType<BoardConfig>,
     default: defaultBoardConfig,
   },
+  playerColor: {
+    type: [String, undefined] as PropType<
+      'white' | 'black' | 'both' | undefined
+    >,
+    default: null,
+  },
 });
 
 const emit = defineEmits<{
@@ -125,7 +131,7 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       fen: game.fen(),
       turnColor: board.state.turnColor,
       movable: {
-        color: board.state.turnColor,
+        color: props.playerColor ?? board.state.turnColor,
         dests: possibleMoves(game),
       },
     });
