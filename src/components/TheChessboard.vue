@@ -15,7 +15,7 @@ import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { emitBoardEvents } from '@/helper/EmitEvents';
 import type { Api } from 'chessground/api';
 import type { Key } from 'chessground/types';
-import type { BoardConfig } from '@/typings/BoardConfig';
+import type { BoardConfig, MoveableColor } from '@/typings/BoardConfig';
 import type {
   Promotion,
   SquareKey,
@@ -32,9 +32,7 @@ const props = defineProps({
     default: defaultBoardConfig,
   },
   playerColor: {
-    type: [String, undefined] as PropType<
-      'white' | 'black' | 'both' | undefined
-    >,
+    type: [String, undefined] as PropType<MoveableColor>,
     default: null,
   },
 });
@@ -58,6 +56,7 @@ const boardState = ref<BoardState>({
   showThreats: false,
   boardConfig: {},
   openPromotionDialog: false,
+  playerColor: props.playerColor,
 });
 
 onMounted(() => {
@@ -71,12 +70,19 @@ onMounted(() => {
     boardState.value.boardConfig = defaultBoardConfig;
   }
 
+  if (props.playerColor) {
+    boardState.value.boardConfig.movable = {
+      color: props.playerColor,
+      dests: possibleMoves(game),
+    };
+  }
+
   if (props.boardConfig.fen) {
     game.load(props.boardConfig.fen);
     boardState.value.boardConfig.turnColor = shortToLongColor(game.turn());
     boardState.value.boardConfig.check = game.inCheck();
     boardState.value.boardConfig.movable = {
-      color: boardState.value.boardConfig.turnColor,
+      color: props.playerColor ?? boardState.value.boardConfig.turnColor,
       dests: possibleMoves(game),
     };
   }
