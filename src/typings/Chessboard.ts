@@ -51,6 +51,7 @@ export interface BoardState {
   boardConfig: BoardConfig;
   showThreats: boolean;
   openPromotionDialog: boolean;
+  playerColor: 'white' | 'black' | 'both' | undefined;
 }
 
 export interface PromotionEvent {
