@@ -82,7 +82,7 @@ onMounted(() => {
     boardState.value.boardConfig.turnColor = shortToLongColor(game.turn());
     boardState.value.boardConfig.check = game.inCheck();
     boardState.value.boardConfig.movable = {
-      color: props.playerColor ?? boardState.value.boardConfig.turnColor,
+      color: props.playerColor || boardState.value.boardConfig.turnColor,
       dests: possibleMoves(game),
     };
   }
@@ -137,7 +137,7 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       fen: game.fen(),
       turnColor: board.state.turnColor,
       movable: {
-        color: props.playerColor ?? board.state.turnColor,
+        color: props.playerColor || board.state.turnColor,
         dests: possibleMoves(game),
       },
     });

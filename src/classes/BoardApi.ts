@@ -72,7 +72,7 @@ export class BoardApi {
     this.board.state.turnColor = shortToLongColor(this.game.turn());
 
     this.board.state.movable.color =
-      this.boardState.playerColor ?? this.board.state.turnColor;
+      this.boardState.playerColor || this.board.state.turnColor;
     this.board.state.movable.dests = possibleMoves(this.game);
     this.board.state.check = undefined;
 
@@ -229,7 +229,7 @@ export class BoardApi {
     this.board.state.movable.dests = possibleMoves(this.game);
     this.board.state.turnColor = shortToLongColor(this.game.turn());
     this.board.state.movable.color =
-      this.boardState.playerColor ?? this.board.state.turnColor;
+      this.boardState.playerColor || this.board.state.turnColor;
     this.board.state.lastMove = [m.from, m.to];
 
     if (this.boardState.showThreats) {
@@ -424,7 +424,7 @@ export class BoardApi {
     this.board.set({ fen: this.game.fen() });
     this.board.state.turnColor = shortToLongColor(this.game.turn());
     this.board.state.movable.color =
-      this.boardState.playerColor ?? this.board.state.turnColor;
+      this.boardState.playerColor || this.board.state.turnColor;
     this.board.state.movable.dests = possibleMoves(this.game);
     emitBoardEvents(this.game, this.board, this.emit);
   }
