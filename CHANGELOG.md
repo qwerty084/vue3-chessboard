@@ -1,3 +1,9 @@
+## 1.1.7 (2023-05-20)
+
+### Features
+
+- multiplayer support through setting the player color as a prop to the board component ([841dfac](https://github.com/qwerty084/vue3-chessboard/commit/841dfacc5dd5ab96b216da1b0327d36dd17a1d1d)) @[ddbogdanov](https://github.com/ddbogdanov)
+
 ## 1.1.6 (2023-05-13)
 
 ### Bug fixes
