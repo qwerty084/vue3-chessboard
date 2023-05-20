@@ -149,3 +149,34 @@ The board should then look like this:
 max-width: 90%;
 }
 </style>
+
+## Configure the board for multiplayer
+
+The board can accept a player-color prop to denote the color that the corresponding client should be allowed to play. Moves from a players opponent can be applied to the board with the `BoardApi`'s `move` method - the turns will switch once the `move` method is called with a valid sen string. If no value is provided, turns will switch locally.
+
+```vue [TypeScript]
+<script setup lang="ts">
+import { TheChessboard, type BoardConfig, type BoardApi } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+const boardConfig: BoardConfig = {
+  coordinates: false,
+  autoCastle: false,
+  orientation: 'black',
+};
+const boardAPI = ref<BoardApi>();
+// Client will only be able to play white pieces.
+const playerColor: 'white' | 'black' | 'both' | undefined = 'white'; 
+
+// Recieve move from socket/server/etc here.
+function onRecieveMove(move: string) {
+  boardAPI.value?.move(move)
+}
+</script>
+
+<template>
+  <TheChessboard :board-config="boardConfig" 
+                 :player-color="playerColor"
+  />
+</template>
+```

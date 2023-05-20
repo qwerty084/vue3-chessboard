@@ -1,7 +1,7 @@
 import type BoardApi from '@/classes/BoardApi';
 import type { Move, Square } from 'chess.js';
 import type { Key } from 'chessground/types';
-import type { BoardConfig } from './BoardConfig';
+import type { BoardConfig, MoveableColor } from './BoardConfig';
 
 export interface possibleMoves {
   [key: string]: {
@@ -51,6 +51,7 @@ export interface BoardState {
   boardConfig: BoardConfig;
   showThreats: boolean;
   openPromotionDialog: boolean;
+  playerColor: MoveableColor;
 }
 
 export interface PromotionEvent {
