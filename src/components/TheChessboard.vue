@@ -74,6 +74,8 @@ onMounted(() => {
     boardState.value.boardConfig.movable = {
       color: props.playerColor,
       dests: possibleMoves(game),
+      free:
+        props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
     };
   }
 
