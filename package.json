@@ -54,7 +54,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
-    "chess.js": "^1.0.0-beta.4",
+    "chess.js": "^1.0.0-beta.6",
     "chessground": "^8.3.7",
     "vue": "^3.2.47"
   },
