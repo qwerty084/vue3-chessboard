@@ -74,6 +74,8 @@ onMounted(() => {
     boardState.value.boardConfig.movable = {
       color: props.playerColor,
       dests: possibleMoves(game),
+      free:
+        props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
     };
   }
 
@@ -84,6 +86,8 @@ onMounted(() => {
     boardState.value.boardConfig.movable = {
       color: props.playerColor || boardState.value.boardConfig.turnColor,
       dests: possibleMoves(game),
+      free:
+        props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
     };
   }
   board = Chessground(boardElement.value, boardState.value.boardConfig);
@@ -139,6 +143,8 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       movable: {
         color: props.playerColor || board.state.turnColor,
         dests: possibleMoves(game),
+        free: 
+          props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
       },
     });
 
