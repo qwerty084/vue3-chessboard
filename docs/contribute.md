@@ -60,7 +60,7 @@ npm run lint
 test your changes
 
 ```sh
-npm run test:unit
+npm run test
 ```
 
 Then create a branch with a fitting name, commit and push your changes.

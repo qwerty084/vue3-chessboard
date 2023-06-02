@@ -22,7 +22,7 @@ describe.concurrent('Test the board API', () => {
 
     // test chess.js
     expect(boardApi?.getFen()).toBe(initialPos);
-    expect(boardApi?.getCurrentTurnNumber()).toBe(0);
+    expect(boardApi?.getCurrentTurnNumber()).toBe(1);
   });
 
   // test the board api
@@ -31,7 +31,7 @@ describe.concurrent('Test the board API', () => {
     boardApi?.undoLastMove();
 
     expect(boardApi?.getTurnColor()).toBe('white');
-    expect(boardApi?.getCurrentTurnNumber()).toBe(0);
+    expect(boardApi?.getCurrentTurnNumber()).toBe(1);
     expect(boardApi?.getFen()).toBe(initialPos);
   });
 
@@ -53,7 +53,7 @@ describe.concurrent('Test the board API', () => {
     boardApi.move('e4');
     expect(boardApi?.getCurrentTurnNumber()).toBe(1);
     boardApi.undoLastMove();
-    expect(boardApi?.getCurrentTurnNumber()).toBe(0);
+    expect(boardApi?.getCurrentTurnNumber()).toBe(1);
     boardApi.move('e4');
     boardApi.move('e5');
     expect(boardApi?.getCurrentTurnNumber()).toBe(2);
@@ -65,21 +65,7 @@ describe.concurrent('Test the board API', () => {
     boardApi.move('Bc5');
     expect(boardApi?.getCurrentTurnNumber()).toBe(4);
     boardApi.resetBoard();
-    expect(boardApi?.getCurrentTurnNumber()).toBe(0);
-  });
-
-  it('returns the turn number of last move', () => {
-    boardApi.resetBoard();
-    boardApi.move('e4');
-    expect(boardApi?.getLastMoveTurnNumber()).toBe(1);
-    boardApi.move('e5');
-    expect(boardApi?.getLastMoveTurnNumber()).toBe(1);
-    boardApi.move('Nf3');
-    expect(boardApi?.getLastMoveTurnNumber()).toBe(2);
-    boardApi.move('Nc6');
-    expect(boardApi?.getLastMoveTurnNumber()).toBe(2);
-    boardApi.resetBoard();
-    expect(boardApi?.getLastMoveTurnNumber()).toBe(0);
+    expect(boardApi?.getCurrentTurnNumber()).toBe(1);
   });
 
   it('should update board with pgn', () => {

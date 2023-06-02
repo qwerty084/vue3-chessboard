@@ -33,17 +33,17 @@
   },
   "bugs": {
     "url": "https://github.com/qwerty084/vue3-chessboard/issues",
-    "email": "lucahendrik.dev@gmail.com"
+    "email": "github@lucahelms.dev"
   },
   "author": {
     "name": "Luca Hendrik Helms",
-    "email": "lucahendrik.dev@gmail.com"
+    "email": "github@lucahelms.dev"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --project tsconfig.app.json && ./format.sh",
     "preview": "vite preview",
-    "test:unit": "vitest --environment jsdom --root src/",
+    "test": "vitest --environment jsdom --root src/",
     "build-only": "vite build",
     "build-pages": "vite build --config pages.config.ts",
     "format": "prettier --write src/",
@@ -54,7 +54,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
-    "chess.js": "^1.0.0-beta.4",
+    "chess.js": "^1.0.0-beta.6",
     "chessground": "^8.3.7",
     "vue": "^3.2.47"
   },

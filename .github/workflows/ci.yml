@@ -19,6 +19,6 @@ jobs:
       - name: run type checks
         run: npm run type-check
       - name: run tests
-        run: npm run test:unit
+        run: npm run test
       - name: test build process
         run: npm run build
