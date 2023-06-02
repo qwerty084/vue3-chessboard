@@ -267,15 +267,6 @@ export class BoardApi {
   }
 
   /**
-   *
-   * @returns the turn number of the last move
-   * @example e4 e5 -> turn number is 1 | e4 e5 Nf3 -> turn number is 2
-   */
-  getLastMoveTurnNumber(): number {
-    return Math.ceil(this.game.history().length / 2);
-  }
-
-  /**
    * returns the latest move made on the board
    */
   getLastMove(): Move | undefined {
