@@ -1,3 +1,22 @@
+## 1.1.8 (2023-06-04)
+
+### Features
+
+- new getIsCheck() method ([9b9a4ac](https://github.com/qwerty084/vue3-chessboard/commit/9b9a4ac660c96db773420be367b2643d2b7e53d3))
+
+### Bug fixes
+
+- fix legal move overwrite after setting the player color ([28448be](https://github.com/qwerty084/vue3-chessboard/commit/28448be52be2ae138144e8ccfe3ae7a631dcea9c)) @[ddbogdanov](https://github.com/ddbogdanov)
+- emit move event after check and checkmate ([b437455](https://github.com/qwerty084/vue3-chessboard/commit/98d0ededdfaeeebb925bb8c2ac13acc48425d79d))
+- fix config merge when player color is set ([9b9a4ac](https://github.com/qwerty084/vue3-chessboard/commit/9b9a4ac660c96db773420be367b2643d2b7e53d3))
+- fix captured pawn visible after en passant with move method ([cd64742](https://github.com/qwerty084/vue3-chessboard/commit/cd647424318abe594b8292eafb55ebcc63083db0))
+- fix clearBord() method not working ([9b9a4ac](https://github.com/qwerty084/vue3-chessboard/commit/9b9a4ac660c96db773420be367b2643d2b7e53d3))
+
+### Other
+
+- updated dependencies
+- added more test cases ([9b9a4ac](https://github.com/qwerty084/vue3-chessboard/commit/9b9a4ac660c96db773420be367b2643d2b7e53d3))
+
 ## 1.1.7 (2023-05-20)
 
 ### Features
