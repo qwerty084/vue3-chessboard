@@ -64,4 +64,4 @@ function resetBoard() {
   </a>
 </div>
 
-<p class="version-number">v1.1.3</p>
+<p class="version-number">v1.1.8</p>
