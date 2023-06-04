@@ -1,5 +1,4 @@
 import { expect, it, describe } from 'vitest';
-
 import { getThreats } from '@/helper/Board';
 import {
   possibleFirstMovesWhite,

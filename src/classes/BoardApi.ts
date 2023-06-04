@@ -94,14 +94,14 @@ export class BoardApi {
    */
   getMaterialCount(): MaterialDifference {
     const pieces = this.board.state.pieces;
-    const pieceToNum = new Map([
-      ['pawn', 1],
-      ['knight', 3],
-      ['bishop', 3],
-      ['rook', 5],
-      ['queen', 9],
-      ['king', 0],
-    ]);
+    const piecesValues = {
+      pawn: 1,
+      knight: 3,
+      bishop: 3,
+      rook: 5,
+      queen: 9,
+      king: 0,
+    };
 
     const materialCount = {
       materialWhite: 0,
@@ -111,9 +111,9 @@ export class BoardApi {
 
     for (const piece of pieces) {
       if (piece[1].color === 'white') {
-        materialCount.materialWhite += pieceToNum.get(piece[1].role) || 0;
+        materialCount.materialWhite += piecesValues[piece[1].role];
       } else {
-        materialCount.materialBlack += pieceToNum.get(piece[1].role) || 0;
+        materialCount.materialBlack += piecesValues[piece[1].role];
       }
     }
     materialCount.materialDiff =
@@ -192,12 +192,18 @@ export class BoardApi {
 
   /**
    * make a move programmatically on the board
-   * @param move the san move to make like 'e4', 'O-O' or 'e8=Q'
+   * @param move the san move to make like 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
    * @returns true if the move was made, false if the move was illegal
    */
   move(move: string): boolean {
-    const m = this.game.move(move);
-    if (m == null) return false;
+    let m: Move;
+    try {
+      m = this.game.move(move);
+    } catch {
+      return false;
+    }
+
+    // check for castle
     if (move === 'O-O-O' || move === 'O-O') {
       const currentRow = m.to[1];
       if (move === 'O-O-O') {
@@ -321,6 +327,10 @@ export class BoardApi {
     return this.game.isCheckmate();
   }
 
+  getIsCheck(): boolean {
+    return this.game.isCheck();
+  }
+
   /**
    * returns true or false depending on if a player is in stalemate
    */
@@ -384,6 +394,7 @@ export class BoardApi {
    */
   clearBoard(): void {
     this.game.clear();
+    this.updateGameState();
   }
 
   /**
@@ -404,7 +415,8 @@ export class BoardApi {
   }
 
   /**
-   * apply the fen game on the board
+   * syncs chess.js state with the board
+   * @private
    */
   private updateGameState(): void {
     this.board.set({ fen: this.game.fen() });
