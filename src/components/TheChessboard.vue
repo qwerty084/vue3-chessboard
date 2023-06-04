@@ -70,12 +70,17 @@ onMounted(() => {
     boardState.value.boardConfig = defaultBoardConfig;
   }
 
+  // update movable state when player color is set
+  // @TODO improve object merging of movable and fen
   if (props.playerColor) {
     boardState.value.boardConfig.movable = {
       color: props.playerColor,
       dests: possibleMoves(game),
       free:
         props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
+      events: boardState.value.boardConfig.movable?.events,
+      rookCastle: boardState.value.boardConfig.movable?.rookCastle,
+      showDests: boardState.value.boardConfig.movable?.showDests,
     };
   }
 
@@ -88,6 +93,9 @@ onMounted(() => {
       dests: possibleMoves(game),
       free:
         props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
+      events: boardState.value.boardConfig.movable?.events,
+      rookCastle: boardState.value.boardConfig.movable?.rookCastle,
+      showDests: boardState.value.boardConfig.movable?.showDests,
     };
   }
   board = Chessground(boardElement.value, boardState.value.boardConfig);
@@ -118,12 +126,11 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       await onPromotion();
       boardState.value.openPromotionDialog = false;
       const promotedTo = selectedPromotion.value?.toUpperCase() as PromotedTo;
-      const sanMove = `${orig[0]}x${dest}=${promotedTo}`;
 
       emit('promotion', {
         color: board.state.turnColor,
-        sanMove,
-        promotedTo: promotedTo,
+        sanMove: `${orig[0]}x${dest}=${promotedTo}`,
+        promotedTo,
       });
     }
 
@@ -143,7 +150,7 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       movable: {
         color: props.playerColor || board.state.turnColor,
         dests: possibleMoves(game),
-        free: 
+        free:
           props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
       },
     });

@@ -15,8 +15,10 @@ export function emitBoardEvents(game: Chess, board: Api, emit: Emit): void {
         board.state.check = key;
         if (game.isCheckmate()) {
           emit('checkmate', board.state.turnColor);
+          break;
         } else {
           emit('check', board.state.turnColor);
+          break;
         }
       }
     }
