@@ -232,6 +232,7 @@ export class BoardApi {
       this.board.move(m.from, m.to);
     }
 
+    this.board.set({ fen: this.game.fen() });
     this.board.state.movable.dests = possibleMoves(this.game);
     this.board.state.turnColor = shortToLongColor(this.game.turn());
     this.board.state.movable.color =
