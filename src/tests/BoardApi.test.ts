@@ -13,10 +13,6 @@ describe.concurrent('Test the board API', () => {
   // reset the board and events after each test
   beforeEach(() => resetBoard(wrapper, boardApi));
 
-  if (typeof boardApi === 'undefined') {
-    throw new Error('boardApi is undefined');
-  }
-
   it('emits board api', () => {
     expect(boardApi).toBeTruthy();
   });
