@@ -50,7 +50,6 @@ const emit = defineEmits<{
 let board: Api | undefined;
 const boardElement = ref<HTMLElement | null>(null);
 const game = new Chess();
-const currentTurn = ref<PieceColor>('white');
 const selectedPromotion = ref<Promotion>();
 const boardState = ref<BoardState>({
   showThreats: false,
@@ -103,13 +102,11 @@ onMounted(() => {
     movable: { events: { after: changeTurn() }, dests: possibleMoves(game) },
   });
 
-  currentTurn.value = shortToLongColor(game.turn());
   emit('boardCreated', new BoardApi(game, board, boardState.value, emit));
   emitBoardEvents(game, board, emit);
 });
 
 async function onPromotion(): Promise<Promotion> {
-  currentTurn.value = shortToLongColor(game.turn());
   boardState.value.openPromotionDialog = true;
   return new Promise((resolve) =>
     watch(selectedPromotion, () => resolve(selectedPromotion.value))
@@ -179,8 +176,8 @@ function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
       <div class="dialog-container">
         <PromotionDialog
           v-if="boardState.openPromotionDialog"
-          :turn-color="currentTurn"
-          @promotion-selected="(piece) => (selectedPromotion = piece)"
+          :turn-color="shortToLongColor(game.turn())"
+          @promotion-selected="(piece: Promotion) => {selectedPromotion = piece}"
         />
       </div>
       <div ref="boardElement"></div>
