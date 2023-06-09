@@ -14,7 +14,7 @@ import {
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { emitBoardEvents } from '@/helper/EmitEvents';
 import type { Api } from 'chessground/api';
-import type { Key } from 'chessground/types';
+import type { Key, MoveMetadata } from 'chessground/types';
 import type { BoardConfig, MoveableColor } from '@/typings/BoardConfig';
 import type {
   Promotion,
@@ -99,7 +99,15 @@ onMounted(() => {
   }
   board = Chessground(boardElement.value, boardState.value.boardConfig);
   board.set({
-    movable: { events: { after: changeTurn() }, dests: possibleMoves(game) },
+    movable: {
+      events: {
+        after: (...args) =>
+          changeTurn()(...args).then(() =>
+            boardState.value.boardConfig.movable?.events?.after?.(...args)
+          ),
+      },
+      dests: possibleMoves(game),
+    },
   });
 
   emit('boardCreated', new BoardApi(game, board, boardState.value, emit));
@@ -113,7 +121,11 @@ async function onPromotion(): Promise<Promotion> {
   );
 }
 
-function changeTurn(): (orig: Key, dest: Key) => Promise<void> {
+function changeTurn(): (
+  orig: Key,
+  dest: Key,
+  metadata: MoveMetadata
+) => Promise<void> {
   return async (orig: Key, dest: Key) => {
     if (typeof board === 'undefined') {
       console.error('vue3-chessboard: No board element found');
