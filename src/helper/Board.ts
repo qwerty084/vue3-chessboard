@@ -74,11 +74,12 @@ export function getPossiblePromotions(legalMoves: Move[]): Move[] {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function merge(target: any, source: any): any {
-  for (const key of Object.keys(source)) {
-    if (source[key] instanceof Object)
-      Object.assign(source[key], merge(target[key], source[key]));
+  const result = { ...target, ...source };
+  for (const key of Object.keys(result)) {
+    result[key] =
+      typeof target[key] == 'object' && typeof source[key] == 'object'
+        ? merge(target[key], source[key])
+        : structuredClone(result[key]);
   }
-
-  Object.assign(target || {}, source);
-  return target;
+  return result;
 }
