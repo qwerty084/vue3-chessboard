@@ -29,7 +29,7 @@ import type {
 const props = defineProps({
   boardConfig: {
     type: Object as PropType<BoardConfig>,
-    default: defaultBoardConfig,
+    default: {} as BoardConfig,
   },
   playerColor: {
     type: [String, undefined] as PropType<MoveableColor>,
@@ -53,7 +53,7 @@ const game = new Chess();
 const selectedPromotion = ref<Promotion>();
 const boardState = ref<BoardState>({
   showThreats: false,
-  boardConfig: {},
+  boardConfig: defaultBoardConfig,
   openPromotionDialog: false,
   playerColor: props.playerColor,
 });
@@ -62,8 +62,6 @@ onMounted(() => {
   if (boardElement.value == null) {
     throw new Error('vue3-chessboard: Failed to mount board.');
   }
-
-  updateConfig(defaultBoardConfig);
 
   if (props.playerColor) {
     updateConfig({
@@ -75,6 +73,7 @@ onMounted(() => {
 
   updateConfig(props.boardConfig);
   if (props.boardConfig.fen) game.load(props.boardConfig.fen);
+  patchAfter();
 
   board = Chessground(boardElement.value, boardState.value.boardConfig);
 
@@ -82,14 +81,22 @@ onMounted(() => {
   emitBoardEvents(game, board, emit);
 });
 
-function updateConfig(config: BoardConfig): void {
-  const events = config?.movable?.events;
-  if (events?.after) {
-    events.after = (...args): void => {
-      changeTurn()(...args).then(() => events.after?.(...args));
-    };
+function patchAfter(): void {
+  // If user provided a movable.events.after function themselves we patch changeTurn
+  // to run before it, otherwise we just assign changeTurn to movable.events.after.
+  // (Note: we want changeTurn to run before the user's function rather than after it
+  // so that the boardAPI can provide correct data, such as getLastMove() for the san.)
+  if (boardState.value.boardConfig.movable?.events?.after) {
+    const func = boardState.value.boardConfig.movable.events.after;
+    boardState.value.boardConfig.movable.events.after = (
+      ...args
+    ): Promise<void> => changeTurn(...args).then(() => func(...args));
+  } else {
+    updateConfig({ movable: { events: { after: changeTurn } } });
   }
+}
 
+function updateConfig(config: BoardConfig): void {
   boardState.value.boardConfig = deepMergeConfig(
     boardState.value.boardConfig,
     config
@@ -103,63 +110,61 @@ async function onPromotion(): Promise<Promotion> {
   );
 }
 
-function changeTurn(): (
+async function changeTurn(
   orig: Key,
   dest: Key,
-  metadata: MoveMetadata
-) => Promise<void> {
-  return async (orig: Key, dest: Key) => {
-    if (typeof board === 'undefined') {
-      console.error('vue3-chessboard: No board element found');
-      return;
-    }
-    if (isPromotion(dest, game.get(orig as Square))) {
-      await onPromotion();
-      boardState.value.openPromotionDialog = false;
-      const promotedTo = selectedPromotion.value?.toUpperCase() as PromotedTo;
+  _metadata: MoveMetadata
+): Promise<void> {
+  if (typeof board === 'undefined') {
+    console.error('vue3-chessboard: No board element found');
+    return;
+  }
+  if (isPromotion(dest, game.get(orig as Square))) {
+    await onPromotion();
+    boardState.value.openPromotionDialog = false;
+    const promotedTo = selectedPromotion.value?.toUpperCase() as PromotedTo;
 
-      emit('promotion', {
-        color: board.state.turnColor,
-        sanMove: `${orig[0]}x${dest}=${promotedTo}`,
-        promotedTo,
-      });
-    }
-
-    // TODO: catch exception thrown by invalid move and handle it based on boardConfig.movable.free value
-    game.move({
-      from: orig as SquareKey,
-      to: dest as SquareKey,
-      promotion: selectedPromotion.value,
+    emit('promotion', {
+      color: board.state.turnColor,
+      sanMove: `${orig[0]}x${dest}=${promotedTo}`,
+      promotedTo,
     });
-    selectedPromotion.value = undefined;
+  }
 
-    // TODO: Consolidate this logic with similar logic in BoardAPI.move
-    board.set({
-      animation: {
-        enabled: false,
-      },
-      fen: game.fen(),
-      turnColor: board.state.turnColor,
-      movable: {
-        color: props.playerColor || board.state.turnColor,
-        dests: possibleMoves(game),
-        free:
-          props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
-      },
-    });
+  // TODO: catch exception thrown by invalid move and handle it based on boardConfig.movable.free value
+  game.move({
+    from: orig as SquareKey,
+    to: dest as SquareKey,
+    promotion: selectedPromotion.value,
+  });
+  selectedPromotion.value = undefined;
 
-    board.set({
-      animation: {
-        enabled: true,
-      },
-    });
+  // TODO: Consolidate this logic with similar logic in BoardAPI.move
+  board.set({
+    animation: {
+      enabled: false,
+    },
+    fen: game.fen(),
+    turnColor: board.state.turnColor,
+    movable: {
+      color: props.playerColor || board.state.turnColor,
+      dests: possibleMoves(game),
+      free:
+        props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
+    },
+  });
 
-    emitBoardEvents(game, board, emit);
+  board.set({
+    animation: {
+      enabled: true,
+    },
+  });
 
-    if (boardState.value.showThreats) {
-      board.setShapes(getThreats(game.moves({ verbose: true })));
-    }
-  };
+  emitBoardEvents(game, board, emit);
+
+  if (boardState.value.showThreats) {
+    board.setShapes(getThreats(game.moves({ verbose: true })));
+  }
 }
 </script>
 
