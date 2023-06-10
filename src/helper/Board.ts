@@ -72,14 +72,33 @@ export function getPossiblePromotions(legalMoves: Move[]): Move[] {
   return legalMoves.filter((move) => move.promotion);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function merge(target: any, source: any): any {
+function isObject(value: unknown): boolean {
+  return (
+    Boolean(value) &&
+    value instanceof Object &&
+    !(value instanceof Array) &&
+    !(value instanceof Function)
+  );
+}
+
+function deepCopy<T>(value: T): T {
+  return isObject(value)
+    ? (Object.fromEntries(
+        Object.entries(value as object).map(([key, val]) => [
+          key,
+          deepCopy(val),
+        ])
+      ) as T)
+    : value;
+}
+
+export function deepMergeConfig<T>(target: T, source: T): T {
   const result = { ...target, ...source };
-  for (const key of Object.keys(result)) {
+  for (const key in result) {
     result[key] =
-      typeof target[key] == 'object' && typeof source[key] == 'object'
-        ? merge(target[key], source[key])
-        : structuredClone(result[key]);
+      isObject(target[key]) && isObject(source[key])
+        ? deepMergeConfig(target[key], source[key])
+        : deepCopy(result[key]);
   }
   return result;
 }

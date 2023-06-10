@@ -1,5 +1,5 @@
 import type { Key } from 'chessground/types';
-import type { Config } from 'chessground/config';
+import type { BoardConfig } from '@/typings/BoardConfig';
 
 export const possibleMovesWhite: Map<Key, Key[]> = new Map([
   ['b1', ['a3', 'c3']],
@@ -17,7 +17,7 @@ export const initialPos =
   'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 // lichess default conf
-export const defaultBoardConfig: Config = {
+export const defaultBoardConfig: BoardConfig = {
   fen: initialPos,
   orientation: 'white',
   turnColor: 'white',

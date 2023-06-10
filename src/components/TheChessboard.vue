@@ -9,7 +9,7 @@ import {
   getThreats,
   isPromotion,
   shortToLongColor,
-  merge,
+  deepMergeConfig,
 } from '@/helper/Board';
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { emitBoardEvents } from '@/helper/EmitEvents';
@@ -64,7 +64,10 @@ onMounted(() => {
   }
 
   if (props.boardConfig) {
-    boardState.value.boardConfig = merge(defaultBoardConfig, props.boardConfig);
+    boardState.value.boardConfig = deepMergeConfig(
+      defaultBoardConfig,
+      props.boardConfig
+    );
   } else {
     boardState.value.boardConfig = defaultBoardConfig;
   }
