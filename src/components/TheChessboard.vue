@@ -63,59 +63,38 @@ onMounted(() => {
     throw new Error('vue3-chessboard: Failed to mount board.');
   }
 
-  if (props.boardConfig) {
-    boardState.value.boardConfig = deepMergeConfig(
-      defaultBoardConfig,
-      props.boardConfig
-    );
-  } else {
-    boardState.value.boardConfig = defaultBoardConfig;
-  }
+  updateConfig(defaultBoardConfig);
 
-  // update movable state when player color is set
-  // @TODO improve object merging of movable and fen
   if (props.playerColor) {
-    boardState.value.boardConfig.movable = {
-      color: props.playerColor,
-      dests: possibleMoves(game),
-      free:
-        props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
-      events: boardState.value.boardConfig.movable?.events,
-      rookCastle: boardState.value.boardConfig.movable?.rookCastle,
-      showDests: boardState.value.boardConfig.movable?.showDests,
-    };
+    updateConfig({
+      movable: {
+        color: props.playerColor,
+      },
+    });
   }
 
-  if (props.boardConfig.fen) {
-    game.load(props.boardConfig.fen);
-    boardState.value.boardConfig.turnColor = shortToLongColor(game.turn());
-    boardState.value.boardConfig.check = game.inCheck();
-    boardState.value.boardConfig.movable = {
-      color: props.playerColor || boardState.value.boardConfig.turnColor,
-      dests: possibleMoves(game),
-      free:
-        props.boardConfig?.movable?.free || defaultBoardConfig?.movable?.free,
-      events: boardState.value.boardConfig.movable?.events,
-      rookCastle: boardState.value.boardConfig.movable?.rookCastle,
-      showDests: boardState.value.boardConfig.movable?.showDests,
-    };
-  }
+  updateConfig(props.boardConfig);
+  if (props.boardConfig.fen) game.load(props.boardConfig.fen);
+
   board = Chessground(boardElement.value, boardState.value.boardConfig);
-  board.set({
-    movable: {
-      events: {
-        after: (...args) =>
-          changeTurn()(...args).then(() =>
-            boardState.value.boardConfig.movable?.events?.after?.(...args)
-          ),
-      },
-      dests: possibleMoves(game),
-    },
-  });
 
   emit('boardCreated', new BoardApi(game, board, boardState.value, emit));
   emitBoardEvents(game, board, emit);
 });
+
+function updateConfig(config: BoardConfig): void {
+  const events = config?.movable?.events;
+  if (events?.after) {
+    events.after = (...args): void => {
+      changeTurn()(...args).then(() => events.after?.(...args));
+    };
+  }
+
+  boardState.value.boardConfig = deepMergeConfig(
+    boardState.value.boardConfig,
+    config
+  );
+}
 
 async function onPromotion(): Promise<Promotion> {
   boardState.value.openPromotionDialog = true;
@@ -146,6 +125,7 @@ function changeTurn(): (
       });
     }
 
+    // TODO: catch exception thrown by invalid move and handle it based on boardConfig.movable.free value
     game.move({
       from: orig as SquareKey,
       to: dest as SquareKey,
@@ -153,6 +133,7 @@ function changeTurn(): (
     });
     selectedPromotion.value = undefined;
 
+    // TODO: Consolidate this logic with similar logic in BoardAPI.move
     board.set({
       animation: {
         enabled: false,

@@ -44,6 +44,7 @@ export class BoardApi {
     this.board = board;
     this.boardState = boardState;
     this.emit = emit;
+    this.updateGameState();
   }
 
   /**
@@ -232,6 +233,7 @@ export class BoardApi {
       this.board.move(m.from, m.to);
     }
 
+    // TODO: Consolidate this logic with similar logic in changeTurn function from TheChessboard component
     this.board.set({ fen: this.game.fen() });
     this.board.state.movable.dests = possibleMoves(this.game);
     this.board.state.turnColor = shortToLongColor(this.game.turn());
