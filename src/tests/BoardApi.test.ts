@@ -253,7 +253,7 @@ describe.concurrent('Test the board API', () => {
     boardApi.move('Qd3');
     boardApi.move('bxa1=Q');
     expect(wrapper.emitted('promotion')?.[0][0]).toStrictEqual({
-      color: 'white',
+      color: 'black',
       promotedTo: 'Q',
       sanMove: 'bxa1=Q',
     });
