@@ -1,6 +1,6 @@
 import { SQUARES, type Chess, type Move, type Piece } from 'chess.js';
 import type { Color, Key } from 'chessground/types';
-import type { Threat, Piece as PieceType } from '@/typings/Chessboard';
+import type { Threat } from '@/typings/Chessboard';
 
 export function getThreats(moves: Move[]): Threat[] {
   const threats: Threat[] = [];
@@ -20,25 +20,6 @@ export function getThreats(moves: Move[]): Threat[] {
 
 export function shortToLongColor(color: 'w' | 'b'): Color {
   return color === 'w' ? 'white' : 'black';
-}
-
-export function roleAbbrToRole(role: string): PieceType {
-  switch (role) {
-    case 'p':
-      return 'pawn';
-    case 'n':
-      return 'knight';
-    case 'b':
-      return 'bishop';
-    case 'r':
-      return 'rook';
-    case 'q':
-      return 'queen';
-    case 'k':
-      return 'king';
-    default:
-      return 'pawn';
-  }
 }
 
 export function possibleMoves(game: Chess): Map<Key, Key[]> {
@@ -72,6 +53,7 @@ export function getPossiblePromotions(legalMoves: Move[]): Move[] {
   return legalMoves.filter((move) => move.promotion);
 }
 
+// TODO: write tests for these functions:
 function isObject(value: unknown): boolean {
   return (
     Boolean(value) &&
@@ -96,7 +78,7 @@ export function deepMergeConfig<T>(target: T, source: T): T {
   const result = { ...target, ...source };
   for (const key in result) {
     result[key] =
-      isObject(target[key]) && isObject(source[key])
+      isObject(target?.[key]) && isObject(source?.[key])
         ? deepMergeConfig(target[key], source[key])
         : deepCopy(result[key]);
   }

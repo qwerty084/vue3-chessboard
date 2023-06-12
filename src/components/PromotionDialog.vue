@@ -1,62 +1,41 @@
 <script setup lang="ts">
-import { ref, type PropType } from 'vue';
-import type { PieceColor, Promotion } from '@/typings/Chessboard';
+import type {
+  PromotionDialogState,
+  PromotionPiece,
+} from '@/typings/Chessboard';
 
-defineProps({
-  turnColor: {
-    type: String as PropType<PieceColor>,
-    required: true,
-  },
-});
+const props = defineProps<{
+  state: PromotionDialogState;
+}>();
 
 const emit = defineEmits<{
-  (e: 'promotionSelected', piece: Promotion): void;
+  (e: 'promotionSelected'): void;
 }>();
-const dialogEl = ref<HTMLDialogElement | null>(null);
 
-function promotionSelected(e: Event): void {
-  if (e.target == null) {
-    return;
-  }
-  const promotionValue = (e.target as HTMLDivElement).getAttribute(
-    'data-piece'
-  );
-  if (promotionValue != null) {
-    dialogEl.value?.close();
-    emit('promotionSelected', promotionValue as Promotion);
-  }
+const promotionPieces: PromotionPiece[] = [
+  { name: 'Queen', data: 'q' },
+  { name: 'Knight', data: 'n' },
+  { name: 'Rook', data: 'r' },
+  { name: 'Bishop', data: 'b' },
+];
+
+function promotionSelected(piece: PromotionPiece): void {
+  props.state.callback?.(piece.data);
+  emit('promotionSelected');
 }
 </script>
 
 <template>
   <Teleport to="cg-board">
-    <dialog
-      ref="dialogEl"
-      class="promotion-dialog"
-      open
-      @click="promotionSelected"
-      @touchstart.passive="promotionSelected"
-    >
+    <dialog class="promotion-dialog" open>
       <button
-        :class="['queen', turnColor]"
-        data-piece="q"
-        aria-label="Queen"
-      ></button>
-      <button
-        :class="['knight', turnColor]"
-        data-piece="n"
-        aria-label="Knight"
-      ></button>
-      <button
-        :class="['rook', turnColor]"
-        data-piece="r"
-        aria-label="Rook"
-      ></button>
-      <button
-        :class="['bishop', turnColor]"
-        data-piece="b"
-        aria-label="Bishop"
-      ></button>
+        v-for="piece in promotionPieces"
+        :key="piece.name"
+        :class="[piece.name.toLowerCase(), state.color]"
+        :aria-label="piece.name"
+        @click="promotionSelected(piece)"
+        @touchstart.passive="promotionSelected(piece)"
+      />
     </dialog>
   </Teleport>
 </template>

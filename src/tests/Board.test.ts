@@ -46,16 +46,16 @@ describe.concurrent('Test the board', () => {
 
   it('handles the boardconfig merging correctly', () => {
     expect(
-      (boardApi as any).boardState.boardConfig.movable?.events?.after
+      (boardApi as any).board.state.movable?.events?.after
     ).toBeTruthy();
-    expect((boardApi as any).boardState.boardConfig.animation.enabled).toBe(
+    expect((boardApi as any).board.state.animation.enabled).toBe(
       false
     );
-    expect((boardApi as any).boardState.boardConfig.animation.duration).toBe(0);
+    expect((boardApi as any).board.state.animation.duration).toBe(0);
     expect(
-      (boardApi as any).boardState.boardConfig.drawable.brushes
+      (boardApi as any).board.state.drawable.brushes
     ).toBeUndefined();
-    expect((boardApi as any).boardState.boardConfig.drawable.enabled).toBe(
+    expect((boardApi as any).board.state.drawable.enabled).toBe(
       false
     );
   });

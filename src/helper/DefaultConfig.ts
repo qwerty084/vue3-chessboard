@@ -41,18 +41,23 @@ export const defaultBoardConfig: BoardConfig = {
     color: 'white',
     showDests: true,
     dests: possibleMovesWhite,
-    events: {},
+    // We need to specify movable.events.after as an empty function so that we always have something to patch
+    // BoardApi.changeTurn onto. Other functions need to be specifed as undefined so that BoardApi.setConfig
+    // can reset values back to undefined, eg. if the user calls BoardApi.setConfig({}, true).
+    //
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    events: { after: () => {}, afterNewPiece: undefined },
     rookCastle: true,
   },
   premovable: {
     enabled: true,
     showDests: true,
     castle: true,
-    events: {},
+    events: { set: undefined, unset: undefined },
   },
   predroppable: {
     enabled: false,
-    events: {},
+    events: { set: undefined, unset: undefined },
   },
   draggable: {
     enabled: true,
@@ -64,7 +69,13 @@ export const defaultBoardConfig: BoardConfig = {
   selectable: {
     enabled: true,
   },
-  events: {},
+  events: {
+    change: undefined,
+    move: undefined,
+    dropNewPiece: undefined,
+    select: undefined,
+    insert: undefined,
+  },
   drawable: {
     enabled: true,
     visible: true,

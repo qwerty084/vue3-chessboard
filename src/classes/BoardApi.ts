@@ -1,10 +1,9 @@
-import type {
+import {
   Chess,
-  Move,
-  Piece,
-  PieceSymbol,
-  Square,
-  Color as ShortColor,
+  type Piece,
+  type PieceSymbol,
+  type Square,
+  type Color as ShortColor,
 } from 'chess.js';
 import type { Api } from 'chessground/api';
 import type {
@@ -17,16 +16,23 @@ import {
   getThreats,
   shortToLongColor,
   possibleMoves,
-  roleAbbrToRole,
+  deepMergeConfig,
+  isPromotion,
 } from '@/helper/Board';
-import { emitBoardEvents } from '@/helper/EmitEvents';
 import type {
-  Emit,
+  Move,
+  MoveEvent,
+  Props,
+  Emits,
   BoardState,
   PromotedTo,
   SquareColor,
+  Promotion,
 } from '@/typings/Chessboard';
-import type { Color, Key } from 'chessground/types';
+import type { Color, Key, MoveMetadata } from 'chessground/types';
+import type BoardConfig from '@/typings/BoardConfig';
+import { defaultBoardConfig } from '@/helper/DefaultConfig';
+import { Chessground } from 'chessground/chessground';
 
 /**
  * class for modifying and reading data from the board, \
@@ -38,27 +44,126 @@ export class BoardApi {
   private game: Chess;
   private board: Api;
   private boardState: BoardState;
-  private emit: Emit;
-  constructor(game: Chess, board: Api, boardState: BoardState, emit: Emit) {
-    this.game = game;
-    this.board = board;
+  private props: Props;
+  private emit: Emits;
+  constructor(
+    boardElement: HTMLElement,
+    boardState: BoardState,
+    props: Props,
+    emit: Emits
+  ) {
     this.boardState = boardState;
+    this.props = props;
     this.emit = emit;
-    this.updateGameState();
+    this.game = new Chess();
+    this.board = Chessground(boardElement);
+    this.resetBoard();
   }
 
+  //
+  //  PRIVATE INTERAL METHODS:
+  //
+
   /**
-   * Resets the board to the initial starting position.
+   * syncs chess.js state with the board
+   * @private
    */
-  resetBoard(): void {
-    this.game.reset();
-    this.board.redrawAll();
-    this.board.set(this.boardState.boardConfig);
-    this.board.state.check = undefined;
-    this.board.selectSquare(null);
+  private updateGameState(): void {
+    this.board.set({ fen: this.game.fen() });
+    this.board.state.turnColor = this.getTurnColor();
+    this.board.state.movable.color =
+      this.props.playerColor || this.board.state.turnColor;
+    this.board.state.movable.dests = possibleMoves(this.game);
+
     if (this.boardState.showThreats) {
       this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
     }
+
+    this.emitEvents();
+  }
+
+  /**
+   * emits neccessary events
+   * @private
+   */
+  private emitEvents(): void {
+    const lastMove = this.getLastMove();
+    if (lastMove) {
+      this.emit('move', lastMove);
+    }
+
+    if (lastMove?.promotion) {
+      this.emit('promotion', {
+        color: shortToLongColor(lastMove.color),
+        promotedTo: lastMove.promotion.toUpperCase() as PromotedTo,
+        sanMove: lastMove.san,
+      });
+    }
+
+    if (this.game.inCheck()) {
+      for (const [key, piece] of this.board.state.pieces) {
+        if (
+          piece.role === 'king' &&
+          piece.color === this.board?.state.turnColor
+        ) {
+          this.board.state.check = key;
+          this.emit(
+            this.game.isCheckmate() ? 'checkmate' : 'check',
+            this.board.state.turnColor
+          );
+          break;
+        }
+      }
+    } else {
+      this.board.state.check = undefined;
+    }
+
+    if (this.game.isDraw()) {
+      this.emit('draw');
+    }
+
+    if (this.game.isStalemate()) {
+      this.emit('stalemate');
+    }
+  }
+
+  /**
+   * Changes the turn of the game, triggered by config.movable.events.after
+   * @private
+   */
+  private async changeTurn(
+    orig: Key,
+    dest: Key,
+    _metadata: MoveMetadata
+  ): Promise<void> {
+    let selectedPromotion: Promotion | undefined = undefined;
+
+    if (isPromotion(dest, this.game.get(orig as Square))) {
+      selectedPromotion = await new Promise((resolve) => {
+        this.boardState.promotionDialogState = {
+          isEnabled: true,
+          color: this.getTurnColor(),
+          callback: resolve,
+        };
+      });
+    }
+
+    this.move({
+      from: orig,
+      to: dest,
+      promotion: selectedPromotion,
+    });
+  }
+
+  //
+  //  PUBLIC API METHODS:
+  //
+
+  /**
+   * Resets the board to the initial starting configuration.
+   */
+  resetBoard(): void {
+    this.setConfig(this.props.boardConfig, true);
   }
 
   /**
@@ -67,25 +172,13 @@ export class BoardApi {
   undoLastMove(): void {
     const undoMove = this.game.undo();
     if (undoMove == null) return;
-    const lastMove = this.game.history({ verbose: true }).at(-1);
 
-    this.board.set({ fen: this.game.fen() });
-    this.board.state.turnColor = shortToLongColor(this.game.turn());
-
-    this.board.state.movable.color =
-      this.boardState.playerColor || this.board.state.turnColor;
-    this.board.state.movable.dests = possibleMoves(this.game);
-    this.board.state.check = undefined;
-
-    if (this.game.history().length === 0 || typeof lastMove === 'undefined') {
-      this.board.state.lastMove = undefined;
-    } else {
+    this.updateGameState();
+    const lastMove = this.getLastMove();
+    if (lastMove) {
       this.board.state.lastMove = [lastMove?.from, lastMove?.to];
-    }
-
-    if (this.boardState.showThreats) {
-      // redraw threats in new position if enabled
-      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
+    } else {
+      this.board.state.lastMove = undefined;
     }
   }
 
@@ -193,59 +286,23 @@ export class BoardApi {
 
   /**
    * make a move programmatically on the board
-   * @param move the san move to make like 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
+   * @param move either a string in Standard Algebraic Notation (SAN), eg. 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
+   * or a Move object of shape { from: string; to: string; promotion?: string; }, eg. {from: 'g8', to: 'f6'} or
+   * { from: 'e7', to: 'e8', promotion: 'q'}
    * @returns true if the move was made, false if the move was illegal
    */
-  move(move: string): boolean {
-    let m: Move;
+  move(move: Move): boolean {
+    let moveEvent: MoveEvent;
+
+    // TODO: handle exception based on boardConfig.movable.free
     try {
-      m = this.game.move(move);
+      moveEvent = this.game.move(move);
     } catch {
       return false;
     }
 
-    // check for castle
-    if (move === 'O-O-O' || move === 'O-O') {
-      const currentRow = m.to[1];
-      if (move === 'O-O-O') {
-        this.board.move(`a${currentRow}` as Key, `d${currentRow}` as Key);
-      } else {
-        this.board.move(`h${currentRow}` as Key, `f${currentRow}` as Key);
-      }
-    }
-
-    // check for promotion move
-    if (m.promotion) {
-      this.board.state.pieces.set(m.to, {
-        color: shortToLongColor(m.color),
-        role: roleAbbrToRole(m.promotion),
-        promoted: true,
-      });
-      this.board.state.pieces.delete(m.from);
-      this.board.redrawAll();
-      const promotedTo = m.promotion.toUpperCase() as PromotedTo;
-      this.emit('promotion', {
-        color: this.board?.state.turnColor === 'white' ? 'black' : 'white',
-        promotedTo: promotedTo,
-        sanMove: m.san,
-      });
-    } else {
-      this.board.move(m.from, m.to);
-    }
-
-    // TODO: Consolidate this logic with similar logic in changeTurn function from TheChessboard component
-    this.board.set({ fen: this.game.fen() });
-    this.board.state.movable.dests = possibleMoves(this.game);
-    this.board.state.turnColor = shortToLongColor(this.game.turn());
-    this.board.state.movable.color =
-      this.boardState.playerColor || this.board.state.turnColor;
-    this.board.state.lastMove = [m.from, m.to];
-
-    if (this.boardState.showThreats) {
-      // redraw threats in new position if enabled
-      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
-    }
-    emitBoardEvents(this.game, this.board, this.emit);
+    this.board.move(moveEvent.from, moveEvent.to);
+    this.updateGameState();
 
     return true;
   }
@@ -255,7 +312,7 @@ export class BoardApi {
    * @returns 'white' or 'black'
    */
   getTurnColor(): Color {
-    return this.board.state.turnColor;
+    return shortToLongColor(this.game.turn());
   }
 
   /**
@@ -278,7 +335,7 @@ export class BoardApi {
   /**
    * returns the latest move made on the board
    */
-  getLastMove(): Move | undefined {
+  getLastMove(): MoveEvent | undefined {
     return this.game.history({ verbose: true }).at(-1);
   }
 
@@ -287,7 +344,7 @@ export class BoardApi {
    *
    * @param verbose - passing true will add more info
    */
-  getHistory(verbose = false): Move[] | string[] {
+  getHistory(verbose = false): MoveEvent[] | string[] {
     return this.game.history({ verbose: verbose });
   }
 
@@ -378,6 +435,7 @@ export class BoardApi {
 
   /**
    * loads a fen into the board
+   * Caution: this will erase the game history. To set position with history call loadPgn with a pgn instead
    */
   setPosition(fen: string): void {
     this.game.load(fen);
@@ -418,19 +476,6 @@ export class BoardApi {
   }
 
   /**
-   * syncs chess.js state with the board
-   * @private
-   */
-  private updateGameState(): void {
-    this.board.set({ fen: this.game.fen() });
-    this.board.state.turnColor = shortToLongColor(this.game.turn());
-    this.board.state.movable.color =
-      this.boardState.playerColor || this.board.state.turnColor;
-    this.board.state.movable.dests = possibleMoves(this.game);
-    emitBoardEvents(this.game, this.board, this.emit);
-  }
-
-  /**
    * returns the header information of the current pgn, if no pgn is loaded, returns an empty object
    * @example {
    * "Event": "IBM Kasparov vs. Deep Blue Rematch",
@@ -448,6 +493,37 @@ export class BoardApi {
     [key: string]: string | undefined;
   } {
     return this.game.header();
+  }
+
+  /**
+   * Sets the config of the board.
+   * Caution: providing a config with a fen will erase the game history and change the starting position
+   * for resetBoard. To keep history and starting position: omit fen from the given config and call
+   * loadPgn with a pgn instead.
+   *
+   * @param config - a subset of config options, eg. `{ viewOnly: true, animation: { enabled: false } }`
+   * or `{ movable: { events: { after: afterFunc }, showDests: false }, drawable: { enabled: false } }`
+   * @param fillDefaults - if true unprovided config options will be substituted with default values, if
+   * false the unprovided options will remain unchanged.
+   */
+  setConfig(config: BoardConfig, fillDefaults = false): void {
+    if (fillDefaults) {
+      config = deepMergeConfig(defaultBoardConfig, config);
+    }
+
+    // If user provided a movable.events.after function we patch changeTurn to run before it. We want
+    // changeTurn to run before the user's function rather than after it so that during their function
+    // call the API can provide correct data about the game, eg. getLastMove() for the san.
+    if (config.movable?.events?.after) {
+      const userAfter = config.movable.events.after;
+      config.movable.events.after = async (...args): Promise<void> => {
+        await this.changeTurn(...args);
+        userAfter(...args);
+      };
+    }
+    const { fen, ...configWithoutFen } = config;
+    this.board.set(configWithoutFen);
+    if (fen) this.setPosition(fen);
   }
 }
 

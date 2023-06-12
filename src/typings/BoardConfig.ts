@@ -1,7 +1,7 @@
 import type * as cg from 'chessground/types';
 import type { DrawShape, DrawBrushes } from 'chessground/draw';
 
-export type MoveableColor = 'white' | 'black' | 'both' | undefined;
+export type MoveableColor = 'white' | 'black' | 'both';
 
 // interface for the board config \
 // extends the chessground config interface \
