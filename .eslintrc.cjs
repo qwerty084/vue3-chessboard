@@ -32,5 +32,6 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'vue/require-explicit-emits': ['off'],
   },
 };
