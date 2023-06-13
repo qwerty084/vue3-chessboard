@@ -259,6 +259,25 @@ describe.concurrent('Test the board API', () => {
     });
     expect(wrapper.emitted('promotion')).toHaveLength(1);
   });
+
+  it('sets new config correctly ', () => {
+    expect((boardApi as any).board.state.movable?.events?.after).toBeTruthy();
+    expect((boardApi as any).board.state.animation.enabled).toBe(true);
+    expect((boardApi as any).board.state.animation.duration).toBe(300);
+    expect((boardApi as any).board.state.drawable.enabled).toBe(true);
+    boardApi.setConfig({
+      movable: { events: { after: undefined } },
+      animation: { enabled: false, duration: 200 },
+      drawable: { visible: false },
+    });
+    // test patching of after when undefined
+    expect((boardApi as any).board.state.movable?.events?.after).toBeTruthy();
+    expect((boardApi as any).board.state.animation.enabled).toBe(false);
+    expect((boardApi as any).board.state.animation.duration).toBe(200);
+    expect((boardApi as any).board.state.animation.enabled).toBe(false);
+    expect((boardApi as any).board.state.drawable.enabled).toBe(true);
+    expect((boardApi as any).board.state.drawable.visible).toBe(false);
+  });
 });
 
 export {};

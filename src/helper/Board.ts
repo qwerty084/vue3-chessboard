@@ -53,8 +53,7 @@ export function getPossiblePromotions(legalMoves: Move[]): Move[] {
   return legalMoves.filter((move) => move.promotion);
 }
 
-// TODO: write tests for these functions:
-function isObject(value: unknown): boolean {
+export function isObject(value: unknown): boolean {
   return (
     Boolean(value) &&
     value instanceof Object &&

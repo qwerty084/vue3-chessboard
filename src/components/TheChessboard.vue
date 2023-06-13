@@ -14,8 +14,8 @@ import { deepCopy, deepDiffConfig } from '@/helper/Board';
 // + Cleaned up PromotionDialog to be less convoluted
 // + Fixed old tests for new internal API structure
 // + Added optional config reactivity. Defaults to false to preserve backwards compatibility as new behaviour may be surprising if implementation doesn't expect it
+// + Add tests for new features
 // TODO:
-// - Add tests for new features
 // - Update docs
 // - Submit PR
 // - Add events for: threefold repition, insufficient material and game over (which returns which type of game over)
