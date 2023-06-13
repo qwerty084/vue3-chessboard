@@ -514,16 +514,19 @@ export class BoardApi {
     // If user provided a movable.events.after function we patch changeTurn to run before it. We want
     // changeTurn to run before the user's function rather than after it so that during their function
     // call the API can provide correct data about the game, eg. getLastMove() for the san.
-    if (config.movable?.events?.after) {
+    if (config.movable?.events && 'after' in config.movable.events) {
       const userAfter = config.movable.events.after;
-      config.movable.events.after = async (...args): Promise<void> => {
-        await this.changeTurn(...args);
-        userAfter(...args);
-      };
+      config.movable.events.after = userAfter
+        ? async (...args): Promise<void> => {
+            await this.changeTurn(...args);
+            userAfter(...args);
+          }
+        : this.changeTurn; // in case user provided config with { movable: { event: { after: undefined } } }
     }
     const { fen, ...configWithoutFen } = config;
     this.board.set(configWithoutFen);
     if (fen) this.setPosition(fen);
+    this.board.redrawAll();
   }
 }
 
