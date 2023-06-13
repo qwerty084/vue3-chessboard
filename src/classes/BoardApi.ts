@@ -287,7 +287,7 @@ export class BoardApi {
   /**
    * make a move programmatically on the board
    * @param move either a string in Standard Algebraic Notation (SAN), eg. 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
-   * or a Move object of shape { from: string; to: string; promotion?: string; }, eg. {from: 'g8', to: 'f6'} or
+   * or an object of shape { from: string; to: string; promotion?: string; }, eg. { from: 'g8', to: 'f6' } or
    * { from: 'e7', to: 'e8', promotion: 'q'}
    * @returns true if the move was made, false if the move was illegal
    */
@@ -343,6 +343,7 @@ export class BoardApi {
    * Retrieves the move history.
    *
    * @param verbose - passing true will add more info
+   * @example Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
    */
   getHistory(verbose = false): MoveEvent[] | string[] {
     return this.game.history({ verbose: verbose });

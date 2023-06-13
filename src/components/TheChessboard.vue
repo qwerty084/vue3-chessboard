@@ -6,28 +6,6 @@ import type { BoardState, Props, Emits } from '@/typings/Chessboard';
 import type { BoardConfig } from '@/typings/BoardConfig';
 import { deepCopy, deepDiffConfig } from '@/helper/Board';
 
-// DONE:
-// + Fixed config merging (now does a deep merge/copy and returns a new object instead of mutating arguements)
-// + If movable.events.after is supplied in config, patch changeTurn to run before it rather than replace it entirely
-// + Added setConfig method to the API
-// + Overall refactor to combine redudunant operations and move logic away from Vue component
-// + Cleaned up PromotionDialog to be less convoluted
-// + Fixed old tests for new internal API structure
-// + Added optional config reactivity. Defaults to false to preserve backwards compatibility as new behaviour may be surprising if implementation doesn't expect it
-// + Add tests for new features
-// TODO:
-// - Update docs
-// - Submit PR
-// - Add events for: threefold repition, insufficient material and game over (which returns which type of game over)
-// - Fix enpassent animation
-// - Fix promotion dialogue click through (if one of your own pieces is behind the selected promotion piece, it will be selected accidentally)
-// - Maybe split API into 2 classes? 1 for public exposed API functionality and 1 for private handling of board and game
-// - Premove support
-// - Game history viewer
-// - Fix free move mode
-// - Maybe obscure config from user? ie. move entirely to props and emits for more idiomatic Vue component behaviour
-// - Possibly engine intergration?
-
 const props = withDefaults(defineProps<Props>(), {
   boardConfig: () => ({}),
   reactiveConfig: false,
