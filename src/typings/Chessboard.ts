@@ -60,8 +60,9 @@ export interface Emits {
 }
 
 export interface Props {
-  boardConfig: BoardConfig;
+  boardConfig?: BoardConfig;
   playerColor?: MoveableColor;
+  reactiveConfig?: boolean;
 }
 
 export interface BoardState {

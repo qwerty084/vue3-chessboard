@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, watch, type Ref } from 'vue';
 import PromotionDialog from './PromotionDialog.vue';
 import { BoardApi } from '@/classes/BoardApi';
 import type { BoardState, Props, Emits } from '@/typings/Chessboard';
 import type { BoardConfig } from '@/typings/BoardConfig';
+import { deepCopy, deepDiffConfig } from '@/helper/Board';
 
 // DONE:
 // + Fixed config merging (now does a deep merge/copy and returns a new object instead of mutating arguements)
@@ -12,10 +13,11 @@ import type { BoardConfig } from '@/typings/BoardConfig';
 // + Overall refactor to combine redudunant operations and move logic away from Vue component
 // + Cleaned up PromotionDialog to be less convoluted
 // + Fixed old tests for new internal API structure
+// + Added optional config reactivity. Defaults to false to preserve backwards compatibility as new behaviour may be surprising if implementation doesn't expect it
 // TODO:
-// - Add optional config reactivity. Default to false to preserve backwards compatibility as new behaviour may be surprising if implementation doesn't expect it
 // - Add tests for new features
 // - Update docs
+// - Submit PR
 // - Add events for: threefold repition, insufficient material and game over (which returns which type of game over)
 // - Fix enpassent animation
 // - Fix promotion dialogue click through (if one of your own pieces is behind the selected promotion piece, it will be selected accidentally)
@@ -27,7 +29,8 @@ import type { BoardConfig } from '@/typings/BoardConfig';
 // - Possibly engine intergration?
 
 const props = withDefaults(defineProps<Props>(), {
-  boardConfig: () => ({} as BoardConfig),
+  boardConfig: () => ({}),
+  reactiveConfig: false,
 });
 const emit = defineEmits<Emits>();
 
@@ -42,10 +45,15 @@ onMounted(() => {
     throw new Error('vue3-chessboard: Failed to mount board.');
   }
 
-  emit(
-    'boardCreated',
-    new BoardApi(boardElement.value, boardState, props, emit)
-  );
+  const boardAPI = new BoardApi(boardElement.value, boardState, props, emit);
+  emit('boardCreated', boardAPI);
+
+  const oldConfig: Ref<BoardConfig> = ref(deepCopy(props.boardConfig));
+  if (props.reactiveConfig)
+    watch(reactive(props.boardConfig), (newConfig: BoardConfig) => {
+      boardAPI.setConfig(deepDiffConfig(oldConfig.value, newConfig));
+      oldConfig.value = deepCopy(newConfig);
+    });
 });
 </script>
 

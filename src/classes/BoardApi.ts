@@ -163,7 +163,7 @@ export class BoardApi {
    * Resets the board to the initial starting configuration.
    */
   resetBoard(): void {
-    this.setConfig(this.props.boardConfig, true);
+    this.setConfig(this.props.boardConfig as BoardConfig, true);
   }
 
   /**

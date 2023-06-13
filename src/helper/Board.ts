@@ -63,7 +63,7 @@ function isObject(value: unknown): boolean {
   );
 }
 
-function deepCopy<T>(value: T): T {
+export function deepCopy<T>(value: T): T {
   return isObject(value)
     ? (Object.fromEntries(
         Object.entries(value as object).map(([key, val]) => [
@@ -83,4 +83,24 @@ export function deepMergeConfig<T>(target: T, source: T): T {
         : deepCopy(result[key]);
   }
   return result;
+}
+
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
+export function deepDiffConfig<T>(oldConfig: T, newConfig: T): DeepPartial<T> {
+  const diff = {} as DeepPartial<T>;
+  for (const key in newConfig) {
+    if (isObject(oldConfig?.[key]) && isObject(newConfig?.[key])) {
+      const subDiff = deepDiffConfig(
+        oldConfig[key],
+        newConfig[key]
+      ) as T[keyof T] extends object ? DeepPartial<T[keyof T]> : never; // sometimes I like typescript, others I dont...
+      if (Object.keys(subDiff).length > 0) diff[key as keyof T] = subDiff;
+    } else if (oldConfig?.[key] !== newConfig[key]) {
+      diff[key] = newConfig[key];
+    }
+  }
+  return diff;
 }
