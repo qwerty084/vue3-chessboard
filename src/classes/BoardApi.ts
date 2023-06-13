@@ -71,8 +71,6 @@ export class BoardApi {
   private updateGameState(): void {
     this.board.set({ fen: this.game.fen() });
     this.board.state.turnColor = this.getTurnColor();
-    this.board.state.movable.color =
-      this.props.playerColor || this.board.state.turnColor;
     this.board.state.movable.dests = possibleMoves(this.game);
 
     if (this.boardState.showThreats) {
@@ -523,6 +521,11 @@ export class BoardApi {
           }
         : this.changeTurn; // in case user provided config with { movable: { event: { after: undefined } } }
     }
+
+    config = deepMergeConfig(config, {
+      movable: { color: this.props.playerColor },
+    });
+
     const { fen, ...configWithoutFen } = config;
     this.board.set(configWithoutFen);
     if (fen) this.setPosition(fen);

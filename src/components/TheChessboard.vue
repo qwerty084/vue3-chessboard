@@ -8,6 +8,7 @@ import { deepCopy, deepDiffConfig } from '@/helper/Board';
 
 const props = withDefaults(defineProps<Props>(), {
   boardConfig: () => ({}),
+  playerColor: 'both',
   reactiveConfig: false,
 });
 const emit = defineEmits<Emits>();
@@ -26,12 +27,13 @@ onMounted(() => {
   const boardAPI = new BoardApi(boardElement.value, boardState, props, emit);
   emit('boardCreated', boardAPI);
 
-  const oldConfig: Ref<BoardConfig> = ref(deepCopy(props.boardConfig));
-  if (props.reactiveConfig)
+  if (props.reactiveConfig) {
+    const oldConfig: Ref<BoardConfig> = ref(deepCopy(props.boardConfig));
     watch(reactive(props.boardConfig), (newConfig: BoardConfig) => {
       boardAPI.setConfig(deepDiffConfig(oldConfig.value, newConfig));
       oldConfig.value = deepCopy(newConfig);
     });
+  }
 });
 </script>
 
