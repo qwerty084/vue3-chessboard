@@ -38,12 +38,7 @@ describe.concurrent('Test isObject', () => {
     { value: [{ foo: 'bar' }], result: false },
     // test functions
     { value: () => 'foo', result: false },
-    {
-      value: (bar) => {
-        bar;
-      },
-      result: false,
-    },
+    { value: (bar) => { foo: bar }, result: false },
     // test booleans
     { value: false, result: false },
     { value: true, result: false },
