@@ -76,7 +76,7 @@ export class BoardApi {
     this.board.state.movable.dests = possibleMoves(this.game);
 
     if (this.boardState.showThreats) {
-      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
+      this.drawMoves();
     }
 
     this.emitEvents();
@@ -256,11 +256,10 @@ export class BoardApi {
    * toggle drawing of arrows and circles on the board for possible moves/captures
    */
   toggleMoves(): void {
-    this.boardState.showThreats = !this.boardState.showThreats;
     if (this.boardState.showThreats) {
-      this.board.setShapes(getThreats(this.game.moves({ verbose: true })));
+      this.hideMoves();
     } else {
-      this.board.setShapes([]);
+      this.drawMoves();
     }
   }
 
@@ -303,7 +302,7 @@ export class BoardApi {
 
     this.board.move(moveEvent.from, moveEvent.to);
     this.updateGameState();
-
+    this.board.playPremove();
     return true;
   }
 
