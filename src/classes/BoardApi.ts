@@ -71,6 +71,8 @@ export class BoardApi {
   private updateGameState(): void {
     this.board.set({ fen: this.game.fen() });
     this.board.state.turnColor = this.getTurnColor();
+    this.board.state.movable.color =
+      this.props.playerColor || this.board.state.turnColor;
     this.board.state.movable.dests = possibleMoves(this.game);
 
     if (this.boardState.showThreats) {

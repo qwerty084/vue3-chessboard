@@ -8,7 +8,6 @@ import { deepCopy, deepDiffConfig } from '@/helper/Board';
 
 const props = withDefaults(defineProps<Props>(), {
   boardConfig: () => ({}),
-  playerColor: 'both',
   reactiveConfig: false,
 });
 const emit = defineEmits<Emits>();
