@@ -48,7 +48,7 @@ Here is a list of all the available methods:
 
 ```ts
 /**
- * Resets the board to the initial starting position.
+ * Resets the board to the initial starting configuration.
  */
 resetBoard(): void;
 
@@ -95,10 +95,12 @@ getOpeningName(): Promise<string | null>;
 
 /**
  * make a move programmatically on the board
- * @param move the san move to make like 'e4', 'O-O' or 'e8=Q'
+ * @param move either a string in Standard Algebraic Notation (SAN), eg. 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
+ * or an object of shape { from: string; to: string; promotion?: string; }, eg. { from: 'g8', to: 'f6' } or
+ * { from: 'e7', to: 'e8', promotion: 'q'}
  * @returns true if the move was made, false if the move was illegal
  */
-move(move: string): boolean;
+move(move: string | { from: Key; to: Key; promotion?: Promotion; }): boolean;
 
 /**
  * returns the current turn color
@@ -192,7 +194,8 @@ getSquareColor(square: string): SquareColor | null;
 getSquare(square: Square): Piece | null;
 
 /**
- * Returns the piece on the square or null if there is no piece
+ * loads a fen into the board
+ * Caution: this will erase the game history. To set position with history call loadPgn with a pgn instead
  */
 setPosition(fen: string): void;
 
@@ -236,6 +239,19 @@ loadPgn(pgn: string): void;
 getPgnInfo(): {
   [key: string]: string | undefined;
 };
+
+/**
+ * Sets the config of the board.
+ * Caution: providing a config with a fen will erase the game history and change the starting position
+ * for resetBoard. To keep history and starting position: omit fen from the given config and call
+ * loadPgn with a pgn instead.
+ *
+ * @param config - a subset of config options, eg. `{ viewOnly: true, animation: { enabled: false } }`
+ * or `{ movable: { events: { after: afterFunc }, showDests: false }, drawable: { enabled: false } }`
+ * @param fillDefaults - if true unprovided config options will be substituted with default values, if
+ * false the unprovided options will remain unchanged.
+ */
+setConfig(config: BoardConfig, fillDefaults = false): void {
 ```
 
 ## Example Board API Usage

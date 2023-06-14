@@ -1,7 +1,15 @@
 import type BoardApi from '@/classes/BoardApi';
-import type { Move, Square } from 'chess.js';
+import type { Move as FullMove, Square } from 'chess.js';
 import type { Key } from 'chessground/types';
 import type { BoardConfig, MoveableColor } from './BoardConfig';
+
+export type Move =
+  | string
+  | {
+      from: Key;
+      to: Key;
+      promotion?: Promotion;
+    };
 
 export interface possibleMoves {
   [key: string]: {
@@ -15,7 +23,12 @@ export interface Threat {
   brush: string;
 }
 
-export type Promotion = 'q' | 'n' | 'b' | 'r' | undefined;
+export type Promotion = 'q' | 'n' | 'b' | 'r';
+
+export type PromotionPiece = {
+  name: 'Queen' | 'Rook' | 'Knight' | 'Bishop';
+  data: Promotion;
+};
 
 export type SquareColor = 'light' | 'dark' | null;
 
@@ -37,21 +50,30 @@ export type SquareKey = Square & Key;
 
 export type PieceColor = 'white' | 'black';
 
-export interface Emit {
+export interface Emits {
   (e: 'boardCreated', boardApi: BoardApi): void;
-  (e: 'checkmate', isMated: PieceColor): void;
+  (e: 'check' | 'checkmate', color: PieceColor): void;
   (e: 'stalemate'): void;
   (e: 'draw'): void;
-  (e: 'check', isInCheck: PieceColor): void;
   (e: 'promotion', promotion: PromotionEvent): void;
   (e: 'move', move: MoveEvent): void;
 }
 
+export interface Props {
+  boardConfig?: BoardConfig;
+  playerColor?: MoveableColor;
+  reactiveConfig?: boolean;
+}
+
 export interface BoardState {
-  boardConfig: BoardConfig;
   showThreats: boolean;
-  openPromotionDialog: boolean;
-  playerColor: MoveableColor;
+  promotionDialogState: PromotionDialogState;
+}
+
+export interface PromotionDialogState {
+  isEnabled: boolean;
+  color?: PieceColor;
+  callback?: (promotionValue: Promotion) => void;
 }
 
 export interface PromotionEvent {
@@ -62,4 +84,4 @@ export interface PromotionEvent {
 
 export type PromotedTo = PromotionEvent['promotedTo'];
 
-export type MoveEvent = Move;
+export type MoveEvent = FullMove;

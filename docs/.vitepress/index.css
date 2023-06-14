@@ -19,6 +19,10 @@
   max-width: 600px;
 }
 
+coords.files {
+  bottom: 5px !important;
+}
+
 .move-container {
   min-height: 250px;
 }
@@ -60,4 +64,18 @@ h1 {
 .promotion-container {
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.buttons {
+  padding: 5px;
+  text-align: center;
+}
+.buttons .activated {
+  background-color: #888;
+}
+.buttons button {
+  background-color: #555;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 5px;
 }
