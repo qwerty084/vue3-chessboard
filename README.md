@@ -1,9 +1,8 @@
 # vue3-chessboard
 
-![Continuous Integration](https://github.com/qwerty084/vue3-chessboard/workflows/Continuous%20Integration/badge.svg)
+[![Unit Tests](https://github.com/qwerty084/vue3-chessboard/actions/workflows/tests.yml/badge.svg)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/qwerty084/vue3-chessboard/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/codeql.yml)
 [![Docs](https://github.com/qwerty084/vue3-chessboard/actions/workflows/deploy-docs.yml/badge.svg?branch=main)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/deploy-docs.yml)
-
 [![npm](https://img.shields.io/npm/v/vue3-chessboard)](https://www.npmjs.com/package/vue3-chessboard)
 
 Vue3 chessboard component built with:
@@ -43,6 +42,41 @@ npm i vue3-chessboard
 
 # Usage
 
+Basic Example (Composition API)
+
+```html
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+</script>
+
+<template>
+  <TheChessboard />
+</template>
+```
+
+Basic Example (Options API)
+
+```html
+
+<template>
+  <TheChessboard />
+</template>
+
+<script>
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+export default {
+  components: {
+    TheChessboard,
+  },
+};
+</script>
+```
+
+<hr>
+
 Example Typescript Component
 
 ```html
@@ -55,7 +89,6 @@ import type { BoardApi, BoardConfig } from 'vue3-chessboard';
 const boardAPI = ref<BoardApi>();
 const boardConfig: BoardConfig = {
   coordinates: false,
-  autoCastle: false,
 };
 
 function handleCheckmate(isMated: string) {
@@ -97,7 +130,6 @@ import 'vue3-chessboard/style.css';
 const boardAPI = ref();
 const boardConfig = {
   coordinates: false,
-  autoCastle: false,
 };
 
 function handleCheckmate(isMated) {
