@@ -524,10 +524,6 @@ export class BoardApi {
         : this.changeTurn; // in case user provided config with { movable: { event: { after: undefined } } }
     }
 
-    config = deepMergeConfig(config, {
-      movable: { color: this.props.playerColor },
-    });
-
     const { fen, ...configWithoutFen } = config;
     this.board.set(configWithoutFen);
     if (fen) this.setPosition(fen);
