@@ -1,9 +1,8 @@
 # vue3-chessboard
 
-![Continuous Integration](https://github.com/qwerty084/vue3-chessboard/workflows/Continuous%20Integration/badge.svg)
+[![Unit Tests](https://github.com/qwerty084/vue3-chessboard/actions/workflows/tests.yml/badge.svg)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/qwerty084/vue3-chessboard/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/codeql.yml)
 [![Docs](https://github.com/qwerty084/vue3-chessboard/actions/workflows/deploy-docs.yml/badge.svg?branch=main)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/deploy-docs.yml)
-
 [![npm](https://img.shields.io/npm/v/vue3-chessboard)](https://www.npmjs.com/package/vue3-chessboard)
 
 Vue3 chessboard component built with:
