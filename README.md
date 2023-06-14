@@ -43,6 +43,41 @@ npm i vue3-chessboard
 
 # Usage
 
+Basic Example (Composition API)
+
+```html
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+</script>
+
+<template>
+  <TheChessboard />
+</template>
+```
+
+Basic Example (Options API)
+
+```html
+
+<template>
+  <TheChessboard />
+</template>
+
+<script>
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+export default {
+  components: {
+    TheChessboard,
+  },
+};
+</script>
+```
+
+<hr>
+
 Example Typescript Component
 
 ```html
@@ -55,7 +90,6 @@ import type { BoardApi, BoardConfig } from 'vue3-chessboard';
 const boardAPI = ref<BoardApi>();
 const boardConfig: BoardConfig = {
   coordinates: false,
-  autoCastle: false,
 };
 
 function handleCheckmate(isMated: string) {
@@ -97,7 +131,6 @@ import 'vue3-chessboard/style.css';
 const boardAPI = ref();
 const boardConfig = {
   coordinates: false,
-  autoCastle: false,
 };
 
 function handleCheckmate(isMated) {
