@@ -24,7 +24,7 @@ Example:
 import { TheChessboard, type BoardApi } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardAPI = ref<BoardApi>();
+let boardAPI: BoardApi | undefined;
 </script>
 
 <template>
@@ -37,7 +37,7 @@ const boardAPI = ref<BoardApi>();
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardAPI = ref();
+let boardAPI;
 </script>
 
 <template>

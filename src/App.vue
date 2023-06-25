@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { TheChessboard, type BoardApi, type BoardConfig } from '@/index';
 import '@/assets/board.css';
-const boardAPI = ref<BoardApi>();
+
+let boardAPI: BoardApi | undefined;
 
 const boardConfig: BoardConfig = {
   coordinates: true,

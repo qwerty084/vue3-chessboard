@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 import { TheChessboard } from '../dist/vue3-chessboard';
 
-const boardAPI = ref(null);
-const boardAPI2 = ref(null);
-const boardAPI3 = ref(null);
-const boardAPI4 = ref(null);
-const boardAPI5 = ref(null);
+let boardAPI;
+let boardAPI2;
+let boardAPI3;
+let boardAPI4;
+let boardAPI5;
 const move = ref();
 
 const runningStalemate = ref(false);
@@ -31,7 +31,7 @@ function emitDraw() {
       if (move === 'Nxc1') {
         runningDraw.value = false;
       }
-      boardAPI4?.value.move(move);
+      boardAPI4?.move(move);
     }, i * 300);
   });
 }
@@ -43,7 +43,7 @@ function emitStalemate() {
       if (move === 'Kxh1') {
         runningStalemate.value = false;
       }
-      boardAPI3?.value.move(move);
+      boardAPI3?.move(move);
     }, i * 300);
   });
 }
@@ -51,7 +51,7 @@ function emitStalemate() {
 function emitCheck() {
   checkMoves.forEach((move, i) => {
     setTimeout(() => {
-      boardAPI?.value.move(move);
+      boardAPI?.move(move);
     }, i * 1000);
   });
 }
@@ -59,7 +59,7 @@ function emitCheck() {
 function emitMate() {
   mateMoves.forEach((move, i) => {
     setTimeout(() => {
-      boardAPI2?.value.move(move);
+      boardAPI2?.move(move);
     }, i * 1000);
   });
 }
@@ -67,7 +67,7 @@ function emitMate() {
 function emitPromotion() {
   promotionMoves.forEach((move, i) => {
     setTimeout(() => {
-      boardAPI5?.value.move(move);
+      boardAPI5?.move(move);
     }, i * 1000);
   });
 }
@@ -193,7 +193,6 @@ function handleMove(move: MoveEvent) {
 
 ```vue [JavaScript]
 <script setup>
-import { ref } from 'vue';
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 

@@ -22,7 +22,7 @@ watch(theme.isDark, () => {
   setSvgPath();
 });
 
-const boardAPI = ref();
+let boardAPI;
 
 function handleCheckmate(isMated) {
   if (isMated === 'w') {
@@ -30,18 +30,8 @@ function handleCheckmate(isMated) {
   } else {
     alert('White wins!');
   }
-  console.log(boardAPI.value);
-  boardAPI.value.resetBoard();
+  boardAPI?.resetBoard();
 }
-
-function toggleOrientation() {
-  boardAPI.value?.board.toggleOrientation();
-}
-
-function resetBoard() {
-  boardAPI.value?.resetBoard();
-}
-
 </script>
 
 # Vue3-Chessboard

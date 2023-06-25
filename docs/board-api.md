@@ -13,11 +13,16 @@ Here is an example:
 
 ```vue [TypeScript]
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted } from 'vue';
 import { TheChessboard, type BoardApi } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardAPI = ref<BoardApi>();
+let boardAPI: BoardApi | undefined;
+
+// access the boardAPI in the onMounted hook
+onMounted(() => {
+  console.log(boardAPI?.getBoardPosition());
+});
 </script>
 
 <template>
@@ -27,11 +32,15 @@ const boardAPI = ref<BoardApi>();
 
 ```vue [JavaScript]
 <script setup>
-import { ref } from 'vue';
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardAPI = ref();
+let boardAPI;
+
+// access the boardAPI in the onMounted hook
+onMounted(() => {
+  console.log(boardAPI?.getBoardPosition());
+});
 </script>
 
 <template>

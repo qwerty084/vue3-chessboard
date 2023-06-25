@@ -16,12 +16,13 @@ const boardConfig2 = reactive({
 });
 </script>
 
-# Board props
+# Props
 
 Available props:
-  - `board-config`
-  - `player-color`
-  - `reactive-config`
+
+- `board-config`
+- `player-color`
+- `reactive-config`
 
 ## `board-config`: Configure the chessboard
 
@@ -168,7 +169,12 @@ The board can accept a player-color prop to denote the color that the correspond
 
 ```vue [TypeScript]
 <script setup lang="ts">
-import { TheChessboard, type BoardConfig, type BoardApi } from 'vue3-chessboard';
+import {
+  TheChessboard,
+  type BoardConfig,
+  type BoardApi,
+  type MovableColor,
+} from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
 const boardConfig: BoardConfig = {
@@ -176,29 +182,26 @@ const boardConfig: BoardConfig = {
   autoCastle: false,
   orientation: 'black',
 };
-const boardAPI = ref<BoardApi>();
+let boardAPI: BoardApi | undefined;
 // Client will only be able to play white pieces.
-const playerColor: 'white' | 'black' | 'both' | undefined = 'white'; 
+const playerColor: MovableColor = 'white';
 
 // Recieve move from socket/server/etc here.
 function onRecieveMove(move: string) {
-  boardAPI.value?.move(move)
+  boardAPI?.move(move);
 }
 </script>
 
 <template>
-  <TheChessboard :board-config="boardConfig" 
-                 :player-color="playerColor"
-  />
+  <TheChessboard :board-config="boardConfig" :player-color="playerColor" />
 </template>
 ```
-
 
 ## `reactive-config`: Using a reactive config object
 
 The `TheChessboard` component can accept a `reactive-config` prop to allow the `board-config` prop to be reactive to changes. Any mutations of the `board-config` prop will propagate to changes of the board config. This works with nested properties in a non-destructive way, ie. setting `boardConfig.draggable = { distance: 10, showGhost: false }` won't affect the other properties of `draggable` on the actual board config, such as `draggable.enabled`. However, it will change the "default state" of the board so that if `boardAPI.resetBoard()` is called the current state of the `board-config` prop is considered to be the provided config, as if it was passed at the time of instantiation of the `TheChessboard` component.
 
-Note that prop mutation is a *one-way flow of data*, so the state of the `board-config` prop won't necessarily reflect the state of the actual board config. For example, as the game progresses the `fen` property of the `board-config` prop **will not** update. 
+Note that prop mutation is a _one-way flow of data_, so the state of the `board-config` prop won't necessarily reflect the state of the actual board config. For example, as the game progresses the `fen` property of the `board-config` prop **will not** update.
 
 See the following example for how one might make use of this feature:
 
@@ -219,10 +222,7 @@ const boardConfig: BoardConfig = reactive({
 </script>
 
 <template>
-  <TheChessboard
-    :board-config="boardConfig"
-    reactive-config
-  />
+  <TheChessboard :board-config="boardConfig" reactive-config />
   <div class="buttons">
     <button @click="boardConfig.coordinates = !boardConfig.coordinates">
       Toggle coordinates
@@ -271,10 +271,7 @@ const boardConfig = reactive({
 </script>
 
 <template>
-  <TheChessboard
-    :board-config="boardConfig"
-    reactive-config
-  />
+  <TheChessboard :board-config="boardConfig" reactive-config />
   <div class="buttons">
     <button @click="boardConfig.coordinates = !boardConfig.coordinates">
       Toggle coordinates
@@ -318,25 +315,25 @@ The board should then look like this:
     reactive-config
   />
   <div class="buttons">
-    <button 
+    <button
       @click="boardConfig2.coordinates = !boardConfig2.coordinates"
       :class="{ activated: boardConfig2.coordinates }"
     >
       Toggle coordinates
     </button>
-    <button 
+    <button
       @click="boardConfig2.viewOnly = !boardConfig2.viewOnly"
       :class="{ activated: !boardConfig2.viewOnly }"
     >
       Toggle view only
     </button>
-    <button 
+    <button
       @click="boardConfig2.animation.enabled = !boardConfig2.animation.enabled"
       :class="{ activated: boardConfig2.animation.enabled }"
     >
       Toggle animations
     </button>
-    <button 
+    <button
       @click="boardConfig2.draggable.enabled = !boardConfig2.draggable.enabled"
       :class="{ activated: boardConfig2.draggable.enabled }"
     >

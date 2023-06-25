@@ -10,7 +10,7 @@ export default {
       {
         text: 'Configuration',
         items: [
-          { text: 'Board props', link: '/board-props' },
+          { text: 'Props', link: '/props' },
           { text: 'Callbacks', link: '/callbacks' },
         ],
       },

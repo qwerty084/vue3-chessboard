@@ -50,6 +50,7 @@ const boardConfig: BoardConfig = {
     },
     move: (from, to, capture) => {
       // the move function fires after each move on the board, you can access the values from, to, and capture
+      // use @move event to access values from the board api. The move function is executed before the state is updated in the board.
       console.log(from, to, capture);
     },
     select(key) {
@@ -79,6 +80,7 @@ const boardConfig = {
     },
     move: (from, to, capture) => {
       // the move function fires after each move on the board, you can access the values from, to, and capture
+      // use @move event to access values from the board api. The move function is executed before the state is updated in the board.
       console.log(from, to, capture);
     },
     select(key) {
