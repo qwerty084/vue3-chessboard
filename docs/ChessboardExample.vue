@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 import { TheChessboard, type BoardApi } from '../dist/vue3-chessboard';
 
-const boardAPI = ref<BoardApi>();
+let boardAPI: BoardApi | undefined;
 const opening = ref('');
 
 async function getOpening() {
-  opening.value = await boardAPI.value?.getOpeningName();
+  opening.value = await boardAPI?.getOpeningName();
 }
 </script>
 

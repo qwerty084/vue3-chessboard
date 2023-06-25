@@ -2,14 +2,22 @@
 
 <br>
 
-Emitted when a game is drawn.
+Emitted when the game ends in a draw.
 
-Example:
+## Definition:
+
+```ts
+defineEmits<{
+  (e: 'draw'): void;
+}>();
+```
+
+## Example:
 
 ::: code-group
 
-```vue [TypeScript]
-<script setup lang="ts">
+```vue [JavaScript]
+<script setup>
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
@@ -23,8 +31,8 @@ function handleDraw() {
 </template>
 ```
 
-```vue [JavaScript]
-<script setup>
+```vue [TypeScript]
+<script setup lang="ts">
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 

@@ -4,7 +4,7 @@
 
 This event is emitted after every move on the board.
 
-Definition:
+## Definition:
 
 ```ts
 defineEmits<{
@@ -26,9 +26,24 @@ type MoveEvent = {
 };
 ```
 
-Example:
+## Example:
 
 ::: code-group
+
+```vue [JavaScript]
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+function handleMove(move) {
+  console.log(move);
+}
+</script>
+
+<template>
+  <TheChessboard @move="handleMove" />
+</template>
+```
 
 ```vue [TypeScript]
 <script setup lang="ts">
@@ -43,22 +58,6 @@ function handleMove(move: MoveEvent) {
 <template>
   <TheChessboard @move="handleMove" />
 </template>
-```
-
-```vue [JavaScript]
-<script setup>
-import { ref } from 'vue';
-import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
-
-function handleMove(move) {
-  console.log(move);
-}
-
-<template>
-  <TheChessboard @move="handleMove" />
-</template>
-</script>
 ```
 
 :::

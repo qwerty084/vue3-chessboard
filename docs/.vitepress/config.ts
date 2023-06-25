@@ -10,14 +10,14 @@ export default {
       {
         text: 'Configuration',
         items: [
-          { text: 'Board props', link: '/board-props' },
+          { text: 'Props', link: '/props' },
           { text: 'Callbacks', link: '/callbacks' },
         ],
       },
       {
         text: 'Events',
         items: [
-          { text: 'Available Events', link: '/events/board-events' },
+          { text: 'Available Events', link: '/events' },
           { text: 'Board Created', link: '/events/board-created' },
           { text: 'Checkmate', link: '/events/checkmate' },
           { text: 'Stalemate', link: '/events/stalemate' },

@@ -33,16 +33,21 @@ const square = ref('');
 ## Registering Callback functions
 
 You can register custom callback functions on the board through the config object.
-Like each other config property, this is optional.
+Like other config property, this is optional.
+
+::: warning
+The move callback is being executed before the internal board state is updated. Accessing the boardApi can lead to unexpected results.
+Use the `move` event provided by the board component to access the API.
+:::
 
 ::: code-group
 
-```vue [TypeScript]
-<script setup lang="ts">
-import { TheChessboard, type BoardConfig } from 'vue3-chessboard';
+```vue [JavaScript]
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardConfig: BoardConfig = {
+const boardConfig = {
   events: {
     change: () => {
       // called after the situation changes on the board
@@ -50,6 +55,7 @@ const boardConfig: BoardConfig = {
     },
     move: (from, to, capture) => {
       // the move function fires after each move on the board, you can access the values from, to, and capture
+      // use @move event to access values from the board api. The move function is executed before the state is updated in the board.
       console.log(from, to, capture);
     },
     select(key) {
@@ -66,12 +72,12 @@ const boardConfig: BoardConfig = {
 </template>
 ```
 
-```vue [JavaScript]
-<script setup>
-import { TheChessboard } from 'vue3-chessboard';
+```vue [TypeScript]
+<script setup lang="ts">
+import { TheChessboard, type BoardConfig } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardConfig = {
+const boardConfig: BoardConfig = {
   events: {
     change: () => {
       // called after the situation changes on the board
@@ -79,6 +85,7 @@ const boardConfig = {
     },
     move: (from, to, capture) => {
       // the move function fires after each move on the board, you can access the values from, to, and capture
+      // use @move event to access values from the board api. The move function is executed before the state is updated in the board.
       console.log(from, to, capture);
     },
     select(key) {

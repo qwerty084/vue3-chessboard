@@ -28,13 +28,13 @@ pnpm install vue3-chessboard
 In the following you will see the most basic setup to get started. <br>
 Later you will be shown more advanced configurations and event listeners.
 <br><br>
-For each code example there is always a TypeScript and JavaScript version.
+For each code example there is always a JavaScript and TypeScript version.
 Just copy the code for your prefered language in a \*.vue file to get started. <br>
 
 ::: code-group
 
-```vue [TypeScript]
-<script setup lang="ts">
+```vue [JavaScript]
+<script setup>
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 </script>
@@ -44,8 +44,8 @@ import 'vue3-chessboard/style.css';
 </template>
 ```
 
-```vue [JavaScript]
-<script setup>
+```vue [TypeScript]
+<script setup lang="ts">
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 </script>
