@@ -4,7 +4,7 @@
 
 Emitted when a promotion occurs.
 
-Definition:
+## Definition:
 
 ```ts
 defineEmits<{
@@ -18,16 +18,16 @@ export interface PromotionEvent {
 }
 ```
 
-Example:
+## Example:
 
 ::: code-group
 
-```vue [TypeScript]
-<script setup lang="ts">
-import { TheChessboard, type PromotionEvent } from 'vue3-chessboard';
+```vue [JavaScript]
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handlePromotion(promotion: PromotionEvent) {
+function handlePromotion(promotion) {
   console.log(promotion);
 }
 </script>
@@ -37,13 +37,13 @@ function handlePromotion(promotion: PromotionEvent) {
 </template>
 ```
 
-```vue [JavaScript]
-<script setup>
-import { TheChessboard } from 'vue3-chessboard';
+```vue [TypeScript]
+<script setup lang="ts">
+import { TheChessboard, type PromotionEvent } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handlePromotion(e) {
-  console.log(e);
+function handlePromotion(promotion: PromotionEvent) {
+  console.log(promotion);
 }
 </script>
 

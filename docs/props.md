@@ -20,17 +20,17 @@ const boardConfig2 = reactive({
 
 Available props:
 
-- `board-config`
-- `player-color`
-- `reactive-config`
+- `board-config` - an object to configure the board
+- `player-color` - the color of the player who is allowed to move
+- `reactive-config` - boolean value, whether the board config should be reactive or not
 
 ## `board-config`: Configure the chessboard
 
 To edit the chessboard you can pass a configuration object to the component.
-Here are all the available options:
+Here are all the available options with their default values.
+Just update the values the values you want to overwrite.
 
 ```js
-// configuration object which can be passed as a prop
 {
   fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', // the position to start from as a string
   orientation: 'white', // the orientation of the board
@@ -110,14 +110,16 @@ Here are all the available options:
 If you dont pass a config object, the default config shown above will be used.
 It's not required to set all properties. Your object will be merged with the default config.
 
+### Example setting the config object
+
 ::: code-group
 
-```vue [TypeScript]
-<script setup lang="ts">
-import { TheChessboard, type BoardConfig } from 'vue3-chessboard';
+```vue [JavaScript]
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardConfig: BoardConfig = {
+const boardConfig = {
   coordinates: false,
   autoCastle: false,
   orientation: 'black',
@@ -129,12 +131,12 @@ const boardConfig: BoardConfig = {
 </template>
 ```
 
-```vue [JavaScript]
-<script setup>
-import { TheChessboard } from 'vue3-chessboard';
+```vue [TypeScript]
+<script setup lang="ts">
+import { TheChessboard, type BoardConfig } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardConfig = {
+const boardConfig: BoardConfig = {
   coordinates: false,
   autoCastle: false,
   orientation: 'black',
@@ -165,7 +167,39 @@ max-width: 90%;
 
 ## `player-color`: Configure the board for multiplayer
 
-The board can accept a player-color prop to denote the color that the corresponding client should be allowed to play. Moves from a players opponent can be applied to the board with the `BoardApi`'s `move` method - the turns will switch once the `move` method is called with a valid sen string. If no value is provided, turns will switch locally.
+The board can accept a _player-color_ prop to denote the color that the corresponding client should be allowed to play. Moves from a players opponent can be applied to the board with the `BoardApi`'s `move` method - the turns will switch once the `move` method is called with a valid fen string. If no value is provided, turns will switch locally.
+
+::: code-group
+
+```vue [JavaScript]
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+const boardConfig = {
+  coordinates: false,
+  autoCastle: false,
+  orientation: 'black',
+};
+let boardApi;
+
+// Client will only be able to play white pieces.
+const playerColor = 'white';
+
+// Recieve move from socket/server/etc here.
+function onRecieveMove(move) {
+  boardApi?.move(move);
+}
+</script>
+
+<template>
+  <TheChessboard
+    :board-config="boardConfig"
+    :player-color="playerColor"
+    @board-created="(api) => (boardApi = api)"
+  />
+</template>
+```
 
 ```vue [TypeScript]
 <script setup lang="ts">
@@ -173,7 +207,7 @@ import {
   TheChessboard,
   type BoardConfig,
   type BoardApi,
-  type MovableColor,
+  type MoveableColor,
 } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
@@ -182,79 +216,38 @@ const boardConfig: BoardConfig = {
   autoCastle: false,
   orientation: 'black',
 };
-let boardAPI: BoardApi | undefined;
+let boardApi: BoardApi | undefined;
+
 // Client will only be able to play white pieces.
-const playerColor: MovableColor = 'white';
+const playerColor: MoveableColor = 'white';
 
 // Recieve move from socket/server/etc here.
 function onRecieveMove(move: string) {
-  boardAPI?.move(move);
+  boardApi?.move(move);
 }
 </script>
 
 <template>
-  <TheChessboard :board-config="boardConfig" :player-color="playerColor" />
+  <TheChessboard
+    :board-config="boardConfig"
+    :player-color="playerColor"
+    @board-created="(api) => (boardApi = api)"
+  />
 </template>
 ```
 
+:::
+
 ## `reactive-config`: Using a reactive config object
 
-The `TheChessboard` component can accept a `reactive-config` prop to allow the `board-config` prop to be reactive to changes. Any mutations of the `board-config` prop will propagate to changes of the board config. This works with nested properties in a non-destructive way, ie. setting `boardConfig.draggable = { distance: 10, showGhost: false }` won't affect the other properties of `draggable` on the actual board config, such as `draggable.enabled`. However, it will change the "default state" of the board so that if `boardAPI.resetBoard()` is called the current state of the `board-config` prop is considered to be the provided config, as if it was passed at the time of instantiation of the `TheChessboard` component.
+The `TheChessboard` component can accept a `reactive-config` prop to allow the `board-config` prop to be reactive to changes. Any mutations of the `board-config` prop will propagate to changes of the board config. This works with nested properties in a non-destructive way, i.e. setting `boardConfig.draggable = { distance: 10, showGhost: false }` won't affect the other properties of `draggable` on the actual board config, such as `draggable.enabled`. However, it will change the "default state" of the board so that if `boardAPI.resetBoard()` is called the current state of the `board-config` prop is considered to be the provided config, as if it was passed at the time of instantiation of the `TheChessboard` component.
 
 Note that prop mutation is a _one-way flow of data_, so the state of the `board-config` prop won't necessarily reflect the state of the actual board config. For example, as the game progresses the `fen` property of the `board-config` prop **will not** update.
+Use the `boardAPI` to retrieve values.
 
 See the following example for how one might make use of this feature:
 
 ::: code-group
-
-```vue [TypeScript]
-<script setup lang="ts">
-import { reactive } from 'vue';
-import { TheChessboard, type BoardConfig } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
-
-const boardConfig: BoardConfig = reactive({
-  coordinates: true,
-  viewOnly: false,
-  animation: { enabled: true },
-  draggable: { enabled: true },
-});
-</script>
-
-<template>
-  <TheChessboard :board-config="boardConfig" reactive-config />
-  <div class="buttons">
-    <button @click="boardConfig.coordinates = !boardConfig.coordinates">
-      Toggle coordinates
-    </button>
-    <button @click="boardConfig.viewOnly = !boardConfig.viewOnly">
-      Toggle view only
-    </button>
-    <button
-      @click="boardConfig.animation!.enabled = !boardConfig.animation!.enabled"
-    >
-      Toggle animations
-    </button>
-    <button
-      @click="boardConfig.draggable!.enabled = !boardConfig.draggable!.enabled"
-    >
-      Toggle draggable
-    </button>
-  </div>
-</template>
-
-<style scoped>
-.buttons {
-  padding: 5px;
-  text-align: center;
-}
-.buttons button {
-  border-radius: 5px;
-  margin: 5px;
-  padding: 5px;
-}
-</style>
-```
 
 ```vue [JavaScript]
 <script setup>
@@ -291,18 +284,43 @@ const boardConfig = reactive({
     </button>
   </div>
 </template>
+```
 
-<style scoped>
-.buttons {
-  padding: 5px;
-  text-align: center;
-}
-.buttons button {
-  border-radius: 5px;
-  margin: 5px;
-  padding: 5px;
-}
-</style>
+```vue [TypeScript]
+<script setup lang="ts">
+import { reactive } from 'vue';
+import { TheChessboard, type BoardConfig } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+const boardConfig: BoardConfig = reactive({
+  coordinates: true,
+  viewOnly: false,
+  animation: { enabled: true },
+  draggable: { enabled: true },
+});
+</script>
+
+<template>
+  <TheChessboard :board-config="boardConfig" reactive-config />
+  <div class="buttons">
+    <button @click="boardConfig.coordinates = !boardConfig.coordinates">
+      Toggle coordinates
+    </button>
+    <button @click="boardConfig.viewOnly = !boardConfig.viewOnly">
+      Toggle view only
+    </button>
+    <button
+      @click="boardConfig.animation!.enabled = !boardConfig.animation!.enabled"
+    >
+      Toggle animations
+    </button>
+    <button
+      @click="boardConfig.draggable!.enabled = !boardConfig.draggable!.enabled"
+    >
+      Toggle draggable
+    </button>
+  </div>
+</template>
 ```
 
 :::

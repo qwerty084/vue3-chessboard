@@ -4,7 +4,7 @@
 
 Emitted when a player is in check. In the event the color of the player who is in check is included.
 
-Definition:
+## Definition:
 
 ```ts
 defineEmits<{
@@ -14,15 +14,16 @@ defineEmits<{
 export type PieceColor = 'white' | 'black';
 ```
 
-Example:
+## Example:
+
 ::: code-group
 
-```vue [TypeScript]
-<script setup lang="ts">
-import { TheChessboard, type PieceColor } from 'vue3-chessboard';
+```vue [JavaScript]
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handleCheck(isInCheck: PieceColor) {
+function handleCheck(isInCheck) {
   alert(`${isInCheck} is in Check`);
 }
 </script>
@@ -32,12 +33,12 @@ function handleCheck(isInCheck: PieceColor) {
 </template>
 ```
 
-```vue [JavaScript]
-<script setup>
-import { TheChessboard } from 'vue3-chessboard';
+```vue [TypeScript]
+<script setup lang="ts">
+import { TheChessboard, type PieceColor } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handleCheck(isInCheck) {
+function handleCheck(isInCheck: PieceColor) {
   alert(`${isInCheck} is in Check`);
 }
 </script>

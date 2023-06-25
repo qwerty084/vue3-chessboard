@@ -54,4 +54,4 @@ function handleCheckmate(isMated) {
   </a>
 </div>
 
-<p class="version-number">v1.1.8</p>
+<p class="version-number">v1.2.0</p>

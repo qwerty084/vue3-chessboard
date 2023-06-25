@@ -4,7 +4,7 @@
 
 Emitted when a player is checkmated. In the event the color of the player who got checkmated is included.
 
-Definition:
+## Definition:
 
 ```ts
 defineEmits<{
@@ -14,16 +14,16 @@ defineEmits<{
 export type PieceColor = 'white' | 'black';
 ```
 
-Example:
+## Example:
 
 ::: code-group
 
-```vue [TypeScript]
-<script setup lang="ts">
-import { TheChessboard, type PieceColor } from 'vue3-chessboard';
+```vue [JavaScript]
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handleCheckmate(isMated: PieceColor) {
+function handleCheckmate(isMated) {
   alert(`${isMated} is mated`);
 }
 </script>
@@ -33,12 +33,12 @@ function handleCheckmate(isMated: PieceColor) {
 </template>
 ```
 
-```vue [JavaScript]
-<script setup>
-import { TheChessboard } from 'vue3-chessboard';
+```vue [TypeScript]
+<script setup lang="ts">
+import { TheChessboard, type PieceColor } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-function handleCheck(isMated) {
+function handleCheckmate(isMated: PieceColor) {
   alert(`${isMated} is mated`);
 }
 </script>

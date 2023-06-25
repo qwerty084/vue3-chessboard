@@ -4,20 +4,20 @@ import ChessboardExample from './ChessboardExample.vue';
 
 # Board API
 
-The board api can be used to modify and retrieve information from the board.
-You obtain the api when listening for the @board-created event.
+The `boardApi` can be used to modify and retrieve information from the board.
+You can access the api when listening for the @board-created event.
 
-Here is an example:
+## Example:
 
 ::: code-group
 
-```vue [TypeScript]
-<script setup lang="ts">
+```vue [JavaScript]
+<script setup>
 import { onMounted } from 'vue';
-import { TheChessboard, type BoardApi } from 'vue3-chessboard';
+import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-let boardAPI: BoardApi | undefined;
+let boardAPI;
 
 // access the boardAPI in the onMounted hook
 onMounted(() => {
@@ -30,12 +30,13 @@ onMounted(() => {
 </template>
 ```
 
-```vue [JavaScript]
-<script setup>
-import { TheChessboard } from 'vue3-chessboard';
+```vue [TypeScript]
+<script setup lang="ts">
+import { onMounted } from 'vue';
+import { TheChessboard, type BoardApi } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-let boardAPI;
+let boardAPI: BoardApi | undefined;
 
 // access the boardAPI in the onMounted hook
 onMounted(() => {
