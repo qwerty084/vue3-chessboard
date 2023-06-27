@@ -33,6 +33,7 @@ import type { Color, Key, MoveMetadata } from 'chessground/types';
 import type BoardConfig from '@/typings/BoardConfig';
 import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { Chessground } from 'chessground/chessground';
+import { nextTick } from 'vue';
 
 /**
  * class for modifying and reading data from the board, \
@@ -68,8 +69,10 @@ export class BoardApi {
    * syncs chess.js state with the board
    * @private
    */
-  private updateGameState(): void {
-    this.board.set({ fen: this.game.fen() });
+  private updateGameState({ updateFen = true } = {}): void {
+    if (updateFen) {
+      this.board.set({ fen: this.game.fen() });
+    }
     this.board.state.turnColor = this.getTurnColor();
     this.board.state.movable.color =
       this.props.playerColor || this.board.state.turnColor;
@@ -87,19 +90,6 @@ export class BoardApi {
    * @private
    */
   private emitEvents(): void {
-    const lastMove = this.getLastMove();
-    if (lastMove) {
-      this.emit('move', lastMove);
-    }
-
-    if (lastMove?.promotion) {
-      this.emit('promotion', {
-        color: shortToLongColor(lastMove.color),
-        promotedTo: lastMove.promotion.toUpperCase() as PromotedTo,
-        sanMove: lastMove.san,
-      });
-    }
-
     if (this.game.inCheck()) {
       for (const [key, piece] of this.board.state.pieces) {
         if (
@@ -173,13 +163,12 @@ export class BoardApi {
     const undoMove = this.game.undo();
     if (undoMove == null) return;
 
-    this.updateGameState();
+    this.board.set({ fen: undoMove.before });
+    this.updateGameState({ updateFen: false });
     const lastMove = this.getLastMove();
-    if (lastMove) {
-      this.board.state.lastMove = [lastMove?.from, lastMove?.to];
-    } else {
-      this.board.state.lastMove = undefined;
-    }
+    this.board.state.lastMove = lastMove
+      ? [lastMove?.from, lastMove?.to]
+      : undefined;
   }
 
   /**
@@ -290,7 +279,7 @@ export class BoardApi {
    * { from: 'e7', to: 'e8', promotion: 'q'}
    * @returns true if the move was made, false if the move was illegal
    */
-  move(move: Move): boolean {
+  move(move: string | Move): boolean {
     let moveEvent: MoveEvent;
 
     // TODO: handle exception based on boardConfig.movable.free
@@ -301,8 +290,29 @@ export class BoardApi {
     }
 
     this.board.move(moveEvent.from, moveEvent.to);
-    this.updateGameState();
-    this.board.playPremove();
+
+    this.emit('move', moveEvent);
+    if (moveEvent?.promotion) {
+      this.emit('promotion', {
+        color: shortToLongColor(moveEvent.color),
+        promotedTo: moveEvent.promotion.toUpperCase() as PromotedTo,
+        sanMove: moveEvent.san,
+      });
+    }
+
+    // update position if promotion or en passant capture
+    if (moveEvent.flags === 'e' || moveEvent?.promotion) {
+      // if animating, wait until after the animation to update position
+      setTimeout(
+        () => this.board.set({ fen: moveEvent.after }),
+        this.board.state.animation.current
+          ? this.board.state.animation.duration
+          : 0
+      );
+    }
+
+    this.updateGameState({ updateFen: false });
+    nextTick(this.board.playPremove);
     return true;
   }
 
@@ -447,7 +457,11 @@ export class BoardApi {
    * returns true on success, else false
    */
   putPiece(piece: Piece, square: Square): boolean {
-    return this.game.put(piece, square);
+    const result = this.game.put(piece, square);
+    if (result) {
+      this.updateGameState();
+    }
+    return result;
   }
 
   /**
@@ -521,7 +535,7 @@ export class BoardApi {
             await this.changeTurn(...args);
             userAfter(...args);
           }
-        : this.changeTurn; // in case user provided config with { movable: { event: { after: undefined } } }
+        : this.changeTurn.bind(this); // in case user provided config with { movable: { events: { after: undefined } } }
     }
 
     const { fen, ...configWithoutFen } = config;
