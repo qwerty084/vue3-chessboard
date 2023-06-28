@@ -438,6 +438,9 @@ export class BoardApi {
     return this.game.isCheckmate();
   }
 
+  /**
+   * returns true or false depending on if a player is in check
+   */
   getIsCheck(): boolean {
     return this.game.isCheck();
   }
