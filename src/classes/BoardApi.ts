@@ -70,19 +70,41 @@ export class BoardApi {
    * @private
    */
   private updateGameState({ updateFen = true } = {}): void {
-    if (updateFen) {
-      this.board.set({ fen: this.game.fen() });
-    }
-    this.board.state.turnColor = this.getTurnColor();
-    this.board.state.movable.color =
-      this.props.playerColor || this.board.state.turnColor;
-    this.board.state.movable.dests = possibleMoves(this.game);
+    if (!this.boardState.historyViewerState.isEnabled) {
+      if (updateFen) {
+        this.board.set({ fen: this.game.fen() });
+      }
 
-    if (this.boardState.showThreats) {
-      this.drawMoves();
+      this.board.state.turnColor = this.getTurnColor();
+      this.board.state.movable.color =
+        this.props.playerColor || this.board.state.turnColor;
+      this.board.state.movable.dests = possibleMoves(this.game);
+
+      this.displayInCheck(this.game.inCheck(), this.board.state.turnColor);
+
+      if (this.boardState.showThreats) {
+        this.drawMoves();
+      }
     }
 
     this.emitEvents();
+  }
+
+  /**
+   * Updates the board state to display whether the king of given color is in check
+   * @private
+   */
+  private displayInCheck(inCheck: boolean, color: Color): void {
+    if (inCheck) {
+      for (const [key, piece] of this.board.state.pieces) {
+        if (piece.role === 'king' && piece.color === color) {
+          this.board.state.check = key;
+          return;
+        }
+      }
+    } else {
+      this.board.state.check = undefined;
+    }
   }
 
   /**
@@ -91,21 +113,10 @@ export class BoardApi {
    */
   private emitEvents(): void {
     if (this.game.inCheck()) {
-      for (const [key, piece] of this.board.state.pieces) {
-        if (
-          piece.role === 'king' &&
-          piece.color === this.board?.state.turnColor
-        ) {
-          this.board.state.check = key;
-          this.emit(
-            this.game.isCheckmate() ? 'checkmate' : 'check',
-            this.board.state.turnColor
-          );
-          break;
-        }
-      }
-    } else {
-      this.board.state.check = undefined;
+      this.emit(
+        this.game.isCheckmate() ? 'checkmate' : 'check',
+        this.board.state.turnColor
+      );
     }
 
     if (this.game.isDraw()) {
@@ -163,12 +174,24 @@ export class BoardApi {
     const undoMove = this.game.undo();
     if (undoMove == null) return;
 
-    this.board.set({ fen: undoMove.before });
-    this.updateGameState({ updateFen: false });
-    const lastMove = this.getLastMove();
-    this.board.state.lastMove = lastMove
-      ? [lastMove?.from, lastMove?.to]
-      : undefined;
+    // if we were viewing the previous move, this is now the current move, so disable viewer
+    if (
+      this.boardState.historyViewerState.isEnabled &&
+      this.boardState.historyViewerState.plyViewing ===
+        this.getCurrentPlyNumber()
+    ) {
+      this.stopViewingHistory();
+    }
+
+    // if we're not viewing history, update the board
+    if (!this.boardState.historyViewerState.isEnabled) {
+      this.board.set({ fen: undoMove.before });
+      this.updateGameState({ updateFen: false });
+      const lastMove = this.getLastMove();
+      this.board.state.lastMove = lastMove
+        ? [lastMove?.from, lastMove?.to]
+        : undefined;
+    }
   }
 
   /**
@@ -300,8 +323,11 @@ export class BoardApi {
       });
     }
 
-    // update position if promotion or en passant capture
-    if (moveEvent.flags === 'e' || moveEvent?.promotion) {
+    // update position if not viewing history and move was a promotion or en passant capture
+    if (
+      !this.boardState.historyViewerState.isEnabled &&
+      (moveEvent.flags === 'e' || moveEvent?.promotion)
+    ) {
       // if animating, wait until after the animation to update position
       setTimeout(
         () => this.board.set({ fen: moveEvent.after }),
@@ -342,6 +368,18 @@ export class BoardApi {
   }
 
   /**
+   *
+   * @returns the current ply number
+   * @example e4 e5 Nf3 -> ply number is 3
+   */
+  getCurrentPlyNumber(): number {
+    return (
+      2 * this.getCurrentTurnNumber() -
+      (this.getTurnColor() === 'black' ? 1 : 2)
+    );
+  }
+
+  /**
    * returns the latest move made on the board
    */
   getLastMove(): MoveEvent | undefined {
@@ -354,6 +392,9 @@ export class BoardApi {
    * @param verbose - passing true will add more info
    * @example Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
    */
+  getHistory(): string[];
+  getHistory(verbose: false): string[];
+  getHistory(verbose: true): MoveEvent[];
   getHistory(verbose = false): MoveEvent[] | string[] {
     return this.game.history({ verbose: verbose });
   }
@@ -449,6 +490,7 @@ export class BoardApi {
    */
   setPosition(fen: string): void {
     this.game.load(fen);
+    this.boardState.historyViewerState = { isEnabled: false };
     this.updateGameState();
   }
 
@@ -469,6 +511,7 @@ export class BoardApi {
    */
   clearBoard(): void {
     this.game.clear();
+    this.boardState.historyViewerState = { isEnabled: false };
     this.updateGameState();
   }
 
@@ -486,6 +529,7 @@ export class BoardApi {
    */
   loadPgn(pgn: string): void {
     this.game.loadPgn(pgn);
+    this.boardState.historyViewerState = { isEnabled: false };
     this.updateGameState();
   }
 
@@ -542,6 +586,105 @@ export class BoardApi {
     this.board.set(configWithoutFen);
     if (fen) this.setPosition(fen);
     this.board.redrawAll();
+  }
+
+  /**
+   * Views the position at the given ply number in the game's history.
+   *
+   * @param ply - the ply number of the position to be viewed, where 0 is the initial position, 1 is
+   * after white's first move, 2 is after black's first move and so on.
+   */
+  viewHistory(ply: number): void {
+    const history = this.getHistory(true);
+
+    // if given ply is invalid, terminate function
+    if (ply < 0 || ply > history.length) return;
+
+    // if animation is enabled and ply is not within 1 of the currently viewed, disable animation
+    const disableAnimation =
+      this.board.state.animation.enabled &&
+      ((this.boardState.historyViewerState.isEnabled &&
+        Math.abs(this.boardState.historyViewerState.plyViewing - ply) !== 1) ||
+        (!this.boardState.historyViewerState.isEnabled &&
+          ply !== history.length - 1));
+    if (disableAnimation) {
+      this.board.set({ animation: { enabled: false } });
+    }
+
+    // if viewing a previous ply, view that position
+    if (ply < history.length) {
+      this.boardState.historyViewerState = { isEnabled: true, plyViewing: ply };
+
+      this.board.set({
+        fen: history[ply].before,
+        viewOnly: true,
+        lastMove:
+          ply > 0 ? [history[ply - 1].from, history[ply - 1].to] : undefined,
+        selected: undefined,
+      });
+
+      this.displayInCheck(
+        ply > 0 ? '+#'.includes(history[ply - 1].san.at(-1) as string) : false,
+        shortToLongColor(history[ply].color)
+      );
+    } else {
+      // else ply is current position, so stop viewing history
+      if (this.boardState.historyViewerState.isEnabled) {
+        this.boardState.historyViewerState = { isEnabled: false };
+
+        const lastMove = history.at(-1) as MoveEvent;
+        this.board.set({
+          fen: lastMove.after,
+          viewOnly:
+            typeof this.props.boardConfig?.viewOnly !== 'undefined'
+              ? this.props.boardConfig.viewOnly
+              : defaultBoardConfig.viewOnly,
+          lastMove: [lastMove.from, lastMove.to],
+        });
+
+        this.updateGameState({ updateFen: false });
+      }
+    }
+
+    // if animation was disabled, reenable it
+    if (disableAnimation) this.board.set({ animation: { enabled: true } });
+  }
+
+  /**
+   * Stops viewing history and returns the board to the present position, ie. after the latest move.
+   */
+  stopViewingHistory(): void {
+    if (this.boardState.historyViewerState.isEnabled) {
+      this.viewHistory(this.getCurrentPlyNumber());
+    }
+  }
+
+  /**
+   * Views the starting position of this game.
+   */
+  viewStart(): void {
+    this.viewHistory(0);
+  }
+
+  /**
+   * If viewing history, views the move after the one currently being viewed.
+   * If that move is the latest move, stops viewing history.
+   */
+  viewNext(): void {
+    if (this.boardState.historyViewerState.isEnabled) {
+      this.viewHistory(this.boardState.historyViewerState.plyViewing + 1);
+    }
+  }
+
+  /**
+   * If viewing history, views the previous move to the one currently being viewed.
+   * Else, starts viewing history and views the move previous to the latest move.
+   */
+  viewPrevious(): void {
+    const ply = this.boardState.historyViewerState.isEnabled
+      ? this.boardState.historyViewerState.plyViewing
+      : this.getCurrentPlyNumber();
+    this.viewHistory(ply - 1);
   }
 }
 

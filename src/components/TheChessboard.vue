@@ -16,6 +16,7 @@ const boardElement = ref<HTMLElement | null>(null);
 const boardState: BoardState = reactive({
   showThreats: false,
   promotionDialogState: { isEnabled: false },
+  historyViewerState: { isEnabled: false },
 });
 
 onMounted(() => {
@@ -39,7 +40,10 @@ onMounted(() => {
 <template>
   <section
     class="main-wrap"
-    :class="{ disabledBoard: boardState.promotionDialogState.isEnabled }"
+    :class="{
+      disabledBoard: boardState.promotionDialogState.isEnabled,
+      viewingHistory: boardState.historyViewerState.isEnabled,
+    }"
   >
     <div class="main-board">
       <div class="dialog-container">
