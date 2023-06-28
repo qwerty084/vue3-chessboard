@@ -312,8 +312,6 @@ export class BoardApi {
       return false;
     }
 
-    this.board.move(moveEvent.from, moveEvent.to);
-
     this.emit('move', moveEvent);
     if (moveEvent?.promotion) {
       this.emit('promotion', {
@@ -323,22 +321,24 @@ export class BoardApi {
       });
     }
 
-    // update position if not viewing history and move was a promotion or en passant capture
-    if (
-      !this.boardState.historyViewerState.isEnabled &&
-      (moveEvent.flags === 'e' || moveEvent?.promotion)
-    ) {
-      // if animating, wait until after the animation to update position
-      setTimeout(
-        () => this.board.set({ fen: moveEvent.after }),
-        this.board.state.animation.current
-          ? this.board.state.animation.duration
-          : 0
-      );
+    // Only update board if not viewing history
+    if (!this.boardState.historyViewerState.isEnabled) {
+      this.board.move(moveEvent.from, moveEvent.to);
+
+      // if move was a promotion or en passant capture, update position
+      if (moveEvent.flags === 'e' || moveEvent?.promotion) {
+        // if animating, wait until after the animation to update position
+        setTimeout(
+          () => this.board.set({ fen: moveEvent.after }),
+          this.board.state.animation.current
+            ? this.board.state.animation.duration
+            : 0
+        );
+      }
+      this.updateGameState({ updateFen: false });
+      nextTick(this.board.playPremove);
     }
 
-    this.updateGameState({ updateFen: false });
-    nextTick(this.board.playPremove);
     return true;
   }
 
@@ -627,6 +627,8 @@ export class BoardApi {
         ply > 0 ? '+#'.includes(history[ply - 1].san.at(-1) as string) : false,
         shortToLongColor(history[ply].color)
       );
+
+      this.board.cancelPremove();
     } else {
       // else ply is current position, so stop viewing history
       if (this.boardState.historyViewerState.isEnabled) {
