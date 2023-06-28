@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive, watch, type Ref } from 'vue';
+import { ref, onMounted, reactive, watch } from 'vue';
 import PromotionDialog from './PromotionDialog.vue';
 import { BoardApi } from '@/classes/BoardApi';
 import type { BoardState, Props, Emits } from '@/typings/Chessboard';
@@ -28,10 +28,10 @@ onMounted(() => {
   emit('boardCreated', boardAPI);
 
   if (props.reactiveConfig) {
-    const oldConfig: Ref<BoardConfig> = ref(deepCopy(props.boardConfig));
+    let oldConfig: BoardConfig = deepCopy(props.boardConfig);
     watch(reactive(props.boardConfig), (newConfig: BoardConfig) => {
-      boardAPI.setConfig(deepDiffConfig(oldConfig.value, newConfig));
-      oldConfig.value = deepCopy(newConfig);
+      boardAPI.setConfig(deepDiffConfig(oldConfig, newConfig));
+      oldConfig = deepCopy(newConfig);
     });
   }
 });
