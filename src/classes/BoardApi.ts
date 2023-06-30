@@ -534,6 +534,12 @@ export class BoardApi {
     this.game.loadPgn(pgn);
     this.boardState.historyViewerState = { isEnabled: false };
     this.updateGameState();
+
+    // show last move if there is one
+    const lastMove = this.getLastMove();
+    if (lastMove) {
+      this.board.set({ lastMove: [lastMove.from, lastMove.to] });
+    }
   }
 
   /**
@@ -616,7 +622,15 @@ export class BoardApi {
 
     // if viewing a previous ply, view that position
     if (ply < history.length) {
-      this.boardState.historyViewerState = { isEnabled: true, plyViewing: ply };
+      if (!this.boardState.historyViewerState.isEnabled) {
+        this.boardState.historyViewerState = {
+          isEnabled: true,
+          plyViewing: ply,
+          viewOnly: this.board.state.viewOnly,
+        };
+      } else {
+        this.boardState.historyViewerState.plyViewing = ply;
+      }
 
       this.board.set({
         fen: history[ply].before,
@@ -635,18 +649,15 @@ export class BoardApi {
     } else {
       // else ply is current position, so stop viewing history
       if (this.boardState.historyViewerState.isEnabled) {
-        this.boardState.historyViewerState = { isEnabled: false };
-
         const lastMove = history.at(-1) as MoveEvent;
+
         this.board.set({
           fen: lastMove.after,
-          viewOnly:
-            typeof this.props.boardConfig?.viewOnly !== 'undefined'
-              ? this.props.boardConfig.viewOnly
-              : defaultBoardConfig.viewOnly,
+          viewOnly: this.boardState.historyViewerState.viewOnly,
           lastMove: [lastMove.from, lastMove.to],
         });
 
+        this.boardState.historyViewerState = { isEnabled: false };
         this.updateGameState({ updateFen: false });
       }
     }

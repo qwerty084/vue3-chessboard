@@ -94,4 +94,5 @@ export type HistoryViewerState =
   | {
       isEnabled: true;
       plyViewing: number;
+      viewOnly: boolean;
     };
