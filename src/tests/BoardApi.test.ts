@@ -278,6 +278,103 @@ describe.concurrent('Test the board API', () => {
     expect((boardApi as any).board.state.drawable.enabled).toBe(true);
     expect((boardApi as any).board.state.drawable.visible).toBe(false);
   });
+
+  /**  
+   * History Viewer Tests:
+   */
+  it('views game history', () => {
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(false);
+    boardApi.move('e4');
+    boardApi.move('e5');
+    boardApi.move('d4');
+    boardApi.move('exd4');
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(false);
+    boardApi.viewHistory(1);
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(1);
+    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');    
+  });
+  
+  it('views the previous move when not viewing history', () => {
+    boardApi.move('e4');
+    boardApi.move('e5');
+    boardApi.viewPrevious();
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(1);
+    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+  });
+  
+  it('views the previous move when already viewing history', () => {
+    boardApi.move('e4');
+    boardApi.move('e5');
+    boardApi.viewPrevious();
+    boardApi.viewPrevious();
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(0);
+    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  });
+  
+  it('views the next move when viewing history', () => {
+    boardApi.move('e4');
+    boardApi.move('e5');
+    boardApi.viewHistory(0);
+    boardApi.viewNext();
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(1);
+    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+  });
+  
+  it('views the first turn', () => {
+    boardApi.move('e4');
+    boardApi.move('e5');
+    boardApi.viewStart();
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(0);
+    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  });
+  
+  it('stops viewing history', () => {
+    boardApi.move('e4');
+    boardApi.viewHistory(0);
+    boardApi.stopViewingHistory();
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(false);
+    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+  });
+  
+  it('enableds viewOnly when viewing history', () => {
+    expect((boardApi as any).board.state.viewOnly).toBe(false);
+    boardApi.move('e4');
+    boardApi.viewHistory(0);
+    expect((boardApi as any).board.state.viewOnly).toBe(true);
+  });
+  
+  it('disableds viewOnly when stopping viewing history if it should be disabled', () => {
+    expect((boardApi as any).board.state.viewOnly).toBe(false);
+    boardApi.move('e4');
+    boardApi.viewHistory(0);
+    boardApi.stopViewingHistory();
+    expect((boardApi as any).board.state.viewOnly).toBe(false);
+  });
+  
+  it('keeps viewOnly enabled when stopping viewing history if it should be enabled', () => {
+    boardApi.setConfig({ viewOnly: true })
+    expect((boardApi as any).board.state.viewOnly).toBe(true);
+    boardApi.move('e4');
+    boardApi.viewHistory(0);
+    boardApi.stopViewingHistory();
+    expect((boardApi as any).board.state.viewOnly).toBe(true);
+  });
+    
+  it('keeps animation enabled if it should be enabled', () => {
+    expect((boardApi as any).board.state.animation.enabled).toBe(true);
+    boardApi.move('e4');
+    boardApi.move('e5');
+    boardApi.viewStart();
+    expect((boardApi as any).board.state.animation.enabled).toBe(true);
+    boardApi.stopViewingHistory();
+    expect((boardApi as any).board.state.animation.enabled).toBe(true);
+  });
+  
 });
 
 export {};
