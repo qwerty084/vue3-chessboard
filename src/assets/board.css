@@ -345,6 +345,11 @@ cg-board .king.black {
   pointer-events: none;
 }
 
+.viewingHistory {
+  filter: saturate(60%);
+  transition: 0.25s filter linear;
+}
+
 .promotion-dialog {
   padding: 0.4rem 0.8rem 0.8rem 0.8rem;
   position: relative;

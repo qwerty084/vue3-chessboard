@@ -1,5 +1,6 @@
 <script setup>
 import ChessboardExample from './ChessboardExample.vue';
+import HistoryViewerExample from './HistoryViewerExample.vue';
 </script>
 
 # Board API
@@ -132,9 +133,16 @@ getPossibleMoves(): Map<Key, Key[]> | undefined;
 getCurrentTurnNumber(): number;
 
 /**
+ *
+ * @returns the current ply number
+ * @example e4 e5 Nf3 -> ply number is 3
+ */
+getCurrentPlyNumber(): number;
+
+/**
  * returns the latest move made on the board
  */
-getLastMove(): Move | undefined;
+getLastMove(): MoveEvent | undefined;
 
 /**
  * Retrieves the move history.
@@ -142,7 +150,7 @@ getLastMove(): Move | undefined;
  * @param verbose - passing true will add more info
  * @example Verbose: [{"color": "w", "from": "e2", "to": "e4", "flags": "b", "piece": "p", "san": "e4"}],  without verbose flag: [ "e7", "e5" ]
  */
-getHistory(verbose?: boolean): Move[] | string[];
+getHistory(verbose?: boolean): MoveEvent[] | string[];
 
 /**
  * Returns the FEN string for the current position.
@@ -174,6 +182,11 @@ getIsGameOver(): boolean;
 getIsCheckmate(): boolean;
 
 /**
+ * returns true or false depending on if a player is in check
+ */
+getIsCheck(): boolean;
+
+/**
  * returns true or false depending on if a player is in stalemate
  */
 getIsStalemate(): boolean;
@@ -196,7 +209,7 @@ getIsInsufficientMaterial(): boolean;
 /**
  * returns the color of a given square
  */
-getSquareColor(square: string): SquareColor | null;
+getSquareColor(square: Square): SquareColor;
 
 /**
  * Returns the piece on the square or null if there is no piece
@@ -261,9 +274,47 @@ getPgnInfo(): {
  * @param fillDefaults - if true unprovided config options will be substituted with default values, if
  * false the unprovided options will remain unchanged.
  */
-setConfig(config: BoardConfig, fillDefaults = false): void {
+setConfig(config: BoardConfig, fillDefaults = false): void;
+
+/**
+ * Views the position at the given ply number in the game's history.
+ *
+ * @param ply - the ply number of the position to be viewed, where 0 is the initial position, 1 is
+ * after white's first move, 2 is after black's first move and so on.
+ */
+viewHistory(ply: number): void;
+
+/**
+ * Stops viewing history and returns the board to the present position, ie. after the latest move.
+ */
+stopViewingHistory(): void;
+
+/**
+ * Views the starting position of this game.
+ */
+viewStart(): void;
+
+/**
+ * If viewing history, views the move after the one currently being viewed.
+ * If that move is the latest move, stops viewing history.
+ */
+viewNext(): void;
+
+/**
+ * If viewing history, views the previous move to the one currently being viewed.
+ * Else, starts viewing history and views the move previous to the latest move.
+ */
+viewPrevious(): void;
+
 ```
 
 ## Example Board API Usage
 
 <ChessboardExample />
+
+
+## Example Game History Viewer Usage
+
+<HistoryViewerExample />
+
+When viewing game history, the `viewingHistory` class is applied to the `main-wrap` element. This allows custom styles to be applied to the board only when viewing the history (by default, the board is desaturated).

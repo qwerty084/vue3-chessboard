@@ -68,6 +68,7 @@ export interface Props {
 export interface BoardState {
   showThreats: boolean;
   promotionDialogState: PromotionDialogState;
+  historyViewerState: HistoryViewerState;
 }
 
 export interface PromotionDialogState {
@@ -85,3 +86,13 @@ export interface PromotionEvent {
 export type PromotedTo = PromotionEvent['promotedTo'];
 
 export type MoveEvent = FullMove;
+
+export type HistoryViewerState =
+  | {
+      isEnabled: false;
+    }
+  | {
+      isEnabled: true;
+      plyViewing: number;
+      viewOnly: boolean;
+    };
