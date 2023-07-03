@@ -1,3 +1,15 @@
+## v1.2.0 (2023-07-03)
+
+### Features
+
+- `reactive-config` - the board config object can now be made reactive ([#190](https://github.com/qwerty084/vue3-chessboard/pull/190)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/props.html#reactive-config-using-a-reactive-config-object) for
+  more information.
+- `history-viewer` - the board component now contains a history viewer ([#200](https://github.com/qwerty084/vue3-chessboard/pull/200)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html#example-game-history-viewer-usage) for
+  more information.
+
+### Bug fixes
+- `boardAPI` - the board api should not be used with a ref, as shown in earlier versions in the documentation. Please refer to the new documentation. Since using a ref can cause performance issues.
+
 ## 1.1.8 (2023-06-04)
 
 ### Features
