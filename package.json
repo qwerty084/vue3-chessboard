@@ -1,6 +1,6 @@
 {
   "name": "vue3-chessboard",
-  "version": "1.2.0-beta.1",
+  "version": "1.2.0",
   "description": "vue3-chessboard is a component library for creating chess web apps with vue3",
   "homepage": "https://qwerty084.github.io/vue3-chessboard/",
   "keywords": [
