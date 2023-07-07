@@ -7,7 +7,7 @@
 - `history-viewer` - the board component now contains a history viewer ([#200](https://github.com/qwerty084/vue3-chessboard/pull/200)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html#example-game-history-viewer-usage) for
   more information.
 
-### Bug fixes
+### Other
 - `boardAPI` - the board api should not be used with a ref, as shown in earlier versions in the documentation. Please refer to the new documentation. Since using a ref can cause performance issues.
 
 ## 1.1.8 (2023-06-04)

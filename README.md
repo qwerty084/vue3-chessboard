@@ -2,20 +2,17 @@
 
 [![Unit Tests](https://github.com/qwerty084/vue3-chessboard/actions/workflows/tests.yml/badge.svg)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/qwerty084/vue3-chessboard/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/codeql.yml)
-[![Docs](https://github.com/qwerty084/vue3-chessboard/actions/workflows/deploy-docs.yml/badge.svg?branch=main)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/deploy-docs.yml)
 [![npm](https://img.shields.io/npm/v/vue3-chessboard)](https://www.npmjs.com/package/vue3-chessboard)
 
-Vue3 chessboard component built with:
+Vue 3 chessboard component library built with:
 
 - [lichess chessground](https://github.com/lichess-org/chessground)
 - [chess.js](https://github.com/jhlywa/chess.js)
 - [vue.js](https://github.com/vuejs/core)
 
-Based on [vue-chessboard](https://github.com/vitogit/vue-chessboard) a Vue2 chessboard component.
-
 ![Chessboard](https://media3.giphy.com/media/cWw6eHQ7AmjDXbWm6w/giphy.gif?cid=790b7611cce1bb251c4ae6a786ea4dc8be97b1563f59d989&rid=giphy.gif&ct=g)
 
-You can find the demo and full documentation [here](https://qwerty084.github.io/vue3-chessboard/).
+You can find a demo and full documentation [here](https://qwerty084.github.io/vue3-chessboard/).
 
 ## Table of contents
 
@@ -27,12 +24,10 @@ You can find the demo and full documentation [here](https://qwerty084.github.io/
 # Features:
 
 - Customizable chessboard
-- Custom Events for check, checkmate, draw etc.
-- Undo Moves, reset game, show threats/possible Moves, get opening name
-- Show material count
+- Custom Events for check, checkmate, draw, move etc.
+- Undo Moves, reset game, get opening name, get current fen...
 - Promotion dialog window
 - Fully typed API/Custom Events
-- and many more...
 
 # Installation
 
@@ -58,7 +53,6 @@ import 'vue3-chessboard/style.css';
 Basic Example (Options API)
 
 ```html
-
 <template>
   <TheChessboard />
 </template>
@@ -81,12 +75,11 @@ Example Typescript Component
 
 ```html
 <script setup lang="ts">
-import { ref } from 'vue';
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 import type { BoardApi, BoardConfig } from 'vue3-chessboard';
 
-const boardAPI = ref<BoardApi>();
+let boardAPI: BoardApi;
 const boardConfig: BoardConfig = {
   coordinates: false,
 };
@@ -123,11 +116,11 @@ Example Javascript Component
 
 ```html
 <script setup>
-import { ref } from 'vue';
+
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardAPI = ref();
+let boardAPI;
 const boardConfig = {
   coordinates: false,
 };
@@ -180,11 +173,11 @@ For example a custom function can be run on piece selection or after each move.
 
 <br>
 
-### Chessboard API
+### API
 
 The chessboard component provides a class based API to interact with the chessboard. The API is accessible via the board-created event. The event will be emitted when the chessboard is created and the API is ready to use.
 
-#### Available methods:
+### Available methods:
 
 For a full list of available methods please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html).
 
@@ -198,6 +191,7 @@ You can listen for events on the chessboard component. The following events are 
 - draw - Emitted when the game is drawn
 - check - Emitted when a player is checked
 - promotion - Emitted when a player promotes
+- move - Emitted when a player makes a move
 
 ```ts
 const emit = defineEmits<{
