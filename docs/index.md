@@ -32,6 +32,16 @@ function handleCheckmate(isMated) {
   }
   boardAPI?.resetBoard();
 }
+
+function handleCheck(isChecked) {
+  console.log(isChecked)
+  if (isChecked === 'w') {
+    alert('White is in check!');
+  } else {
+    alert('Black is in check!');
+  }
+}
+
 </script>
 
 # vue3-chessboard
@@ -39,9 +49,24 @@ function handleCheckmate(isMated) {
 ## A vue.js component library
 
 <div class="chessboard">
+  <div class="buttons">
+    <button @click="boardAPI.toggleOrientation">
+      Toggle orientation
+    </button>
+    <button @click="boardAPI.resetBoard">
+      Reset Board
+    </button>
+    <button @click="boardAPI.undoLastMove">
+      Undo last move
+    </button>
+    <button @click="boardAPI.toggleMoves">
+      Toggle possible moves/captures
+    </button>
+  </div>
   <TheChessboard
     @board-created="(api) => (boardAPI = api)"
     @checkmate="handleCheckmate"
+    @check="handleCheck"
   />
 </div>
 
