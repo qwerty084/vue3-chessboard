@@ -34,7 +34,7 @@ function handleCheckmate(isMated) {
 }
 </script>
 
-# Vue3-Chessboard
+# vue3-chessboard
 
 ## A vue.js component library
 
