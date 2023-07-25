@@ -1,3 +1,7 @@
+html {
+  overflow-y: scroll;
+}
+
 .flex {
   display: flex;
   align-items: center;
@@ -17,6 +21,10 @@
 .chessboard .main-wrap {
   width: 99%;
   max-width: 600px;
+}
+
+.chessboard .buttons {
+  margin-bottom: 10px;
 }
 
 coords.files {
@@ -70,9 +78,11 @@ h1 {
   padding: 5px;
   text-align: center;
 }
+
 .buttons .activated {
   background-color: #888;
 }
+
 .buttons button {
   background-color: #555;
   border-radius: 5px;
