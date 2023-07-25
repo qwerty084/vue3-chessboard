@@ -116,7 +116,6 @@ Example Javascript Component
 
 ```html
 <script setup>
-
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
@@ -170,8 +169,6 @@ You can pass a config object to the chessboard component to modify the board to 
 The default config is based on the [lichess board config](https://github.com/lichess-org/chessground/blob/master/src/state.ts).
 Additionally custom callback functions can be passed to the component.
 For example a custom function can be run on piece selection or after each move.
-
-<br>
 
 ### API
 
