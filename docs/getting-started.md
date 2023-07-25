@@ -2,7 +2,7 @@
 
 ## About
 
-Vue3-chessboard is a component library for vue 3 written in TypeScript, using the <a href="https://github.com/lichess-org/chessground">lichess chessground</a> and <a href="https://github.com/jhlywa/chess.js">chess.js</a> for the board logic.
+vue3-chessboard is a component library for vue 3 written in TypeScript, using the <a href="https://github.com/lichess-org/chessground">lichess chessground</a> and <a href="https://github.com/jhlywa/chess.js">chess.js</a> for the board logic.
 <br>
 
 ## Installation
