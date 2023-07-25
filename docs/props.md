@@ -265,7 +265,7 @@ const boardConfig = reactive({
 
 <template>
   <TheChessboard :board-config="boardConfig" reactive-config />
-  <div class="buttons">
+  <div>
     <button @click="boardConfig.coordinates = !boardConfig.coordinates">
       Toggle coordinates
     </button>
@@ -302,7 +302,7 @@ const boardConfig: BoardConfig = reactive({
 
 <template>
   <TheChessboard :board-config="boardConfig" reactive-config />
-  <div class="buttons">
+  <div>
     <button @click="boardConfig.coordinates = !boardConfig.coordinates">
       Toggle coordinates
     </button>
