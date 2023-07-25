@@ -4,15 +4,11 @@
 [![CodeQL](https://github.com/qwerty084/vue3-chessboard/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/qwerty084/vue3-chessboard/actions/workflows/codeql.yml)
 [![npm](https://img.shields.io/npm/v/vue3-chessboard)](https://www.npmjs.com/package/vue3-chessboard)
 
-Vue 3 chessboard component library built with:
-
-- [lichess chessground](https://github.com/lichess-org/chessground)
-- [chess.js](https://github.com/jhlywa/chess.js)
-- [vue.js](https://github.com/vuejs/core)
+vue3-chesssboard is a component library for vue 3 built with [lichess chessground](https://github.com/lichess-org/chessground) & [chess.js](https://github.com/jhlywa/chess.js).
 
 ![Chessboard](https://media3.giphy.com/media/cWw6eHQ7AmjDXbWm6w/giphy.gif?cid=790b7611cce1bb251c4ae6a786ea4dc8be97b1563f59d989&rid=giphy.gif&ct=g)
 
-You can find a demo and full documentation [here](https://qwerty084.github.io/vue3-chessboard/).
+You can find a demo and the full library documentation [here](https://qwerty084.github.io/vue3-chessboard/).
 
 ## Table of contents
 
