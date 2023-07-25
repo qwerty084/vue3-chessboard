@@ -2,12 +2,13 @@
 
 ### Features
 
-- `reactive-config` - the board config object can now be made reactive ([#190](https://github.com/qwerty084/vue3-chessboard/pull/190)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/props.html#reactive-config-using-a-reactive-config-object) for
+- `reactive-config` - the board config object can now be made reactive ([#190](https://github.com/qwerty084/vue3-chessboard/pull/190)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://chessboard.lucahelms.dev/props.html#reactive-config-using-a-reactive-config-object) for
   more information.
-- `history-viewer` - the board component now contains a history viewer ([#200](https://github.com/qwerty084/vue3-chessboard/pull/200)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html#example-game-history-viewer-usage) for
+- `history-viewer` - the board component now contains a history viewer ([#200](https://github.com/qwerty084/vue3-chessboard/pull/200)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://chessboard.lucahelms.dev/board-api.html#example-game-history-viewer-usage) for
   more information.
 
 ### Other
+
 - `boardAPI` - the board api should not be used with a ref, as shown in earlier versions in the documentation. Please refer to the new documentation. Since using a ref can cause performance issues.
 
 ## 1.1.8 (2023-06-04)
@@ -113,9 +114,9 @@
 
 ### v1.0.0. includes some breaking changes. Only breaking changes will be listed here. Refer to the new documentation to update your app to v1.0.0
 
-- callback functions as props have been removed. Take a look at the [documentation](https://qwerty084.github.io/vue3-chessboard/callbacks.html) to see how to register callbacks in v1.0.0.
-- board and game from the boardAPI have been made private. You need to use the corresponding method to achieve the same result. Visit the [docs](https://qwerty084.github.io/vue3-chessboard/board-api.html) to get an overview of all available methods.
-- If you encounter any issues visit the [docs](https://qwerty084.github.io/vue3-chessboard/) or open an [issue](https://github.com/qwerty084/vue3-chessboard/issues/new/choose).
+- callback functions as props have been removed. Take a look at the [documentation](https://chessboard.lucahelms.dev/callbacks.html) to see how to register callbacks in v1.0.0.
+- board and game from the boardAPI have been made private. You need to use the corresponding method to achieve the same result. Visit the [docs](https://chessboard.lucahelms.dev/board-api.html) to get an overview of all available methods.
+- If you encounter any issues visit the [docs](https://chessboard.lucahelms.dev) or open an [issue](https://github.com/qwerty084/vue3-chessboard/issues/new/choose).
 
 ## 0.0.9 (2022-11-13)
 

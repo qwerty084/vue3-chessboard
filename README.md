@@ -8,7 +8,7 @@ vue3-chesssboard is a component library for vue 3 built with [lichess chessgroun
 
 ![Chessboard](https://media3.giphy.com/media/cWw6eHQ7AmjDXbWm6w/giphy.gif?cid=790b7611cce1bb251c4ae6a786ea4dc8be97b1563f59d989&rid=giphy.gif&ct=g)
 
-You can find a demo and the full library documentation [here](https://qwerty084.github.io/vue3-chessboard/).
+You can find a demo and the full library documentation [here](https://chessboard.lucahelms.dev).
 
 ## Table of contents
 
@@ -149,7 +149,7 @@ function handleCheckmate(isMated) {
 ```
 
 # Docs
-You can find the full documentation [here](https://qwerty084.github.io/vue3-chessboard/).
+You can find the full documentation [here](https://chessboard.lucahelms.dev).
 
 ## Setup:
 
@@ -172,7 +172,7 @@ The chessboard component provides a class based API to interact with the chessbo
 
 ### Available methods:
 
-For a full list of available methods please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html).
+For a full list of available methods please visit the [documentation](https://chessboard.lucahelms.dev/board-api.html).
 
 ### Custom Events
 
