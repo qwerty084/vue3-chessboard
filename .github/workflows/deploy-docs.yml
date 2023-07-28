@@ -2,7 +2,10 @@ name: Docs
 
 on:
   release:
-    types: [created]
+    types: created
+
+  push:
+    branches: main
 
   workflow_dispatch:
 
@@ -12,7 +15,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: pages
   cancel-in-progress: true
 
 jobs:
@@ -28,8 +31,6 @@ jobs:
           node-version: 18
       - name: install npm dependencies
         run: npm ci
-      - name: build files
-        run: npm run build
       - name: build docs files
         run: npm run docs:build
       - name: Setup Pages
@@ -42,7 +43,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
 
-  # Deployment job
   deploy:
     environment:
       name: github-pages

@@ -176,11 +176,6 @@ The board can accept a _player-color_ prop to denote the color that the correspo
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardConfig = {
-  coordinates: false,
-  autoCastle: false,
-  orientation: 'black',
-};
 let boardApi;
 
 // Client will only be able to play white pieces.
@@ -194,7 +189,6 @@ function onRecieveMove(move) {
 
 <template>
   <TheChessboard
-    :board-config="boardConfig"
     :player-color="playerColor"
     @board-created="(api) => (boardApi = api)"
   />
@@ -211,11 +205,6 @@ import {
 } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-const boardConfig: BoardConfig = {
-  coordinates: false,
-  autoCastle: false,
-  orientation: 'black',
-};
 let boardApi: BoardApi | undefined;
 
 // Client will only be able to play white pieces.
@@ -229,7 +218,6 @@ function onRecieveMove(move: string) {
 
 <template>
   <TheChessboard
-    :board-config="boardConfig"
     :player-color="playerColor"
     @board-created="(api) => (boardApi = api)"
   />
