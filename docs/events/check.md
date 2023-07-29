@@ -4,7 +4,7 @@
 
 Emitted when a player is in check. In the event the color of the player who is in check is included.
 
-## Definition:
+## Definition
 
 ```ts
 defineEmits<{
@@ -14,7 +14,7 @@ defineEmits<{
 export type PieceColor = 'white' | 'black';
 ```
 
-## Example:
+## Example
 
 ::: code-group
 

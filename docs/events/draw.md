@@ -4,7 +4,7 @@
 
 Emitted when the game ends in a draw.
 
-## Definition:
+## Definition
 
 ```ts
 defineEmits<{
@@ -12,7 +12,7 @@ defineEmits<{
 }>();
 ```
 
-## Example:
+## Example
 
 ::: code-group
 

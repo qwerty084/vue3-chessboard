@@ -4,7 +4,7 @@
 
 Emitted when a promotion occurs.
 
-## Definition:
+## Definition
 
 ```ts
 defineEmits<{
@@ -18,7 +18,7 @@ export interface PromotionEvent {
 }
 ```
 
-## Example:
+## Example
 
 ::: code-group
 

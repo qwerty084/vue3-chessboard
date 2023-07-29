@@ -1,10 +1,10 @@
-# Move Event
+# Move
 
 <br>
 
 This event is emitted after every move on the board.
 
-## Definition:
+## Definition
 
 ```ts
 defineEmits<{
@@ -26,7 +26,7 @@ type MoveEvent = {
 };
 ```
 
-## Example:
+## Example
 
 ::: code-group
 

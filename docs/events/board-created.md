@@ -5,7 +5,7 @@
 When the board component is mounted the board-created event is being emitted.
 In this event the `boardAPI` is included, which you can use to modify and extract data from the board through it's methods.
 
-## Definition:
+## Definition
 
 ```ts
 defineEmits<{
@@ -15,7 +15,7 @@ defineEmits<{
 
 <p>Full reference of all methods: <a href="/board-api.html">Board API Docs</a> | <a href="https://github.com/qwerty084/vue3-chessboard/blob/main/src/classes/BoardApi.ts">Source Code</a></p>
 
-## Example:
+## Example
 
 ::: code-group
 
