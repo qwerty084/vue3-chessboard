@@ -1,8 +1,6 @@
-# Board Events
+# Available Events
 
 <br>
-
-## Available Events
 
 - boardCreated (emitted when the board is created)
 - checkmate (Emitted when one player is mated)

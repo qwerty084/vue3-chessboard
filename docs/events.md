@@ -87,9 +87,9 @@ function handleDraw() {
 }
 </script>
 
-# Board Events
+# Available Events
 
-## Available Events
+## Events
 
 - `boardCreated` - emitted when the board is created and the boardAPI is available
 - `checkmate` - emitted when one player is mated
@@ -118,7 +118,7 @@ const emit = defineEmits<{
 In the following examples you will see an alert when an event was emitted. <br>
 Hit the play button, to see the events in action.
 
-### Check
+## Check
 
 ::: code-group
 
@@ -173,7 +173,7 @@ function handleCheck(isInCheck: PieceColor) {
   />
 </div>
 
-## Move Event
+## Move
 
 You can listen of moves on the board and get information about the move
 

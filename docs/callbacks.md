@@ -28,9 +28,9 @@ const square = ref('');
 
 </script>
 
-# Board Callbacks
+# Callbacks
 
-## Registering Callback functions
+## Registering
 
 You can register custom callback functions on the board through the config object.
 Like other config property, this is optional.
@@ -104,9 +104,7 @@ const boardConfig: BoardConfig = {
 
 :::
 
-### Example
-
-<br>
+## Example
 
 <p>Change Counter: {{ changeCounter }}</p>
 <p>Latest Move: {{lastMove }}</p>

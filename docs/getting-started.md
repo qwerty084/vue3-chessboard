@@ -23,13 +23,7 @@ pnpm install vue3-chessboard
 
 :::
 
-## Import the component
-
-In the following you will see the most basic setup to get started. <br>
-Later you will be shown more advanced configurations and event listeners.
-<br><br>
-For each code example there is always a JavaScript and TypeScript version.
-Just copy the code for your prefered language in a \*.vue file to get started. <br>
+## Basic Example
 
 ::: code-group
 
@@ -56,6 +50,3 @@ import 'vue3-chessboard/style.css';
 ```
 
 :::
-
-<br>
-Now the chessboard should be visible and you will be able to make moves 🚀

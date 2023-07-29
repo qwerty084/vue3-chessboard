@@ -1,9 +1,8 @@
 # Contributing
 
 Contributions are very welcome. Thanks for your interest!
-<br>
 
-If you want to add a feature or fix a bug, just clone the project.
+## Setup the project
 
 ::: code-group
 
@@ -37,27 +36,27 @@ Now you can start developing 🚀
 
 ## Creating a Pull Request
 
-After adding your feature/bug fix please run the following scripts.
+After adding your feature/bugfix please run the following scripts.
 
-format your code
+Format your changes
 
 ```sh
 npm run format
 ```
 
-type check your code
+Type check your chages
 
 ```sh
 npm run type-check
 ```
 
-lint your changes
+Lint your changes
 
 ```sh
 npm run lint
 ```
 
-test your changes
+Test your changes
 
 ```sh
 npm run test

@@ -6,4 +6,4 @@ I you have found a bug please open an issue on [GitHub](https://github.com/qwert
 
 Or contact my via email: [github@lucahelms.dev](mailto:github@lucahelms.dev)
 
-I want to fix the bug yourself, contributions are very welcome!
+If you want to fix the bug yourself, contributions are very welcome!

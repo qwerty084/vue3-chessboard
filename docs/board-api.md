@@ -8,7 +8,7 @@ import HistoryViewerExample from './HistoryViewerExample.vue';
 The `boardApi` can be used to modify and retrieve information from the board.
 You can access the api when listening for the @board-created event.
 
-## Example:
+## Example
 
 ::: code-group
 
@@ -311,7 +311,6 @@ viewPrevious(): void;
 ## Example Board API Usage
 
 <ChessboardExample />
-
 
 ## Example Game History Viewer Usage
 
