@@ -75,6 +75,17 @@ undoLastMove(): void;
 getMaterialCount(): MaterialDifference;
 
 /**
+ * Finds all the captured pieces from the game history.
+ *
+ * Note: results may be innaccurate if game history has been lost, eg. if
+ * setPosition has been called.
+ *
+ * @returns an object with white and black properties whose values are arrays
+ * of all the pieces captured by that player this game.
+ */
+getCapturedPieces(): CapturedPieces;
+
+/**
  * toggles the board orientation.
  */
 toggleOrientation(): void;
