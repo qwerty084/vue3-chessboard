@@ -37,10 +37,7 @@ import type { Color, Key, MoveMetadata } from 'chessground/types';
 import { nextTick } from 'vue';
 
 /**
- * class for modifying and reading data from the board, \
- * extends the lichess chessground api & chess.js api \
- * lichess documentation: https://github.com/lichess-org/chessground/blob/master/src/api.ts \
- * chess.js documentation: https://github.com/jhlywa/chess.js/blob/master/README.md
+ * class for modifying and reading data from the board
  */
 export class BoardApi {
   private game: Chess;
@@ -77,9 +74,15 @@ export class BoardApi {
       }
 
       this.board.state.turnColor = this.getTurnColor();
-      this.board.state.movable.color =
-        this.props.playerColor || this.board.state.turnColor;
-      this.board.state.movable.dests = possibleMoves(this.game);
+
+      if (this.board.state.movable.free) {
+        this.board.state.movable.color = 'both';
+        this.board.state.movable.dests = new Map();
+      } else {
+        this.board.state.movable.color =
+          this.props.playerColor || this.board.state.turnColor;
+        this.board.state.movable.dests = possibleMoves(this.game);
+      }
 
       this.displayInCheck(this.game.inCheck(), this.board.state.turnColor);
 
@@ -136,10 +139,9 @@ export class BoardApi {
   private async changeTurn(
     orig: Key,
     dest: Key,
-    _metadata: MoveMetadata
+    _: MoveMetadata
   ): Promise<void> {
     let selectedPromotion: Promotion | undefined = undefined;
-
     if (isPromotion(dest, this.game.get(orig as Square))) {
       selectedPromotion = await new Promise((resolve) => {
         this.boardState.promotionDialogState = {
@@ -328,10 +330,13 @@ export class BoardApi {
   move(move: string | Move): boolean {
     let moveEvent: MoveEvent;
 
-    // TODO: handle exception based on boardConfig.movable.free
     try {
       moveEvent = this.game.move(move);
     } catch {
+      if (typeof move === 'object' && this.board.state.movable.free) {
+        this.board.move(move.from, move.to);
+        this.updateGameState({ updateFen: false });
+      }
       return false;
     }
 
