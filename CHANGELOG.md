@@ -1,3 +1,13 @@
+## v1.2.1 (2023-08-02)
+
+### Features
+
+- `getCapturedPieces` api method ([#216](https://github.com/qwerty084/vue3-chessboard/pull/216)) @[gavin-lb](https://github.com/gavin-lb)
+
+### Bug fixes
+
+- fixed config option `movable.free = true`, not being able to make moves after the first one (promotions are still buggy in this mode)
+
 ## v1.2.0 (2023-07-03)
 
 ### Features
@@ -8,6 +18,7 @@
   more information.
 
 ### Other
+
 - `boardAPI` - the board api should not be used with a ref, as shown in earlier versions in the documentation. Please refer to the new documentation. Since using a ref can cause performance issues.
 
 ## 1.1.8 (2023-06-04)
