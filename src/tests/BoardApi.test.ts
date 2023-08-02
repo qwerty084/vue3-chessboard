@@ -1,7 +1,7 @@
-import { expect, it, describe, beforeEach } from 'vitest';
-import { makeStalemate, mountComponent, resetBoard } from './helper/Helper';
-import { initialPos } from '@/helper/DefaultConfig';
 import type { BoardApi } from '@/classes/BoardApi';
+import { initialPos } from '@/helper/DefaultConfig';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { makeStalemate, mountComponent, resetBoard } from './helper/Helper';
 
 describe.concurrent('Test the board API', () => {
   const wrapper = mountComponent();
@@ -70,6 +70,37 @@ describe.concurrent('Test the board API', () => {
     expect(materialCountAfterReset.materialWhite).toBe(39);
     expect(materialCountAfterReset.materialBlack).toBe(39);
     expect(materialCountAfterReset.materialDiff).toBe(0);
+  });
+
+  it('returns the captured pieces', () => {
+    expect(boardApi.getCapturedPieces()).toEqual({ white: [], black: [] });
+    boardApi.move('e4');
+    boardApi.move('d5');
+    boardApi.move('exd5');
+    expect(boardApi.getCapturedPieces()).toEqual({ white: ['p'], black: [] });
+    boardApi.move('Qxd5');
+    expect(boardApi.getCapturedPieces()).toEqual({
+      white: ['p'],
+      black: ['p'],
+    });
+    boardApi.move('c4');
+    boardApi.move('e6');
+    boardApi.move('cxd5');
+    expect(boardApi.getCapturedPieces()).toEqual({
+      white: ['p', 'q'],
+      black: ['p'],
+    });
+    boardApi.move('exd5');
+    expect(boardApi.getCapturedPieces()).toEqual({
+      white: ['p', 'q'],
+      black: ['p', 'p'],
+    });
+    boardApi.move('Bc4');
+    boardApi.move('dxc4');
+    expect(boardApi.getCapturedPieces()).toEqual({
+      white: ['p', 'q'],
+      black: ['p', 'p', 'b'],
+    });
   });
 
   it('returns the current turn number', () => {
@@ -279,75 +310,103 @@ describe.concurrent('Test the board API', () => {
     expect((boardApi as any).board.state.drawable.visible).toBe(false);
   });
 
-  /**  
+  /**
    * History Viewer Tests:
    */
   it('views game history', () => {
-    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(false);
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      false
+    );
     boardApi.move('e4');
     boardApi.move('e5');
     boardApi.move('d4');
     boardApi.move('exd4');
-    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(false);
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      false
+    );
     boardApi.viewHistory(1);
-    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      true
+    );
     expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(1);
-    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');    
+    expect((boardApi as any).board.state.fen).toBe(
+      'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
+    );
   });
-  
+
   it('views the previous move when not viewing history', () => {
     boardApi.move('e4');
     boardApi.move('e5');
     boardApi.viewPrevious();
-    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      true
+    );
     expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(1);
-    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+    expect((boardApi as any).board.state.fen).toBe(
+      'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
+    );
   });
-  
+
   it('views the previous move when already viewing history', () => {
     boardApi.move('e4');
     boardApi.move('e5');
     boardApi.viewPrevious();
     boardApi.viewPrevious();
-    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      true
+    );
     expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(0);
-    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    expect((boardApi as any).board.state.fen).toBe(
+      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+    );
   });
-  
+
   it('views the next move when viewing history', () => {
     boardApi.move('e4');
     boardApi.move('e5');
     boardApi.viewHistory(0);
     boardApi.viewNext();
-    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      true
+    );
     expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(1);
-    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+    expect((boardApi as any).board.state.fen).toBe(
+      'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
+    );
   });
-  
+
   it('views the first turn', () => {
     boardApi.move('e4');
     boardApi.move('e5');
     boardApi.viewStart();
-    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(true);
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      true
+    );
     expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(0);
-    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    expect((boardApi as any).board.state.fen).toBe(
+      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+    );
   });
-  
+
   it('stops viewing history', () => {
     boardApi.move('e4');
     boardApi.viewHistory(0);
     boardApi.stopViewingHistory();
-    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(false);
-    expect((boardApi as any).board.state.fen).toBe('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1');
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      false
+    );
+    expect((boardApi as any).board.state.fen).toBe(
+      'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
+    );
   });
-  
+
   it('enableds viewOnly when viewing history', () => {
     expect((boardApi as any).board.state.viewOnly).toBe(false);
     boardApi.move('e4');
     boardApi.viewHistory(0);
     expect((boardApi as any).board.state.viewOnly).toBe(true);
   });
-  
+
   it('disableds viewOnly when stopping viewing history if it should be disabled', () => {
     expect((boardApi as any).board.state.viewOnly).toBe(false);
     boardApi.move('e4');
@@ -355,16 +414,16 @@ describe.concurrent('Test the board API', () => {
     boardApi.stopViewingHistory();
     expect((boardApi as any).board.state.viewOnly).toBe(false);
   });
-  
+
   it('keeps viewOnly enabled when stopping viewing history if it should be enabled', () => {
-    boardApi.setConfig({ viewOnly: true })
+    boardApi.setConfig({ viewOnly: true });
     expect((boardApi as any).board.state.viewOnly).toBe(true);
     boardApi.move('e4');
     boardApi.viewHistory(0);
     boardApi.stopViewingHistory();
     expect((boardApi as any).board.state.viewOnly).toBe(true);
   });
-    
+
   it('keeps animation enabled if it should be enabled', () => {
     expect((boardApi as any).board.state.animation.enabled).toBe(true);
     boardApi.move('e4');
@@ -374,7 +433,6 @@ describe.concurrent('Test the board API', () => {
     boardApi.stopViewingHistory();
     expect((boardApi as any).board.state.animation.enabled).toBe(true);
   });
-  
 });
 
 export {};
