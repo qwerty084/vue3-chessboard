@@ -1,3 +1,4 @@
+import type { PieceSymbol } from 'chess.js';
 import type { Key } from 'chessground/types';
 
 export interface LichessOpening {
@@ -58,4 +59,9 @@ export interface DrawShape {
   orig: Key;
   dest: Key;
   brush: BrushColor;
+}
+
+export interface CapturedPieces {
+  white: PieceSymbol[];
+  black: PieceSymbol[];
 }
