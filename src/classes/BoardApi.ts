@@ -1,38 +1,39 @@
 import {
+  deepMergeConfig,
+  getThreats,
+  isPromotion,
+  possibleMoves,
+  shortToLongColor,
+} from '@/helper/Board';
+import { defaultBoardConfig } from '@/helper/DefaultConfig';
+import type {
+  BrushColor,
+  CapturedPieces,
+  DrawShape,
+  LichessOpening,
+  MaterialDifference,
+} from '@/typings/BoardAPI';
+import type BoardConfig from '@/typings/BoardConfig';
+import type {
+  BoardState,
+  Emits,
+  Move,
+  MoveEvent,
+  PromotedTo,
+  Promotion,
+  Props,
+  SquareColor,
+} from '@/typings/Chessboard';
+import {
   Chess,
   type Piece,
   type PieceSymbol,
-  type Square,
   type Color as ShortColor,
+  type Square,
 } from 'chess.js';
 import type { Api } from 'chessground/api';
-import type {
-  LichessOpening,
-  MaterialDifference,
-  BrushColor,
-  DrawShape,
-} from '@/typings/BoardAPI';
-import {
-  getThreats,
-  shortToLongColor,
-  possibleMoves,
-  deepMergeConfig,
-  isPromotion,
-} from '@/helper/Board';
-import type {
-  Move,
-  MoveEvent,
-  Props,
-  Emits,
-  BoardState,
-  PromotedTo,
-  SquareColor,
-  Promotion,
-} from '@/typings/Chessboard';
-import type { Color, Key, MoveMetadata } from 'chessground/types';
-import type BoardConfig from '@/typings/BoardConfig';
-import { defaultBoardConfig } from '@/helper/DefaultConfig';
 import { Chessground } from 'chessground/chessground';
+import type { Color, Key, MoveMetadata } from 'chessground/types';
 import { nextTick } from 'vue';
 
 /**
@@ -228,6 +229,28 @@ export class BoardApi {
       materialCount.materialWhite - materialCount.materialBlack;
 
     return materialCount;
+  }
+
+  /**
+   * Finds all the captured pieces from the game history.
+   *
+   * Note: results may be innaccurate if game history has been lost, eg. if
+   * setPosition has been called.
+   *
+   * @returns an object with white and black properties whose values are arrays
+   * of all the pieces captured by that player this game.
+   */
+  getCapturedPieces(): CapturedPieces {
+    const capturedPieces: CapturedPieces = {
+      white: [],
+      black: [],
+    };
+
+    for (const { color, captured } of this.getHistory(true)) {
+      if (captured) capturedPieces[shortToLongColor(color)].push(captured);
+    }
+
+    return capturedPieces;
   }
 
   /**
