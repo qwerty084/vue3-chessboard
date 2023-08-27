@@ -1,3 +1,8 @@
+## v1.2.2 (2023-08-27)
+
+### Dependencies
+- update chessground to latest version ([#219](https://github.com/qwerty084/vue3-chessboard/pull/219))
+
 ## v1.2.1 (2023-08-02)
 
 ### Features
