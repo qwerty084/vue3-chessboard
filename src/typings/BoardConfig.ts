@@ -3,10 +3,6 @@ import type { DrawShape, DrawBrushes } from 'chessground/draw';
 
 export type MoveableColor = 'white' | 'black' | 'both';
 
-// interface for the board config \
-// extends the chessground config interface \
-// https://github.com/lichess-org/chessground/blob/master/src/config.ts
-
 export interface BoardConfig {
   fen?: cg.FEN; // chess position in Forsyth notation
   orientation?: cg.Color; // board orientation. white | black
@@ -21,10 +17,11 @@ export interface BoardConfig {
   addPieceZIndex?: boolean; // adds z-index values to pieces (for 3D)
   addDimensionsCssVarsTo?: HTMLElement; // add --cg-width and --cg-height CSS vars containing the board's dimensions to this element
   blockTouchScroll?: boolean; // block scrolling via touch dragging on the board, e.g. for coordinate training
-  // pieceKey: boolean; // add a data-key attribute to piece elements
+  trustAllEvents?: boolean; // wether to check for isTrusted on events
   highlight?: {
     lastMove?: boolean; // add last-move class to squares
     check?: boolean; // add check class to squares
+    custom?: cg.SquareClasses;
   };
   animation?: {
     enabled?: boolean;
@@ -50,6 +47,7 @@ export interface BoardConfig {
     showDests?: boolean; // whether to add the premove-dest class on squares
     castle?: boolean; // whether to allow king castle premoves
     dests?: cg.Key[]; // premove destinations for the current selection
+    customDests?: cg.Dests;
     events?: {
       set?: (
         orig: cg.Key,
