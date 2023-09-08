@@ -604,6 +604,7 @@ export class BoardApi {
   setConfig(config: BoardConfig, fillDefaults = false): void {
     if (fillDefaults) {
       config = deepMergeConfig(defaultBoardConfig, config);
+      this.board.state.selected = undefined;
     }
 
     // If user provided a movable.events.after function we patch changeTurn to run before it. We want
