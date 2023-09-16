@@ -157,8 +157,6 @@ You can find the full documentation [here](https://qwerty084.github.io/vue3-ches
 - Don't forget to include the stylesheet: <br>
   `import 'vue3-chessboard/style.css';`
 
-<br>
-
 ### Chessboard config
 
 You can pass a config object to the chessboard component to modify the board to your needs, as a prop (:board-config). The config object is optional and will be merged with the [default config](https://github.com/qwerty084/vue3-chessboard/blob/main/src/helper/DefaultConfig.ts).

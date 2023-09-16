@@ -5,6 +5,7 @@ import { TheChessboard } from '../dist/vue3-chessboard';
 
 const theme = useData();
 const svgPath = ref(null);
+const versionNumber = ref("");
 
 function setSvgPath() {
   if (theme.isDark.value) {
@@ -14,8 +15,13 @@ function setSvgPath() {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   setSvgPath();
+  try {
+    const res = await fetch('https://registry.npmjs.org/vue3-chessboard/latest');
+    const data = await res.json();
+    versionNumber.value = data.version ?? "";
+  } catch {}
 });
 
 watch(theme.isDark, () => {
@@ -79,4 +85,4 @@ function handleCheck(isChecked) {
   </a>
 </div>
 
-<p class="version-number">v1.2.0</p>
+<p class="version-number">{{ versionNumber }}</p>
