@@ -433,6 +433,11 @@ describe.concurrent('Test the board API', () => {
     boardApi.stopViewingHistory();
     expect((boardApi as any).board.state.animation.enabled).toBe(true);
   });
+
+  it('adds a pgn header and checks if it is added', () => {
+    boardApi.setPgnInfo('White', 'Test');
+    expect(boardApi.getPgn()).toContain('[White "Test"]');
+  });
 });
 
 export {};

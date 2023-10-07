@@ -591,6 +591,21 @@ export class BoardApi {
   }
 
   /**
+   * Sets a header in the PGN.
+   *
+   * @param key the key to change, e.g. "Event"
+   * @param value the value to set, e.g. "IBM Kasparov vs. Deep Blue Rematch"
+   */
+  setPgnInfo(
+    key: string,
+    value: string
+  ): {
+    [key: string]: string | undefined;
+  } {
+    return this.game.header(key, value);
+  }
+
+  /**
    * Sets the config of the board.
    * Caution: providing a config with a fen will erase the game history and change the starting position
    * for resetBoard. To keep history and starting position: omit fen from the given config and call
