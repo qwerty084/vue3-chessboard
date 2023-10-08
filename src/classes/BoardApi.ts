@@ -593,16 +593,12 @@ export class BoardApi {
   /**
    * Sets a header in the PGN.
    *
-   * @param key the key to change, e.g. "Event"
-   * @param value the value to set, e.g. "IBM Kasparov vs. Deep Blue Rematch"
+   * @param changes a record of key value pairs to change in the PGN, eg. `{ White: 'Deep Blue', Black: 'Kasparov, Garry' }`
    */
-  setPgnInfo(
-    key: string,
-    value: string
-  ): {
+  setPgnInfo(changes: { [key: string]: string }): {
     [key: string]: string | undefined;
   } {
-    return this.game.header(key, value);
+    return this.game.header(...Object.entries(changes).flat());
   }
 
   /**
