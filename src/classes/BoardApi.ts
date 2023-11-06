@@ -591,6 +591,17 @@ export class BoardApi {
   }
 
   /**
+   * Sets a header in the PGN.
+   *
+   * @param changes a record of key value pairs to change in the PGN, eg. `{ White: 'Deep Blue', Black: 'Kasparov, Garry' }`
+   */
+  setPgnInfo(changes: { [key: string]: string }): {
+    [key: string]: string | undefined;
+  } {
+    return this.game.header(...Object.entries(changes).flat());
+  }
+
+  /**
    * Sets the config of the board.
    * Caution: providing a config with a fen will erase the game history and change the starting position
    * for resetBoard. To keep history and starting position: omit fen from the given config and call

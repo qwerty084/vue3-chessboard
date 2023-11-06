@@ -1,3 +1,9 @@
+## v1.2.4 (2023-10-16)
+
+### Features
+
+- added a new method `setPgnInfo` for setting a header in the pgn ([#224](https://github.com/qwerty084/vue3-chessboard/pull/224)) @[chew](https://github.com/Chew)
+
 ## v1.2.3 (2023-08-27)
 
 ### Bug fixes

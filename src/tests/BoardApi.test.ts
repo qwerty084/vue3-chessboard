@@ -433,6 +433,13 @@ describe.concurrent('Test the board API', () => {
     boardApi.stopViewingHistory();
     expect((boardApi as any).board.state.animation.enabled).toBe(true);
   });
+
+  it('adds a pgn header and checks if it is added', () => {
+    boardApi.setPgnInfo({ White: "Deep Blue", Black: "Kasparov", Date: "1997.05.11" });
+    expect(boardApi.getPgn()).toContain('[White "Deep Blue"]');
+    expect(boardApi.getPgn()).toContain('[Black "Kasparov"]');
+    expect(boardApi.getPgn()).toContain('[Date "1997.05.11"]');
+  });
 });
 
 export {};
