@@ -1,5 +1,6 @@
 export default {
   title: 'vue3-chessboard',
+  appearance: 'dark',
   description: 'A Vue 3 Chessboard component library.',
   themeConfig: {
     sidebar: [
