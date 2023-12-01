@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { TheChessboard, type BoardApi, type BoardConfig } from '@/index';
-import '@/assets/board.css';
 
 let boardAPI: BoardApi | undefined;
 
