@@ -1,5 +1,3 @@
-import '@/assets/board.css';
-
 export { default as TheChessboard } from './components/TheChessboard.vue';
 export { default as BoardApi } from './classes/BoardApi';
 export * from './typings/BoardAPI';

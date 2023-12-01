@@ -26,16 +26,39 @@ function promotionSelected(piece: PromotionPiece): void {
 </script>
 
 <template>
-  <Teleport to="cg-board">
-    <dialog class="promotion-dialog" open>
-      <button
-        v-for="piece in promotionPieces"
-        :key="piece.name"
-        :class="[piece.name.toLowerCase(), state.color]"
-        :aria-label="piece.name"
-        @click="promotionSelected(piece)"
-        @touchstart.passive="promotionSelected(piece)"
-      />
-    </dialog>
-  </Teleport>
+  <dialog class="promotion-dialog" open>
+    <button
+      v-for="piece in promotionPieces"
+      :key="piece.name"
+      type="button"
+      :class="[piece.name.toLowerCase(), state.color]"
+      :aria-label="piece.name"
+      @click="promotionSelected(piece)"
+      @touchstart.passive="promotionSelected(piece)"
+    />
+  </dialog>
 </template>
+
+<style>
+.promotion-dialog {
+  padding: 0.8rem;
+  position: absolute;
+  background-color: #f0d9b5;
+  width: 60%;
+  z-index: 999;
+  top: 41%;
+  height: 13%;
+  min-height: 40px;
+  display: flex;
+  border: 2px solid #333;
+}
+
+.promotion-dialog button {
+  pointer-events: all;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+</style>
