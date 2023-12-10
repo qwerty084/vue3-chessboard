@@ -1,3 +1,18 @@
+## v1.3.0 (2023-12-10)
+
+### Breaking changes
+
+- `vue3-chessboard/style.css` has been removed. Please remove the import from existing projects.
+
+### Bug fixes
+
+- fix putPiece with movable set to free from jumping back to previous position ([#236](https://github.com/qwerty084/vue3-chessboard/pull/236))
+- fixed promotion dialog with multiple board instances ([#233](https://github.com/qwerty084/vue3-chessboard/pull/233))
+
+### Other
+
+- documentation has been removed from the main repo and moved to [vue3-chessboard-docs](https://github.com/qwerty084/vue3-chessboard-docs) ([#235](https://github.com/qwerty084/vue3-chessboard/pull/235))
+
 ## v1.2.4 (2023-10-16)
 
 ### Features

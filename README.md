@@ -38,7 +38,6 @@ Basic Example (Composition API)
 ```html
 <script setup>
 import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
 </script>
 
 <template>
@@ -55,7 +54,6 @@ Basic Example (Options API)
 
 <script>
 import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
 
 export default {
   components: {
@@ -72,7 +70,6 @@ Example Typescript Component
 ```html
 <script setup lang="ts">
 import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
 import type { BoardApi, BoardConfig } from 'vue3-chessboard';
 
 let boardAPI: BoardApi;
@@ -113,7 +110,6 @@ Example Javascript Component
 ```html
 <script setup>
 import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
 
 let boardAPI;
 const boardConfig = {
@@ -154,8 +150,6 @@ You can find the full documentation [here](https://qwerty084.github.io/vue3-ches
 ## Setup:
 
 - Just install the package and import the component in your project, like shown above.
-- Don't forget to include the stylesheet: <br>
-  `import 'vue3-chessboard/style.css';`
 
 ### Chessboard config
 
