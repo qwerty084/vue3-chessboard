@@ -8,7 +8,7 @@ vue3-chesssboard is a component library for vue 3 built with [lichess chessgroun
 
 ![Chessboard](https://media3.giphy.com/media/cWw6eHQ7AmjDXbWm6w/giphy.gif?cid=790b7611cce1bb251c4ae6a786ea4dc8be97b1563f59d989&rid=giphy.gif&ct=g)
 
-You can find a demo and the full library documentation [here](https://qwerty084.github.io/vue3-chessboard/).
+You can find a demo and the full library documentation [here](https://qwerty084.github.io/vue3-chessboard-docs/).
 
 ## Table of contents
 
@@ -38,7 +38,6 @@ Basic Example (Composition API)
 ```html
 <script setup>
 import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
 </script>
 
 <template>
@@ -55,7 +54,6 @@ Basic Example (Options API)
 
 <script>
 import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
 
 export default {
   components: {
@@ -72,7 +70,6 @@ Example Typescript Component
 ```html
 <script setup lang="ts">
 import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
 import type { BoardApi, BoardConfig } from 'vue3-chessboard';
 
 let boardAPI: BoardApi;
@@ -113,7 +110,6 @@ Example Javascript Component
 ```html
 <script setup>
 import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
 
 let boardAPI;
 const boardConfig = {
@@ -149,13 +145,11 @@ function handleCheckmate(isMated) {
 ```
 
 # Docs
-You can find the full documentation [here](https://qwerty084.github.io/vue3-chessboard/).
+You can find the full documentation [here](https://qwerty084.github.io/vue3-chessboard-docs/).
 
 ## Setup:
 
 - Just install the package and import the component in your project, like shown above.
-- Don't forget to include the stylesheet: <br>
-  `import 'vue3-chessboard/style.css';`
 
 ### Chessboard config
 
@@ -170,7 +164,7 @@ The chessboard component provides a class based API to interact with the chessbo
 
 ### Available methods:
 
-For a full list of available methods please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html).
+For a full list of available methods please visit the [documentation](https://qwerty084.github.io/vue3-chessboard-docs/board-api.html/board-api.html).
 
 ### Custom Events
 
