@@ -45,9 +45,9 @@
 
 ### Features
 
-- `reactive-config` - the board config object can now be made reactive ([#190](https://github.com/qwerty084/vue3-chessboard/pull/190)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/props.html#reactive-config-using-a-reactive-config-object) for
+- `reactive-config` - the board config object can now be made reactive ([#190](https://github.com/qwerty084/vue3-chessboard/pull/190)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard-docs/props.html#reactive-config-using-a-reactive-config-object) for
   more information.
-- `history-viewer` - the board component now contains a history viewer ([#200](https://github.com/qwerty084/vue3-chessboard/pull/200)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard/board-api.html#example-game-history-viewer-usage) for
+- `history-viewer` - the board component now contains a history viewer ([#200](https://github.com/qwerty084/vue3-chessboard/pull/200)) @[gavin-lb](https://github.com/gavin-lb). Please visit the [documentation](https://qwerty084.github.io/vue3-chessboard-docs/board-api.html#example-game-history-viewer-usage) for
   more information.
 
 ### Other
