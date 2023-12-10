@@ -2,6 +2,7 @@ import {
   deepMergeConfig,
   getThreats,
   isPromotion,
+  chessJSPieceToLichessPiece,
   possibleMoves,
   shortToLongColor,
 } from '@/helper/Board';
@@ -33,7 +34,7 @@ import {
 } from 'chess.js';
 import type { Api } from 'chessground/api';
 import { Chessground } from 'chessground/chessground';
-import type { Color, Key, MoveMetadata } from 'chessground/types';
+import type { Color, Key, MoveMetadata, Role } from 'chessground/types';
 import { nextTick } from 'vue';
 
 /**
@@ -530,11 +531,22 @@ export class BoardApi {
    * returns true on success, else false
    */
   putPiece(piece: Piece, square: Square): boolean {
-    const result = this.game.put(piece, square);
-    if (result) {
-      this.updateGameState();
+    // @TODO using putPiece with the same piece and square twice is buggy in movable: false in chess.js state
+    if (this.board.state.movable.free) {
+      const current = this.board.state.pieces;
+      current.set(square, {
+        color: piece.color === 'w' ? 'white' : 'black',
+        role: chessJSPieceToLichessPiece[piece.type] as Role,
+      });
+      this.board.setPieces(current);
+      return true;
+    } else {
+      const result = this.game.put(piece, square);
+      if (result) {
+        this.updateGameState();
+      }
+      return result;
     }
-    return result;
   }
 
   /**
