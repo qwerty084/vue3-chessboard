@@ -1,4 +1,10 @@
+## v1.3.1 (2023-12-10)
+
+- fix style export in package.json ([#239](https://github.com/qwerty084/vue3-chessboard/pull/239))
+
 ## v1.3.0 (2023-12-10)
+
+### CAUTION: this release is broken, use >= v1.3.1 instead
 
 ### Breaking changes
 
