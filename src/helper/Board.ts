@@ -103,3 +103,12 @@ export function deepDiffConfig<T>(oldConfig: T, newConfig: T): DeepPartial<T> {
   }
   return diff;
 }
+
+export const chessJSPieceToLichessPiece = {
+  p: 'pawn',
+  n: 'knight',
+  b: 'bishop',
+  r: 'rook',
+  q: 'queen',
+  k: 'king',
+};
