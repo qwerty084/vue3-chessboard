@@ -21,7 +21,22 @@ export default defineConfig({
       },
     },
   },
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    {
+      name: 'ignore-missing-favicon',
+      configureServer(server): void {
+        server.middlewares.use((req, res, next) => {
+          if (req.url === '/favicon.ico') {
+            res.statusCode = 204;
+            res.end();
+            return;
+          }
+          next();
+        });
+      },
+    },
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
