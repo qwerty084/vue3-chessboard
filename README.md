@@ -73,9 +73,9 @@ Example Typescript Component
 <script setup lang="ts">
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
-import type { BoardApi, BoardConfig } from 'vue3-chessboard';
+import type { Api, BoardConfig } from 'vue3-chessboard';
 
-let boardAPI: BoardApi;
+let api: Api;
 const boardConfig: BoardConfig = {
   coordinates: false,
 };
@@ -92,16 +92,16 @@ function handleCheckmate(isMated: string) {
 <template>
   <section>
     <div>
-      <button @click="boardAPI?.toggleOrientation()">
+      <button @click="api?.toggleOrientation()">
         Toggle orientation
       </button>
-      <button @click="boardAPI?.resetBoard()">Reset</button>
-      <button @click="boardAPI?.undoLastMove()">Undo</button>
-      <button @click="boardAPI?.toggleMoves()">Threats</button>
+      <button @click="api?.resetBoard()">Reset</button>
+      <button @click="api?.undoLastMove()">Undo</button>
+      <button @click="api?.toggleMoves()">Threats</button>
     </div>
     <TheChessboard
       :board-config="boardConfig"
-      @board-created="(api) => (boardAPI = api)"
+      @board-created="(api) => (api = api)"
       @checkmate="handleCheckmate"
     />
   </section>
@@ -115,7 +115,7 @@ Example Javascript Component
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
-let boardAPI;
+let api;
 const boardConfig = {
   coordinates: false,
 };
@@ -132,16 +132,16 @@ function handleCheckmate(isMated) {
 <template>
   <section>
     <div>
-      <button @click="boardAPI?.toggleOrientation()">
+      <button @click="api?.toggleOrientation()">
         Toggle orientation
       </button>
-      <button @click="boardAPI?.resetBoard()">Reset</button>
-      <button @click="boardAPI?.undoLastMove()">Undo</button>
-      <button @click="boardAPI?.toggleMoves()">Threats</button>
+      <button @click="api?.resetBoard()">Reset</button>
+      <button @click="api?.undoLastMove()">Undo</button>
+      <button @click="api?.toggleMoves()">Threats</button>
     </div>
     <TheChessboard
       :board-config="boardConfig"
-      @board-created="(api) => (boardAPI = api)"
+      @board-created="(api) => (api = api)"
       @checkmate="handleCheckmate"
     />
   </section>
@@ -186,7 +186,7 @@ You can listen for events on the chessboard component. The following events are 
 
 ```ts
 const emit = defineEmits<{
-  (e: 'boardCreated', boardApi: BoardApi): void;
+  (e: 'boardCreated', api: api): void;
   (e: 'checkmate', isMated: PieceColor): void;
   (e: 'stalemate'): void;
   (e: 'draw'): void;

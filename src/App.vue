@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { TheChessboard, type BoardApi, type BoardConfig } from '@/index';
+import '@/assets/styles.css';
+import { TheChessboard, type Api, type BoardConfig } from '@/index';
 
-let boardAPI: BoardApi | undefined;
+let api: Api | undefined;
 
 const boardConfig: BoardConfig = {
   coordinates: true,
   autoCastle: false,
 };
 const playerColor: 'white' | 'black' | 'both' | undefined = undefined;
+
+function handleBoardCreated(newApi: Api): void {
+  api = newApi;
+
+  console.log('Board created!');
+}
 </script>
 
 <template>
   <TheChessboard
     :board-config="boardConfig"
     :player-color="playerColor"
-    @board-created="(api) => (boardAPI = api)"
+    @board-created="handleBoardCreated"
   />
 </template>
 

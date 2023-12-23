@@ -2,7 +2,7 @@ import { beforeEach, expect, it, describe } from 'vitest';
 import TheChessboard from '@/components/TheChessboard.vue';
 import { mount } from '@vue/test-utils';
 import { resetBoard } from './helper/Helper';
-import type BoardApi from '@/classes/BoardApi';
+import type { Api } from '@/classes/Api';
 import { reactive } from 'vue';
 import type { BoardConfig } from '@/typings/BoardConfig';
 
@@ -29,13 +29,13 @@ describe.concurrent('Test the board', () => {
       },
     },
   });
-  const boardApi = wrapper.emitted<BoardApi[]>('boardCreated')?.[0][0];
-  if (typeof boardApi === 'undefined') {
+  const api = wrapper.emitted<Api[]>('boardCreated')?.[0][0];
+  if (typeof api === 'undefined') {
     throw new Error('No board api emitted');
   }
 
   // reset the board and events after each test
-  beforeEach(() => resetBoard(wrapper, boardApi));
+  beforeEach(() => resetBoard(wrapper, api));
 
   it('mounts the component', () => {
     expect(wrapper).toBeTruthy();
@@ -47,28 +47,28 @@ describe.concurrent('Test the board', () => {
   });
 
   it('handles the boardconfig merging correctly', () => {
-    expect((boardApi as any).board.state.movable?.events?.after).toBeTruthy();
-    expect((boardApi as any).board.state.animation.enabled).toBe(false);
-    expect((boardApi as any).board.state.animation.duration).toBe(0);
-    expect((boardApi as any).board.state.drawable.brushes).toBeUndefined();
-    expect((boardApi as any).board.state.drawable.enabled).toBe(false);
+    expect((api as any).board.state.movable?.events?.after).toBeTruthy();
+    expect((api as any).board.state.animation.enabled).toBe(false);
+    expect((api as any).board.state.animation.duration).toBe(0);
+    expect((api as any).board.state.drawable.brushes).toBeUndefined();
+    expect((api as any).board.state.drawable.enabled).toBe(false);
   });
 
-  it('handles the player color correctly', async () => {
-    expect(boardApi.move('e4')).toBeTruthy();
-    expect((boardApi as any).board.state.turnColor).toBe('black');
-    expect((boardApi as any).board.state.movable.color).toBe('white');
-    expect(boardApi.move('e5')).toBeTruthy();
-    expect((boardApi as any).board.state.turnColor).toBe('white');
-    expect((boardApi as any).board.state.movable.color).toBe('white');
-    expect(boardApi.move('d6')).toBeFalsy();
+  it('handles the player color correctly', () => {
+    expect(api.move('e4')).toBeTruthy();
+    expect((api as any).board.state.turnColor).toBe('black');
+    expect((api as any).board.state.movable.color).toBe('white');
+    expect(api.move('e5')).toBeTruthy();
+    expect((api as any).board.state.turnColor).toBe('white');
+    expect((api as any).board.state.movable.color).toBe('white');
+    expect(api.move('d6')).toBeFalsy();
   });
 });
 
 describe('Test reactiveConfig prop option', () => {
   let config: BoardConfig;
   let wrapper;
-  let boardApi: BoardApi;
+  let api: Api | undefined;
 
   beforeEach(() => {
     config = reactive({
@@ -81,37 +81,37 @@ describe('Test reactiveConfig prop option', () => {
     wrapper = mount(TheChessboard, {
       props: { boardConfig: config, reactiveConfig: true },
     });
-    boardApi = wrapper.emitted<BoardApi[]>('boardCreated')?.[0][0] as BoardApi;
+    api = wrapper.emitted<Api[]>('boardCreated')?.[0][0];
   });
 
   it('updates existing config options', async () => {
-    expect((boardApi as any).board.state.coordinates).toBe(false);
+    expect((api as any).board.state.coordinates).toBe(false);
     // need to wrap config update in an async function to await so that config watcher
     // has time to update the config by the time we test board.state in next line
     await (async () => {
       config.coordinates = true;
     })();
-    expect((boardApi as any).board.state.coordinates).toBe(true);
+    expect((api as any).board.state.coordinates).toBe(true);
   });
 
   it('updates new config options', async () => {
-    expect((boardApi as any).board.state.coordinates).toBe(false);
-    expect((boardApi as any).board.state.viewOnly).toBe(false);
+    expect((api as any).board.state.coordinates).toBe(false);
+    expect((api as any).board.state.viewOnly).toBe(false);
     await (async () => {
       config.viewOnly = true;
     })();
-    expect((boardApi as any).board.state.viewOnly).toBe(true);
-    expect((boardApi as any).board.state.coordinates).toBe(false);
+    expect((api as any).board.state.viewOnly).toBe(true);
+    expect((api as any).board.state.coordinates).toBe(false);
   });
 
   it('updates nested config options', async () => {
-    expect((boardApi as any).board.state.animation.enabled).toBe(false);
-    expect((boardApi as any).board.state.animation.duration).toBe(100);
+    expect((api as any).board.state.animation.enabled).toBe(false);
+    expect((api as any).board.state.animation.duration).toBe(100);
     await (async () => {
       config.animation!.enabled = true;
     })();
-    expect((boardApi as any).board.state.animation.enabled).toBe(true);
-    expect((boardApi as any).board.state.animation.duration).toBe(100);
+    expect((api as any).board.state.animation.enabled).toBe(true);
+    expect((api as any).board.state.animation.duration).toBe(100);
   });
 });
 

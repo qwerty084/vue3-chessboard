@@ -23,7 +23,6 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'error',
     'no-duplicate-imports': 'error',
     'no-debugger': 'error',
-    'no-console': ['error', { allow: ['warn', 'error'] }],
     'prettier/prettier': [
       'warn',
       {

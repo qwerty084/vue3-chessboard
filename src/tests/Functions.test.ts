@@ -13,14 +13,14 @@ import {
 } from './helper/Constants';
 
 describe.concurrent('Test getThreats', () => {
-  it('calculate threats', async () => {
+  it('calculate threats', () => {
     const threats = getThreats(possibleFirstMovesWhite);
     expect(threats).toEqual(possibleFirstThreatsWhite);
   });
 });
 
 describe.concurrent('Test isObject', () => {
-  it('returns a value', async () => {
+  it('returns a value', () => {
     expect(isObject(0)).toBeDefined();
   });
 

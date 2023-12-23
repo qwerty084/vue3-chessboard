@@ -1,4 +1,4 @@
-import type BoardApi from '@/classes/BoardApi';
+import type { Api } from '@/classes/Api';
 import type { Move as FullMove, Square } from 'chess.js';
 import type { Key } from 'chessground/types';
 import type { BoardConfig, MoveableColor } from './BoardConfig';
@@ -51,7 +51,7 @@ export type SquareKey = Square & Key;
 export type PieceColor = 'white' | 'black';
 
 export interface Emits {
-  (e: 'boardCreated', boardApi: BoardApi): void;
+  (e: 'boardCreated', api: Api): void;
   (e: 'check' | 'checkmate', color: PieceColor): void;
   (e: 'stalemate'): void;
   (e: 'draw'): void;

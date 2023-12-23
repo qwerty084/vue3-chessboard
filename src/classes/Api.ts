@@ -13,7 +13,7 @@ import type {
   DrawShape,
   LichessOpening,
   MaterialDifference,
-} from '@/typings/BoardAPI';
+} from '@/typings/Api';
 import type BoardConfig from '@/typings/BoardConfig';
 import type {
   BoardState,
@@ -32,7 +32,7 @@ import {
   type Color as ShortColor,
   type Square,
 } from 'chess.js';
-import type { Api } from 'chessground/api';
+import type { Api as ChessgroundApi } from 'chessground/api';
 import { Chessground } from 'chessground/chessground';
 import type { Color, Key, MoveMetadata, Role } from 'chessground/types';
 import { nextTick } from 'vue';
@@ -40,9 +40,9 @@ import { nextTick } from 'vue';
 /**
  * class for modifying and reading data from the board
  */
-export class BoardApi {
+export class Api {
   private game: Chess;
-  private board: Api;
+  private board: ChessgroundApi;
   private boardState: BoardState;
   private props: Props;
   private emit: Emits;
@@ -531,7 +531,7 @@ export class BoardApi {
    * returns true on success, else false
    */
   putPiece(piece: Piece, square: Square): boolean {
-    // @TODO using putPiece with the same piece and square twice is buggy in movable: false in chess.js state
+    // @TODO using putPiece with the same piece and square twice is buggy in movable: true in chess.js state
     if (this.board.state.movable.free) {
       const current = this.board.state.pieces;
       current.set(square, {
@@ -755,5 +755,3 @@ export class BoardApi {
     this.viewHistory(ply - 1);
   }
 }
-
-export default BoardApi;
