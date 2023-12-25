@@ -13,7 +13,7 @@ const playerColor: 'white' | 'black' | 'both' | undefined = undefined;
 function handleBoardCreated(newApi: Api): void {
   api = newApi;
 
-  console.log('Board created!');
+  console.log(api);
 }
 </script>
 

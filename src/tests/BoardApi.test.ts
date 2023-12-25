@@ -314,20 +314,14 @@ describe.concurrent('Test the board API', () => {
    * History Viewer Tests:
    */
   it('views game history', () => {
-    expect((api as any).boardState.historyViewerState.isEnabled).toBe(
-      false
-    );
+    expect((api as any).boardState.historyViewerState.isEnabled).toBe(false);
     api.move('e4');
     api.move('e5');
     api.move('d4');
     api.move('exd4');
-    expect((api as any).boardState.historyViewerState.isEnabled).toBe(
-      false
-    );
+    expect((api as any).boardState.historyViewerState.isEnabled).toBe(false);
     api.viewHistory(1);
-    expect((api as any).boardState.historyViewerState.isEnabled).toBe(
-      true
-    );
+    expect((api as any).boardState.historyViewerState.isEnabled).toBe(true);
     expect((api as any).boardState.historyViewerState.plyViewing).toBe(1);
     expect((api as any).board.state.fen).toBe(
       'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
@@ -338,9 +332,7 @@ describe.concurrent('Test the board API', () => {
     api.move('e4');
     api.move('e5');
     api.viewPrevious();
-    expect((api as any).boardState.historyViewerState.isEnabled).toBe(
-      true
-    );
+    expect((api as any).boardState.historyViewerState.isEnabled).toBe(true);
     expect((api as any).boardState.historyViewerState.plyViewing).toBe(1);
     expect((api as any).board.state.fen).toBe(
       'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
@@ -352,9 +344,7 @@ describe.concurrent('Test the board API', () => {
     api.move('e5');
     api.viewPrevious();
     api.viewPrevious();
-    expect((api as any).boardState.historyViewerState.isEnabled).toBe(
-      true
-    );
+    expect((api as any).boardState.historyViewerState.isEnabled).toBe(true);
     expect((api as any).boardState.historyViewerState.plyViewing).toBe(0);
     expect((api as any).board.state.fen).toBe(
       'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -366,9 +356,7 @@ describe.concurrent('Test the board API', () => {
     api.move('e5');
     api.viewHistory(0);
     api.viewNext();
-    expect((api as any).boardState.historyViewerState.isEnabled).toBe(
-      true
-    );
+    expect((api as any).boardState.historyViewerState.isEnabled).toBe(true);
     expect((api as any).boardState.historyViewerState.plyViewing).toBe(1);
     expect((api as any).board.state.fen).toBe(
       'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
@@ -379,9 +367,7 @@ describe.concurrent('Test the board API', () => {
     api.move('e4');
     api.move('e5');
     api.viewStart();
-    expect((api as any).boardState.historyViewerState.isEnabled).toBe(
-      true
-    );
+    expect((api as any).boardState.historyViewerState.isEnabled).toBe(true);
     expect((api as any).boardState.historyViewerState.plyViewing).toBe(0);
     expect((api as any).board.state.fen).toBe(
       'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -392,9 +378,7 @@ describe.concurrent('Test the board API', () => {
     api.move('e4');
     api.viewHistory(0);
     api.stopViewingHistory();
-    expect((api as any).boardState.historyViewerState.isEnabled).toBe(
-      false
-    );
+    expect((api as any).boardState.historyViewerState.isEnabled).toBe(false);
     expect((api as any).board.state.fen).toBe(
       'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
     );

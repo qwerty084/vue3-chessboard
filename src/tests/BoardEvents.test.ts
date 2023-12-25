@@ -1,4 +1,4 @@
-import type {Api} from '@/classes/Api';
+import type { Api } from '@/classes/Api';
 import { expect, it, describe, beforeEach } from 'vitest';
 import { makeStalemate, mountComponent, resetBoard } from './helper/Helper';
 import { moves } from './helper/Constants';
