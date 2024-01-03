@@ -164,8 +164,8 @@ cg-board piece {
   position: absolute;
   top: 0;
   left: 0;
-  width: 12%;
-  height: 12%;
+  width: 12.5%;
+  height: 12.5%;
   background-size: cover;
   z-index: 2;
   will-change: transform;
