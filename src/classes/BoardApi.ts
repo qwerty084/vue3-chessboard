@@ -550,6 +550,16 @@ export class BoardApi {
   }
 
   /**
+   * Removes a piece from the board.
+   * @param square - The square where the piece is located.
+   */
+  removePiece(square: Square): void {
+    const pieces = this.board.state.pieces;
+    pieces.delete(square);
+    this.game.remove(square);
+  }
+
+  /**
    * removes all pieces from the board
    */
   clearBoard(): void {
