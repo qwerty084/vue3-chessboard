@@ -14,6 +14,7 @@ const playerColor: 'white' | 'black' | 'both' | undefined = undefined;
   <TheChessboard
     :board-config="boardConfig"
     :player-color="playerColor"
+    class="board"
     @board-created="(api) => (boardAPI = api)"
   />
 </template>
@@ -21,5 +22,12 @@ const playerColor: 'white' | 'black' | 'both' | undefined = undefined;
 <style>
 body {
   background-color: #222;
+}
+@media (orientation: landscape) {
+  .board {
+    width: 90vh;
+    margin-inline: auto;
+    max-width: 700px;
+  }
 }
 </style>

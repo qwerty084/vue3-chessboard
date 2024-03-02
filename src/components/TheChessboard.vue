@@ -60,8 +60,9 @@ onMounted(() => {
 
 <style>
 .cg-wrap {
-  width: 700px;
-  height: 700px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .main-board {
@@ -201,8 +202,6 @@ cg-container {
   width: 100%;
   height: 100%;
   display: block;
-  top: 0;
-  right: 0;
 }
 
 cg-board {
@@ -416,13 +415,5 @@ cg-board .king.black {
 .viewingHistory {
   filter: saturate(60%);
   transition: 0.25s filter linear;
-}
-
-@media (orientation: landscape) {
-  .main-wrap {
-    width: 90vh;
-    margin-inline: auto;
-    max-width: 700px;
-  }
 }
 </style>
