@@ -170,7 +170,7 @@ The chessboard component provides an API to interact with the chessboard. The AP
 
 ### Available methods:
 
-For a full list of available methods please visit the [documentation](https://qwerty084.github.io/vue3-chessboard-docs/board-api.html/board-api.html).
+For a full list of available methods please visit the [documentation](https://qwerty084.github.io/vue3-chessboard-docs/board-api.html).
 
 ### Custom Events
 
