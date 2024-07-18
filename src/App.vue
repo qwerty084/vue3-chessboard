@@ -4,9 +4,9 @@ import { TheChessboard, type BoardApi, type BoardConfig } from '@/index';
 let boardAPI: BoardApi | undefined;
 
 const boardConfig: BoardConfig = {
-  coordinates: true,
-  autoCastle: false,
-};
+  coordinates: true
+}
+
 const playerColor: 'white' | 'black' | 'both' | undefined = undefined;
 </script>
 
