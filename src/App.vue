@@ -5,8 +5,8 @@ let boardAPI: BoardApi | undefined;
 
 const boardConfig: BoardConfig = {
   coordinates: true,
-  autoCastle: false,
 };
+
 const playerColor: 'white' | 'black' | 'both' | undefined = undefined;
 </script>
 

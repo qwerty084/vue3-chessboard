@@ -77,7 +77,7 @@ import type { BoardApi, BoardConfig } from 'vue3-chessboard';
 
 let boardAPI: BoardApi;
 const boardConfig: BoardConfig = {
-  coordinates: false,
+  coordinates: true,
 };
 
 function handleCheckmate(isMated: string) {
@@ -117,7 +117,7 @@ import 'vue3-chessboard/style.css';
 
 let boardAPI;
 const boardConfig = {
-  coordinates: false,
+  coordinates: true,
 };
 
 function handleCheckmate(isMated) {
