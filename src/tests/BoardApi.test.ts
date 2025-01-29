@@ -444,6 +444,20 @@ describe.concurrent('Test the board API', () => {
     expect(boardApi.getPgn()).toContain('[Black "Kasparov"]');
     expect(boardApi.getPgn()).toContain('[Date "1997.05.11"]');
   });
+
+  it('load a pgn and check if the comments are returned', () => {
+    boardApi.loadPgn('1. e4 {first move} e5 2. Nf3 Nc6 3. Bc4 Bc5 {giuoco piano} *');
+    expect(boardApi.getPgnComments().map(x => x.comment)).toContain('giuoco piano');
+    boardApi.viewHistory(1);
+    expect(boardApi.getPgnComment()).toEqual('first move');
+    boardApi.viewHistory(6);
+    expect(boardApi.getPgnComment()).toEqual('giuoco piano');
+  });
+
+  it('set a pgn comment and check if it is returned', () => {
+    boardApi.setPgnComment('test');
+    expect(boardApi.getPgnComment()).toEqual('test');
+  });
 });
 
 export {};

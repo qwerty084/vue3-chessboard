@@ -624,6 +624,35 @@ export class BoardApi {
   }
 
   /**
+   * returns the comment for the current position, if it exists.
+   */
+  getPgnComment(): string {
+    // this.game.getComment() is not compatible with history
+    // Iterate over all comments and compare the board FEN instead
+    for (let comment of this.game.getComments()) {
+      if (comment.fen.startsWith(this.board.getFen())) {
+        return comment.comment;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * returns the comments for all positions.
+   */
+  getPgnComments(): [{fen: string, comment: string}] {
+    return this.game.getComments();
+  }
+
+  /**
+   * Comment on the current position. Does not work with history.
+   * @param comment the comment to add to the current position
+   */
+  setPgnComment(comment: string) {
+    this.game.setComment(comment);
+  }
+
+  /**
    * Sets the config of the board.
    * Caution: providing a config with a fen will erase the game history and change the starting position
    * for resetBoard. To keep history and starting position: omit fen from the given config and call
