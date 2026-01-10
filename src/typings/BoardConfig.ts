@@ -1,5 +1,5 @@
-import type * as cg from 'chessground/types';
-import type { DrawShape, DrawBrushes } from 'chessground/draw';
+import type * as cg from '@lichess-org/chessground/types';
+import type { DrawShape, DrawBrushes } from '@lichess-org/chessground/draw';
 
 export type MoveableColor = 'white' | 'black' | 'both';
 
@@ -98,4 +98,4 @@ export interface BoardConfig {
   };
 }
 
-export default BoardConfig;
+export { type BoardConfig as default };

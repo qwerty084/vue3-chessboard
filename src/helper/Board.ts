@@ -1,5 +1,5 @@
 import { SQUARES, type Chess, type Move, type Piece } from 'chess.js';
-import type { Color, Key } from 'chessground/types';
+import type { Color, Key } from '@lichess-org/chessground/types';
 import type { Threat } from '@/typings/Chessboard';
 
 export function getThreats(moves: Move[]): Threat[] {

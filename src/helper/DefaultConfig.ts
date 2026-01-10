@@ -1,4 +1,4 @@
-import type { Key } from 'chessground/types';
+import type { Key } from '@lichess-org/chessground/types';
 import type { BoardConfig } from '@/typings/BoardConfig';
 
 export const possibleMovesWhite: Map<Key, Key[]> = new Map([

@@ -32,9 +32,9 @@ import {
   type Color as ShortColor,
   type Square,
 } from 'chess.js';
-import type { Api } from 'chessground/api';
-import { Chessground } from 'chessground/chessground';
-import type { Color, Key, MoveMetadata, Role } from 'chessground/types';
+import type { Api } from '@lichess-org/chessground/api';
+import { Chessground } from '@lichess-org/chessground/chessground';
+import type { Color, Key, MoveMetadata, Role } from '@lichess-org/chessground/types';
 import { nextTick } from 'vue';
 
 /**
@@ -143,7 +143,7 @@ export class BoardApi {
     _: MoveMetadata
   ): Promise<void> {
     let selectedPromotion: Promotion | undefined = undefined;
-    if (isPromotion(dest, this.game.get(orig as Square))) {
+    if (isPromotion(dest, this.game.get(orig as Square) ?? null)) {
       selectedPromotion = await new Promise((resolve) => {
         this.boardState.promotionDialogState = {
           isEnabled: true,
@@ -513,7 +513,7 @@ export class BoardApi {
    * Returns the piece on the square or null if there is no piece
    */
   getSquare(square: Square): Piece | null {
-    return this.game.get(square);
+    return this.game.get(square) ?? null;
   }
 
   /**
@@ -607,7 +607,7 @@ export class BoardApi {
    * }
    */
   getPgnInfo(): {
-    [key: string]: string | undefined;
+    [key: string]: string | null;
   } {
     return this.game.header();
   }
@@ -618,7 +618,7 @@ export class BoardApi {
    * @param changes a record of key value pairs to change in the PGN, eg. `{ White: 'Deep Blue', Black: 'Kasparov, Garry' }`
    */
   setPgnInfo(changes: { [key: string]: string }): {
-    [key: string]: string | undefined;
+    [key: string]: string | null;
   } {
     return this.game.header(...Object.entries(changes).flat());
   }

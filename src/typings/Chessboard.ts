@@ -1,6 +1,6 @@
 import type BoardApi from '@/classes/BoardApi';
 import type { Move as FullMove, Square } from 'chess.js';
-import type { Key } from 'chessground/types';
+import type { Key } from '@lichess-org/chessground/types';
 import type { BoardConfig, MoveableColor } from './BoardConfig';
 
 export type Move =

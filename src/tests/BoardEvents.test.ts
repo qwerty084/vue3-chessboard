@@ -3,7 +3,7 @@ import { expect, it, describe, beforeEach } from 'vitest';
 import { makeStalemate, mountComponent, resetBoard } from './helper/Helper';
 import { moves } from './helper/Constants';
 
-describe.concurrent('Test the board events', () => {
+describe.sequential('Test the board events', () => {
   const wrapper = mountComponent();
   const boardApi = wrapper.emitted<BoardApi[]>('boardCreated')?.[0][0];
   if (typeof boardApi === 'undefined') {
