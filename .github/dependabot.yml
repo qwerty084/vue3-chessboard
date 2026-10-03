@@ -5,6 +5,17 @@ updates:
     schedule:
       interval: 'daily'
     open-pull-requests-limit: 0
+    # pinned so the generated type declarations stay compatible, see CONTRIBUTING.md
+    ignore:
+      - dependency-name: 'vue'
+        update-types:
+          ['version-update:semver-minor', 'version-update:semver-major']
+      - dependency-name: '@vue/server-renderer'
+        update-types:
+          ['version-update:semver-minor', 'version-update:semver-major']
+      - dependency-name: '@vue/tsconfig'
+        update-types:
+          ['version-update:semver-minor', 'version-update:semver-major']
 
   - package-ecosystem: 'github-actions'
     directory: '/'

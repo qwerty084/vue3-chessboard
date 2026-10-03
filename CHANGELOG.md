@@ -1,3 +1,19 @@
+## v1.3.4 (2026-10-03)
+
+### Security
+
+- updated the development toolchain to resolve the `npm audit` findings (vite 8, vitest 5, vue-tsc 3, eslint 9, prettier 3). The only remaining finding is `braces` ([GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)), which has no patched version and is only used by ESLint. None of these affected the published package, which only depends on chess.js and chessground.
+
+## v1.3.3 (2024-03-02)
+
+### Features
+
+- added a new method `removePiece` for removing a piece from a square ([#248](https://github.com/qwerty084/vue3-chessboard/pull/248))
+
+### Bug fixes
+
+- fixed wrong piece size ([#243](https://github.com/qwerty084/vue3-chessboard/pull/243)) @[YouSafe](https://github.com/YouSafe)
+
 ## v1.3.2 (2023-12-10)
 
 - revert style export changes

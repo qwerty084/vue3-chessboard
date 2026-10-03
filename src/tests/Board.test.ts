@@ -6,7 +6,7 @@ import type BoardApi from '@/classes/BoardApi';
 import { reactive } from 'vue';
 import type { BoardConfig } from '@/typings/BoardConfig';
 
-describe.concurrent('Test the board', () => {
+describe('Test the board', () => {
   const wrapper = mount(TheChessboard, {
     props: {
       playerColor: 'white',
