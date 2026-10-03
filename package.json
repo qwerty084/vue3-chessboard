@@ -18,11 +18,13 @@
   ],
   "license": "GPL-3.0",
   "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     ".": {
-      "import": "./dist/vue3-chessboard.js",
-      "require": "./dist/vue3-chessboard.cjs",
-      "types": "./dist/src/index.d.ts"
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/vue3-chessboard.js"
     },
     "./style.css": "./dist/style.css"
   },
@@ -73,6 +75,7 @@
     "jsdom": "^30.1.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.9.9",
+    "publint": "^0.3.25",
     "typescript": "^5.9.3",
     "vite": "^8.3.2",
     "vitest": "^5.0.3",
