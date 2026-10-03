@@ -48,8 +48,10 @@
     "test": "vitest --environment jsdom --dir src/",
     "build-only": "vite build",
     "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "lint:check": "eslint . --max-warnings 0"
   },
   "dependencies": {
     "chess.js": "^1.0.0-beta.6",
