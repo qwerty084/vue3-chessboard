@@ -23,6 +23,8 @@ jobs:
       - run: npm install -g npm@^11.5.1
       - run: npm ci
       - run: npm run build
+      # fail before publishing if package.json points to files that weren't built
+      - run: npx publint --strict
       # pre-release versions are published under the "next" tag, so "latest" is not changed.
       # stable versions use npm's default tag, which keeps npm's guard against moving
       # "latest" to a lower version
