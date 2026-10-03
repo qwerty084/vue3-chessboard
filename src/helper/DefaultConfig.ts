@@ -45,7 +45,6 @@ export const defaultBoardConfig: BoardConfig = {
     // BoardApi.changeTurn onto. Other functions need to be specifed as undefined so that BoardApi.setConfig
     // can reset values back to undefined, eg. if the user calls BoardApi.setConfig({}, true).
     //
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     events: { after: () => {}, afterNewPiece: undefined },
     rookCastle: true,
   },

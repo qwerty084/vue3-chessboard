@@ -39,3 +39,7 @@ npm run lint
 ```
 
 Then create a branch with a fitting name, commit and push your changes.
+
+## Pinned Vue dev dependencies
+
+`vue`, `@vue/server-renderer` and `@vue/tsconfig` are pinned to exact versions in `devDependencies`. The published type declarations (`dist/src/**/*.d.ts`) are generated against the installed Vue version, and declarations generated with Vue 3.5 only work for projects on Vue 3.5.2 or newer. Building with Vue 3.3.2 keeps them compatible with every Vue version allowed by the `vue` peer dependency. Don't update these packages unless the peer dependency is raised in a new major version. `@vue/server-renderer` must always match the `vue` version exactly.

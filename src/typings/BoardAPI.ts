@@ -14,7 +14,7 @@ export interface LichessOpening {
       game: null;
       black: number;
       draws: number;
-    }
+    },
   ];
   opening: {
     eco: string;
@@ -35,7 +35,7 @@ export interface LichessOpening {
         name: string;
         rating: number;
       };
-    }
+    },
   ];
 }
 

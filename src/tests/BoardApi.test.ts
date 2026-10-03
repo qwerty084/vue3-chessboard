@@ -3,7 +3,7 @@ import { initialPos } from '@/helper/DefaultConfig';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { makeStalemate, mountComponent, resetBoard } from './helper/Helper';
 
-describe.concurrent('Test the board API', () => {
+describe('Test the board API', () => {
   const wrapper = mountComponent();
   const boardApi = wrapper.emitted<BoardApi[]>('boardCreated')?.[0][0];
   if (typeof boardApi === 'undefined') {
