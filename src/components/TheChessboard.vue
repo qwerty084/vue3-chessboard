@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, watch } from 'vue';
 import PromotionDialog from './PromotionDialog.vue';
-import { BoardApi } from '@/classes/BoardApi';
-import type { BoardState, Props, Emits } from '@/typings/Chessboard';
-import type { BoardConfig } from '@/typings/BoardConfig';
-import { deepCopy, deepDiffConfig } from '@/helper/Board';
+import { BoardApi } from '../classes/BoardApi';
+import type { BoardState, Props, Emits } from '../typings/Chessboard';
+import type { BoardConfig } from '../typings/BoardConfig';
+import { deepCopy, deepDiffConfig } from '../helper/Board';
 
 const props = withDefaults(defineProps<Props>(), {
   boardConfig: () => ({}),

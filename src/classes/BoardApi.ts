@@ -5,16 +5,16 @@ import {
   chessJSPieceToLichessPiece,
   possibleMoves,
   shortToLongColor,
-} from '@/helper/Board';
-import { defaultBoardConfig } from '@/helper/DefaultConfig';
+} from '../helper/Board';
+import { defaultBoardConfig } from '../helper/DefaultConfig';
 import type {
   BrushColor,
   CapturedPieces,
   DrawShape,
   LichessOpening,
   MaterialDifference,
-} from '@/typings/BoardAPI';
-import type BoardConfig from '@/typings/BoardConfig';
+} from '../typings/BoardAPI';
+import type BoardConfig from '../typings/BoardConfig';
 import type {
   BoardState,
   Emits,
@@ -24,7 +24,7 @@ import type {
   Promotion,
   Props,
   SquareColor,
-} from '@/typings/Chessboard';
+} from '../typings/Chessboard';
 import {
   Chess,
   type Piece,

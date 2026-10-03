@@ -39,5 +39,24 @@ export default withVueTs(
       ],
       'vue/require-explicit-emits': ['off'],
     },
+  },
+  {
+    // the '@' alias isn't resolved in the generated type declarations,
+    // so the published library code has to use relative imports
+    files: ['src/**/*.{ts,vue}'],
+    ignores: ['src/App.vue', 'src/main.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/*'],
+              message: 'Use a relative import, see CONTRIBUTING.md.',
+            },
+          ],
+        },
+      ],
+    },
   }
 );

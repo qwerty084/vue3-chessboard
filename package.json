@@ -41,7 +41,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --project tsconfig.app.json && ./format.sh",
+    "build": "vite build && vue-tsc --project tsconfig.build.json",
     "preview": "vite preview",
     "test": "vitest --environment jsdom --dir src/",
     "build-only": "vite build",
