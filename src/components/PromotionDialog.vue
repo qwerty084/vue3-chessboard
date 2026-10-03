@@ -2,7 +2,7 @@
 import type {
   PromotionDialogState,
   PromotionPiece,
-} from '@/typings/Chessboard';
+} from '../typings/Chessboard';
 
 const props = defineProps<{
   state: PromotionDialogState;

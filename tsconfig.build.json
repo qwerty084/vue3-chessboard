@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["src/App.vue", "src/main.ts", "src/tests", "src/**/__tests__"],
+  "compilerOptions": {
+    "composite": false,
+    "rootDir": ".",
+    // the '@' alias would end up unresolved in the generated declarations,
+    // so fail the build instead of resolving it
+    "paths": {}
+  }
+}

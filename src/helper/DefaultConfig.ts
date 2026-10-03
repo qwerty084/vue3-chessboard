@@ -1,5 +1,5 @@
 import type { Key } from 'chessground/types';
-import type { BoardConfig } from '@/typings/BoardConfig';
+import type { BoardConfig } from '../typings/BoardConfig';
 
 export const possibleMovesWhite: Map<Key, Key[]> = new Map([
   ['b1', ['a3', 'c3']],
