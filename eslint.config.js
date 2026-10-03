@@ -57,6 +57,17 @@ export default withVueTs(
           ],
         },
       ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'TSImportType[argument.literal.value=/^@\\u002F/]',
+          message: 'Use a relative import, see CONTRIBUTING.md.',
+        },
+        {
+          selector: 'ImportExpression[source.value=/^@\\u002F/]',
+          message: 'Use a relative import, see CONTRIBUTING.md.',
+        },
+      ],
     },
   }
 );

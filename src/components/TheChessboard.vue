@@ -2,7 +2,17 @@
 import { ref, onMounted, reactive, watch } from 'vue';
 import PromotionDialog from './PromotionDialog.vue';
 import { BoardApi } from '../classes/BoardApi';
-import type { BoardState, Props, Emits } from '../typings/Chessboard';
+import type {
+  BoardState,
+  Props,
+  Emits,
+  // only imported so the generated declaration references these types from
+  // here instead of '../index.js', which re-exports this component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  PieceColor,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  PromotionEvent,
+} from '../typings/Chessboard';
 import type { BoardConfig } from '../typings/BoardConfig';
 import { deepCopy, deepDiffConfig } from '../helper/Board';
 
