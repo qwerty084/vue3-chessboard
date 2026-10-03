@@ -27,7 +27,9 @@ jobs:
       - name: npm install
         run: npm ci
       - name: check code style
-        run: npm run lint
+        run: npm run lint:check
+      - name: check formatting
+        run: npm run format:check
       - name: run type checks
         run: npm run type-check
       - name: run tests
