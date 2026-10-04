@@ -143,6 +143,21 @@ export class BoardApi {
   }
 
   /**
+   * Starts a new game from the current position, keeping the pgn headers. Call this after editing the board,
+   * because chess.js replays the history to read it and fails once an edit changes a square a move used.
+   * @private
+   */
+  private restartFromCurrentPosition(): void {
+    // edited positions can be invalid, for example without kings
+    this.game.load(this.game.fen(), {
+      skipValidation: true,
+      preserveHeaders: true,
+    });
+    recountPositions(this.game);
+    this.closeHistoryViewer();
+  }
+
+  /**
    * emits neccessary events
    * @private
    */
@@ -583,6 +598,7 @@ export class BoardApi {
   /**
    * puts a piece on a given square on the board
    * returns true on success, else false
+   * Caution: outside free mode this erases the game history, the edited position becomes the starting position
    */
   putPiece(piece: Piece, square: Square): boolean {
     // @TODO using putPiece with the same piece and square twice is buggy in movable: false in chess.js state
@@ -597,7 +613,7 @@ export class BoardApi {
     } else {
       const result = this.game.put(piece, square);
       if (result) {
-        recountPositions(this.game);
+        this.restartFromCurrentPosition();
         this.updateGameState();
       }
       return result;
@@ -606,11 +622,12 @@ export class BoardApi {
 
   /**
    * Removes a piece from the board.
+   * Caution: this erases the game history, the edited position becomes the starting position
    * @param square - The square where the piece is located.
    */
   removePiece(square: Square): void {
     this.game.remove(square);
-    recountPositions(this.game);
+    this.restartFromCurrentPosition();
     if (this.board.state.movable.free) {
       // setPieces also redraws the board
       this.board.setPieces(new Map([[square, undefined]]));

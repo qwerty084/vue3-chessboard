@@ -107,8 +107,7 @@ export function kingCastlingDest(game: Chess, orig: Key, dest: Key): Key {
 /**
  * Recounts the positions chess.js uses to detect threefold repetition. chess.js counts a loaded fen as
  * given, even if fen() drops its en passant square, and doesn't count positions changed by put or
- * remove. Call this after loading a game or editing the board. A board edit replaces the current
- * position, so the edited position counts instead of the one before the edit.
+ * remove. Call this after loading a game or editing the board.
  */
 export function recountPositions(game: Chess): void {
   const history = game.history({ verbose: true });
@@ -116,7 +115,6 @@ export function recountPositions(game: Chess): void {
     history[0]?.before ?? game.fen(),
     ...history.map((move) => move.after),
   ];
-  positions[positions.length - 1] = game.fen();
 
   const counts: Record<string, number> = {};
   for (const fen of positions) {

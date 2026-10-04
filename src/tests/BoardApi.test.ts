@@ -852,6 +852,44 @@ describe('Test the board API', () => {
     });
   });
 
+  describe('editing the board after moves', () => {
+    const editedFen =
+      'rnbqkbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1';
+
+    it('removes the destination of the last move', () => {
+      boardApi.move('e4');
+      expect(() => boardApi.removePiece('e4')).not.toThrow();
+      expect(boardApi.getFen()).toBe(editedFen);
+      expect(boardApi.getHistory()).toHaveLength(0);
+      expect(boardApi.getLastMove()).toBeUndefined();
+    });
+
+    it('puts a piece on the destination of the last move', () => {
+      boardApi.move('e4');
+      boardApi.putPiece({ type: 'q', color: 'b' }, 'e4');
+      expect(boardApi.getHistory()).toHaveLength(0);
+      expect(boardApi.getSquare('e4')).toEqual({ type: 'q', color: 'b' });
+    });
+
+    it('keeps the pgn headers and sets the edited position as the starting position', () => {
+      boardApi.setPgnInfo({ White: 'Deep Blue' });
+      boardApi.move('e4');
+      boardApi.removePiece('e4');
+      const pgn = boardApi.getPgn();
+      expect(pgn).toContain('[White "Deep Blue"]');
+      expect(pgn).toContain(`[FEN "${editedFen}"]`);
+    });
+
+    it('closes the history viewer', () => {
+      boardApi.move('e4');
+      boardApi.viewStart();
+      boardApi.removePiece('e4');
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+    });
+  });
+
   it('returns whether a free move moved a piece', () => {
     boardApi.setConfig({ movable: { free: true } });
     // illegal in chess, the queen jumps over the d2 pawn
