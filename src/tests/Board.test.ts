@@ -97,6 +97,20 @@ describe('Test Map and element config values', () => {
     expect(state.premovable.customDests.get('e7')).toEqual(['e5']);
   });
 
+  it('resets Map and callback options when filling defaults', () => {
+    const { boardApi } = mountWith({});
+    boardApi.setConfig({
+      highlight: { custom: new Map([['e4', 'marked']]) },
+      premovable: { customDests: new Map([['e7', ['e5']]]) },
+      drawable: { onChange: () => {} },
+    });
+    boardApi.resetBoard();
+    const state = (boardApi as any).board.state;
+    expect(state.highlight.custom).toBeUndefined();
+    expect(state.premovable.customDests).toBeUndefined();
+    expect(state.drawable.onChange).toBeUndefined();
+  });
+
   it('passes the addDimensionsCssVarsTo element through', () => {
     const element = document.createElement('div');
     const { boardApi } = mountWith({ addDimensionsCssVarsTo: element });

@@ -31,6 +31,7 @@ export const defaultBoardConfig: BoardConfig = {
   highlight: {
     lastMove: true,
     check: true,
+    custom: undefined,
   },
   animation: {
     enabled: true,
@@ -53,6 +54,7 @@ export const defaultBoardConfig: BoardConfig = {
     enabled: true,
     showDests: true,
     castle: true,
+    customDests: undefined,
     events: { set: undefined, unset: undefined },
   },
   predroppable: {
@@ -83,6 +85,7 @@ export const defaultBoardConfig: BoardConfig = {
     eraseOnClick: true,
     shapes: [],
     autoShapes: [],
+    onChange: undefined,
     brushes: {
       green: { key: 'g', color: '#15781B', opacity: 1, lineWidth: 10 },
       red: { key: 'r', color: '#882020', opacity: 1, lineWidth: 10 },
