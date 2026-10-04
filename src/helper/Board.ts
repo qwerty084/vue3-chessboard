@@ -96,8 +96,8 @@ export function getPossiblePromotions(legalMoves: Move[]): Move[] {
 }
 
 /**
- * Whether the value is a plain object, eg. a config section. Other objects, such as Maps, arrays,
- * functions and DOM elements, are config values and are copied and compared as a whole.
+ * Whether the value is a plain object, eg. a config section. The config helpers merge plain objects key
+ * by key and treat other objects, such as Maps, arrays, functions and DOM elements, as single values.
  */
 export function isObject(value: unknown): boolean {
   if (typeof value !== 'object' || value === null) {

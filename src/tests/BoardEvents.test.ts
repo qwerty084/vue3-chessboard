@@ -49,7 +49,7 @@ describe('Test the board events', () => {
     );
     expect(wrapper.emitted('draw')).toHaveLength(1);
 
-    // the repeated position is left, so the game continues without draw events
+    // e4 leaves the repeated position, so no further draw event fires
     boardApi.move('e4');
     expect(wrapper.emitted('draw')).toHaveLength(1);
   });

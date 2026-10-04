@@ -2,11 +2,11 @@
 
 ### Breaking
 
-- the `vue` peer dependency is `^3.3.0` instead of `^3.2.47`. The published component types use Vue 3.3's `DefineComponent` signature and failed to type-check on Vue 3.2
+- the `vue` peer dependency is `^3.3.0` instead of `^3.2.47`. The published component types use Vue 3.3's `DefineComponent` signature, so they failed to type-check on Vue 3.2
 
-The package bundles chess.js and chessground, so their updates (see Other) change these behaviors:
+The package bundles chess.js and chessground, so their updates, listed under Other, change these behaviors:
 
-- the move objects in the `move` event, `getLastMove()` and `getHistory(true)` are instances of chess.js's `Move` class instead of plain objects. They always have `captured` and `promotion` keys, and they have helpers such as `isCapture()`. Because chess.js is bundled, `instanceof Move` with a `Move` imported from your own `chess.js` is `false`
+- the move objects in the `move` event, `getLastMove()` and `getHistory(true)` are instances of chess.js's `Move` class instead of plain objects. They always have `captured` and `promotion` keys, and they have helpers such as `isCapture()`. Because the package bundles its own copy of chess.js, `instanceof Move` with a `Move` imported from your own `chess.js` is `false`
 - `setPosition()`, `loadPgn()` with a `FEN` tag, and a `fen` in the board config throw on FENs with pawns on the first or eighth rank. `setConfig()` now checks the `fen` before it applies any other option, so an invalid `fen` leaves the board unchanged
 - `addDimensionsCssVarsTo` sets `---cg-width` and `---cg-height` instead of `--cg-width` and `--cg-height`
 - the default `purple` brush uses the key `purple` instead of `purp`
@@ -24,11 +24,11 @@ The package bundles chess.js and chessground, so their updates (see Other) chang
 - the published type declarations keep their JSDoc tags, such as `@param` and `@returns` ([#269](https://github.com/qwerty084/vue3-chessboard/pull/269))
 - removed the `require` export, which pointed to a CommonJS build that no longer exists. The exports map now lists the `types` condition first ([#270](https://github.com/qwerty084/vue3-chessboard/pull/270))
 - `getSquare()` returns `null` for an empty square, as documented, instead of `false`
-- the `draw` event no longer fires on every move after a threefold repetition. It fires only when the current position has occurred three times (chess.js)
-- board config merging ignores `__proto__` and `constructor` keys (chessground)
-- board config merging keeps Maps and DOM elements, which were turned into empty objects when the config was filled with defaults (on mount, `resetBoard()` and `setConfig(config, true)`). `movable.rookCastle: false` and `highlight.custom` no longer crash the board, `movable.dests` and `premovable.customDests` keep their entries, and `addDimensionsCssVarsTo` keeps its element. With `reactiveConfig`, a Map only counts as changed when its entries change
+- the chess.js update fixes the `draw` event, which fired on every move after a threefold repetition. It now fires only when the current position has occurred three times
+- with the chessground update, board config merging ignores `__proto__` and `constructor` keys
+- board config merging keeps Maps and DOM elements. Filling the config with defaults, on mount, in `resetBoard()` and in `setConfig(config, true)`, turned them into empty objects. `movable.rookCastle: false` and `highlight.custom` no longer crash the board, `movable.dests` and `premovable.customDests` keep their entries, and `addDimensionsCssVarsTo` keeps its element. With `reactiveConfig`, a Map only counts as changed when its entries change
 - `resetBoard()` and `setConfig(config, true)` reset `highlight.custom`, `premovable.customDests` and `drawable.onChange` to their defaults
-- a move made while viewing history emits `check`, `checkmate`, `stalemate` and `draw`, and `check`/`checkmate` carry the color of the side to move
+- a move made while viewing history emits `check`, `checkmate`, `stalemate` and `draw`, and `check` and `checkmate` pass the color of the side to move
 - `loadPgn()`, `setPosition()` and `clearBoard()` while viewing history no longer leave the board view-only
 - `removePiece()` removes the piece from the rendered board right away and, outside `movable.free`, updates the legal moves
 - with `movable.free`, `move()` returns `true` when it moves a piece, even if the move is illegal in chess
@@ -37,7 +37,7 @@ The package bundles chess.js and chessground, so their updates (see Other) chang
 
 - updated chess.js from 1.0.0-beta.6 to the stable 1.1.0 release
 - updated chessground from 9.0.2 to 9.2.1, the last release of the unscoped `chessground` package
-- removed the unused `@types/chess.js` dev dependency, chess.js ships its own types
+- removed the unused `@types/chess.js` dev dependency, because chess.js ships its own types
 
 ## v1.3.4 (2026-10-03)
 

@@ -114,8 +114,8 @@ export class BoardApi {
   }
 
   /**
-   * Closes the history viewer without moving the board to the current position, eg. because the game
-   * is replaced. Restores the viewOnly setting from before the viewer was opened.
+   * Closes the history viewer without showing the current position, for methods that replace the game.
+   * Restores the viewOnly setting the board had before the viewer opened.
    * @private
    */
   private closeHistoryViewer(): void {
@@ -131,7 +131,7 @@ export class BoardApi {
    */
   private emitEvents(): void {
     if (this.game.inCheck()) {
-      // the game's turn, the board's turnColor isn't updated while viewing history
+      // use the game's turn, updateGameState doesn't update the board's turnColor while viewing history
       this.emit(
         this.game.isCheckmate() ? 'checkmate' : 'check',
         this.getTurnColor()
@@ -340,8 +340,8 @@ export class BoardApi {
    * @param move either a string in Standard Algebraic Notation (SAN), eg. 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
    * or an object of shape { from: string; to: string; promotion?: string; }, eg. { from: 'g8', to: 'f6' } or
    * { from: 'e7', to: 'e8', promotion: 'q'}
-   * @returns true if the move was made, false if the move was illegal. With `movable.free`, a move object
-   * is made on the board even if it is illegal, and true is returned if there was a piece to move
+   * @returns true if it made the move, false if the move is illegal. With `movable.free`, it makes a move
+   * object on the board even if the move is illegal, and returns true if there was a piece to move
    */
   move(move: string | Move): boolean {
     let moveEvent: MoveEvent;
@@ -385,7 +385,7 @@ export class BoardApi {
       nextTick(this.board.playPremove);
     }
 
-    // while viewing history this only emits the game events, eg. check
+    // while viewing history, updateGameState only emits the game events, eg. check
     this.updateGameState({ updateFen: false });
 
     return true;
@@ -666,7 +666,7 @@ export class BoardApi {
    * false the unprovided options will remain unchanged.
    */
   setConfig(config: BoardConfig, fillDefaults = false): void {
-    // throw on an invalid fen before any other option is applied, so the board isn't left half updated
+    // throw on an invalid fen before applying any other option, so a failed call leaves the board unchanged
     if (config.fen) new Chess(config.fen);
 
     if (fillDefaults) {
@@ -688,8 +688,8 @@ export class BoardApi {
     }
 
     const { fen, ...configWithoutFen } = config;
-    // a new position replaces the game, so close the history viewer before applying the config,
-    // otherwise restoring the viewer's viewOnly setting would override it
+    // a new position replaces the game, so close the history viewer first. Closing it restores the
+    // viewer's saved viewOnly setting, which would otherwise override the config
     if (fen) this.closeHistoryViewer();
     this.board.set(configWithoutFen);
     if (fen) this.setPosition(fen);

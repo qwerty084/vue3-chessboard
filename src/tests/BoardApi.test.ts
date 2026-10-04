@@ -655,7 +655,7 @@ describe('Test the board API', () => {
     }
   );
 
-  it('keeps a viewOnly board viewOnly when the game is replaced while viewing history', () => {
+  it('keeps a viewOnly board viewOnly when setPosition replaces the game while viewing history', () => {
     boardApi.setConfig({ viewOnly: true });
     boardApi.move('e4');
     boardApi.viewStart();
@@ -713,12 +713,12 @@ describe('Test the board API', () => {
     });
   });
 
-  it('returns whether a free move was made', () => {
+  it('returns whether a free move moved a piece', () => {
     boardApi.setConfig({ movable: { free: true } });
     // illegal in chess, the queen jumps over the d2 pawn
     expect(boardApi.move({ from: 'd1', to: 'd5' })).toBe(true);
     expect((boardApi as any).board.state.pieces.get('d5')?.role).toBe('queen');
-    // no piece on d4
+    // d4 is empty
     expect(boardApi.move({ from: 'd4', to: 'd6' })).toBe(false);
   });
 
