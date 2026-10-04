@@ -1,6 +1,7 @@
 import {
   deepMergeConfig,
   getThreats,
+  isCheck,
   isPromotion,
   chessJSPieceToLichessPiece,
   possibleMoves,
@@ -708,8 +709,9 @@ export class BoardApi {
         selected: undefined,
       });
 
+      // evaluate the viewed position itself, so a starting position in check is also highlighted
       this.displayInCheck(
-        ply > 0 ? '+#'.includes(history[ply - 1].san.at(-1) as string) : false,
+        isCheck(history[ply].before),
         shortToLongColor(history[ply].color)
       );
 

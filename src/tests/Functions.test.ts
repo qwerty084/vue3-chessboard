@@ -2,6 +2,7 @@
 import { expect, it, describe } from 'vitest';
 import {
   getThreats,
+  isCheck,
   isObject,
   deepCopy,
   deepMergeConfig,
@@ -16,6 +17,25 @@ describe.concurrent('Test getThreats', () => {
   it('calculate threats', async () => {
     const threats = getThreats(possibleFirstMovesWhite);
     expect(threats).toEqual(possibleFirstThreatsWhite);
+  });
+});
+
+describe.concurrent('Test isCheck', () => {
+  it('detects check for the side to move', async () => {
+    expect(isCheck('4r1k1/8/8/8/8/8/8/4K3 w - - 0 1')).toBe(true);
+    expect(isCheck('4r1k1/8/8/8/8/8/8/4K3 b - - 0 1')).toBe(false);
+  });
+
+  it('returns false for the starting position', async () => {
+    expect(
+      isCheck('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+    ).toBe(false);
+  });
+
+  it('handles positions without kings', async () => {
+    expect(isCheck('8/4p3/8/8/8/8/4P3/8 w - - 0 1')).toBe(false);
+    // only the side to move has a king, which chess.js would reject
+    expect(isCheck('4r3/8/8/8/8/8/8/4K3 w - - 0 1')).toBe(true);
   });
 });
 
