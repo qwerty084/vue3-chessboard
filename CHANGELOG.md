@@ -2,6 +2,8 @@
 
 ### Breaking
 
+- the `vue` peer dependency is `^3.3.0` instead of `^3.2.47`. The published component types use Vue 3.3's `DefineComponent` signature and failed to type-check on Vue 3.2
+
 The package bundles chess.js and chessground, so their updates (see Other) change these behaviors:
 
 - the move objects in the `move` event, `getLastMove()` and `getHistory(true)` are instances of chess.js's `Move` class instead of plain objects. They always have `captured` and `promotion` keys, and they have helpers such as `isCapture()`. Because chess.js is bundled, `instanceof Move` with a `Move` imported from your own `chess.js` is `false`

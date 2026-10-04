@@ -58,7 +58,7 @@
     "chessground": "^9.2.1"
   },
   "peerDependencies": {
-    "vue": "^3.2.47"
+    "vue": "^3.3.0"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.1",
