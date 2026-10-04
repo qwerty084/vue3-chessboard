@@ -1,4 +1,11 @@
-import { SQUARES, type Chess, type Move, type Piece } from 'chess.js';
+import {
+  Chess,
+  SQUARES,
+  type Move,
+  type Piece,
+  type PieceSymbol,
+  type Square,
+} from 'chess.js';
 import type { Color, Key } from 'chessground/types';
 import type { Threat } from '../typings/Chessboard';
 
@@ -47,6 +54,41 @@ export function isPromotion(dest: Key, piece: Piece | null): boolean {
   const promotionRow = piece?.color === 'w' ? '8' : '1'; // for white promotion row is 8, for black its 1
 
   return dest[1] === promotionRow;
+}
+
+/**
+ * Whether the side to move is in check in the given position.
+ * Unlike the chess.js constructor this doesn't validate the fen, so it also
+ * works for edited positions, eg. without kings.
+ */
+export function isCheck(fen: string): boolean {
+  const [placement, turn] = fen.split(' ');
+  const position = new Chess();
+  position.clear();
+  let kingSquare: Square | undefined;
+
+  placement.split('/').forEach((row, rowIndex) => {
+    let file = 0;
+    for (const char of row) {
+      if (/\d/.test(char)) {
+        file += Number(char);
+        continue;
+      }
+      const square = `${'abcdefgh'[file]}${8 - rowIndex}` as Square;
+      const color = char === char.toUpperCase() ? 'w' : 'b';
+      const type = char.toLowerCase() as PieceSymbol;
+      position.put({ type, color }, square);
+      if (type === 'k' && color === turn) {
+        kingSquare = square;
+      }
+      file++;
+    }
+  });
+
+  return (
+    kingSquare !== undefined &&
+    position.isAttacked(kingSquare, turn === 'w' ? 'b' : 'w')
+  );
 }
 
 export function getPossiblePromotions(legalMoves: Move[]): Move[] {

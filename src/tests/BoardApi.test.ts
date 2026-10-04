@@ -506,6 +506,38 @@ describe('Test the board API', () => {
     });
   });
 
+  describe('history viewer with a starting position in check', () => {
+    // white king on e1 is in check from the rook on e8
+    const startFen = '4r1k1/8/8/8/8/8/8/4K3 w - - 0 1';
+    const pgn = `[SetUp "1"]\n[FEN "${startFen}"]\n\n1. Kd1 Kg7`;
+
+    beforeEach(() => boardApi.loadPgn(pgn));
+
+    it('highlights check when viewing the start position', () => {
+      boardApi.viewStart();
+      expect((boardApi as any).board.state.check).toBe('e1');
+    });
+
+    it('clears the check highlight when viewing a position without check', () => {
+      boardApi.viewStart();
+      boardApi.viewNext();
+      expect((boardApi as any).board.state.check).toBeUndefined();
+    });
+  });
+
+  it('views the history of an edited position without kings', () => {
+    boardApi.clearBoard();
+    boardApi.putPiece({ type: 'p', color: 'w' }, 'e2');
+    boardApi.putPiece({ type: 'p', color: 'b' }, 'e7');
+    boardApi.move('e4');
+    boardApi.move('e5');
+
+    expect(() => boardApi.viewStart()).not.toThrow();
+    expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(0);
+    expect((boardApi as any).board.state.check).toBeUndefined();
+    expect((boardApi as any).board.state.animation.enabled).toBe(true);
+  });
+
   describe('history viewer with a custom starting position, white to move', () => {
     const startFen =
       'r1bqkbnr/1ppp1ppp/p1n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4';
