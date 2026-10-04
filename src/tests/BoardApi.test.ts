@@ -663,6 +663,24 @@ describe('Test the board API', () => {
     expect((boardApi as any).board.state.viewOnly).toBe(true);
   });
 
+  it('applies viewOnly from setConfig with a fen while viewing history', () => {
+    boardApi.move('e4');
+    boardApi.viewStart();
+    boardApi.setConfig({ fen: initialPos, viewOnly: true });
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      false
+    );
+    expect((boardApi as any).board.state.viewOnly).toBe(true);
+  });
+
+  it('resets viewOnly to its default with resetBoard while viewing history', () => {
+    boardApi.setConfig({ viewOnly: true });
+    boardApi.move('e4');
+    boardApi.viewStart();
+    boardApi.resetBoard();
+    expect((boardApi as any).board.state.viewOnly).toBe(false);
+  });
+
   describe('removing pieces', () => {
     const renderedKeys = () =>
       wrapper

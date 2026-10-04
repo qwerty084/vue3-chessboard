@@ -688,6 +688,9 @@ export class BoardApi {
     }
 
     const { fen, ...configWithoutFen } = config;
+    // a new position replaces the game, so close the history viewer before applying the config,
+    // otherwise restoring the viewer's viewOnly setting would override it
+    if (fen) this.closeHistoryViewer();
     this.board.set(configWithoutFen);
     if (fen) this.setPosition(fen);
     this.board.redrawAll();
