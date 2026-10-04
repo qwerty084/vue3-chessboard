@@ -621,6 +621,284 @@ describe('Test the board API', () => {
     expect(boardApi.getHistory()).toEqual([]);
   });
 
+  it('emits check for a move made while viewing history', () => {
+    boardApi.move('e4');
+    boardApi.move('f6');
+    boardApi.viewStart();
+    boardApi.move('Qh5');
+    expect(wrapper.emitted('check')).toEqual([['black']]);
+  });
+
+  it('emits checkmate for a move made while viewing history', () => {
+    boardApi.move('f3');
+    boardApi.move('e5');
+    boardApi.move('g4');
+    boardApi.viewStart();
+    boardApi.move('Qh4');
+    expect(wrapper.emitted('checkmate')).toEqual([['white']]);
+  });
+
+  it('emits check once when the history viewer closes after a checking move', () => {
+    boardApi.move('e4');
+    boardApi.move('f6');
+    boardApi.viewStart();
+    boardApi.move('Qh5');
+    boardApi.stopViewingHistory();
+    expect(wrapper.emitted('check')).toHaveLength(1);
+  });
+
+  it('does not emit checkmate again when navigating history', () => {
+    boardApi.move('f3');
+    boardApi.move('e5');
+    boardApi.move('g4');
+    boardApi.move('Qh4');
+    boardApi.viewPrevious();
+    boardApi.viewNext();
+    expect(wrapper.emitted('checkmate')).toHaveLength(1);
+  });
+
+  it('does not emit game events when removing a piece', () => {
+    boardApi.move('e4');
+    boardApi.move('f6');
+    boardApi.move('Qh5');
+    boardApi.removePiece('a7');
+    expect(wrapper.emitted('check')).toHaveLength(1);
+  });
+
+  it('castles when the king is moved onto its own rook', async () => {
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const board = (boardApi as any).board;
+    expect(board.state.movable.dests.get('e1')).toEqual(
+      expect.arrayContaining(['g1', 'h1', 'c1', 'a1'])
+    );
+
+    board.selectSquare('e1');
+    board.selectSquare('h1');
+    // chessground calls movable.events.after in a timeout
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(boardApi.getFen()).toBe('r3k2r/8/8/8/8/8/8/R4RK1 b kq - 1 1');
+    expect(boardApi.getLastMove()?.san).toBe('O-O');
+  });
+
+  it('does not list the rook square with movable.rookCastle disabled', () => {
+    boardApi.setConfig({ movable: { rookCastle: false } });
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const dests = (boardApi as any).board.state.movable.dests.get('e1');
+    expect(dests).toEqual(expect.arrayContaining(['g1', 'c1']));
+    expect(dests).not.toContain('h1');
+    expect(dests).not.toContain('a1');
+  });
+
+  it('does not list the rook square with autoCastle disabled', () => {
+    boardApi.setConfig({ autoCastle: false });
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const dests = (boardApi as any).board.state.movable.dests.get('e1');
+    expect(dests).toEqual(expect.arrayContaining(['g1', 'c1']));
+    expect(dests).not.toContain('h1');
+    expect(dests).not.toContain('a1');
+  });
+
+  it('updates the rook square destinations when the castling options change', () => {
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const board = (boardApi as any).board;
+
+    boardApi.setConfig({ movable: { rookCastle: false } });
+    expect(board.state.movable.dests.get('e1')).not.toContain('h1');
+    boardApi.setConfig({ movable: { rookCastle: true } });
+    expect(board.state.movable.dests.get('e1')).toContain('h1');
+    boardApi.setConfig({ autoCastle: false });
+    expect(board.state.movable.dests.get('e1')).not.toContain('h1');
+    boardApi.setConfig({ autoCastle: true });
+    expect(board.state.movable.dests.get('e1')).toContain('h1');
+  });
+
+  it('does not castle a king dropped onto its rook from another square in free mode', async () => {
+    boardApi.setConfig({ movable: { free: true } });
+    boardApi.setPosition('4k3/8/8/8/5K1R/8/8/8 w - - 0 1');
+    const board = (boardApi as any).board;
+
+    board.selectSquare('f4');
+    board.selectSquare('h4');
+    // chessground calls movable.events.after in a timeout
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(board.state.pieces.get('h4')?.role).toBe('king');
+    expect(boardApi.getHistory()).toHaveLength(0);
+  });
+
+  it('emits check after an undo while viewing history', () => {
+    boardApi.move('e4');
+    boardApi.move('f6');
+    boardApi.move('Qh5');
+    boardApi.move('g6');
+    boardApi.viewStart();
+    boardApi.undoLastMove();
+    expect(wrapper.emitted('check')).toHaveLength(2);
+    boardApi.stopViewingHistory();
+    expect(wrapper.emitted('check')).toHaveLength(2);
+  });
+
+  it('keeps custom dests when the castling options change', () => {
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const board = (boardApi as any).board;
+    boardApi.setConfig({ movable: { dests: new Map([['e1', ['g1']]]) } });
+
+    boardApi.setConfig({ autoCastle: false });
+    expect([...board.state.movable.dests]).toEqual([['e1', ['g1']]]);
+    boardApi.setConfig({ autoCastle: true });
+    expect([...board.state.movable.dests]).toEqual([['e1', ['g1', 'h1']]]);
+  });
+
+  it('does not castle a king dropped onto its rook in free mode with autoCastle disabled', async () => {
+    boardApi.setConfig({ autoCastle: false, movable: { free: true } });
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const board = (boardApi as any).board;
+
+    board.selectSquare('e1');
+    board.selectSquare('h1');
+    // chessground calls movable.events.after in a timeout
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(board.state.pieces.get('h1')?.role).toBe('king');
+    expect(boardApi.getHistory()).toHaveLength(0);
+    expect(wrapper.emitted('move') ?? []).toHaveLength(0);
+  });
+
+  it('keeps the viewed position after an en passant capture', async () => {
+    boardApi.setPosition(
+      'rnbqkbnr/pppppppp/8/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
+    );
+    boardApi.move('d5');
+    boardApi.move('exd6');
+    boardApi.viewPrevious();
+    const viewedFen = (boardApi as any).board.getFen();
+
+    // wait for the position update after the capture animation
+    const { duration } = (boardApi as any).board.state.animation;
+    await new Promise((resolve) => setTimeout(resolve, duration + 50));
+    expect((boardApi as any).board.getFen()).toBe(viewedFen);
+  });
+
+  it.each(['loadPgn', 'setPosition', 'clearBoard'] as const)(
+    'restores viewOnly when %s replaces the game while viewing history',
+    (method) => {
+      boardApi.move('e4');
+      boardApi.move('e5');
+      boardApi.viewStart();
+      if (method === 'loadPgn') boardApi.loadPgn('1. d4 d5');
+      else if (method === 'setPosition') boardApi.setPosition(initialPos);
+      else boardApi.clearBoard();
+
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+      expect((boardApi as any).board.state.viewOnly).toBe(false);
+    }
+  );
+
+  it('keeps a viewOnly board viewOnly when setPosition replaces the game while viewing history', () => {
+    boardApi.setConfig({ viewOnly: true });
+    boardApi.move('e4');
+    boardApi.viewStart();
+    boardApi.setPosition(initialPos);
+    expect((boardApi as any).board.state.viewOnly).toBe(true);
+  });
+
+  it('applies viewOnly from setConfig with a fen while viewing history', () => {
+    boardApi.move('e4');
+    boardApi.viewStart();
+    boardApi.setConfig({ fen: initialPos, viewOnly: true });
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      false
+    );
+    expect((boardApi as any).board.state.viewOnly).toBe(true);
+  });
+
+  it('resets viewOnly to its default with resetBoard while viewing history', () => {
+    boardApi.setConfig({ viewOnly: true });
+    boardApi.move('e4');
+    boardApi.viewStart();
+    boardApi.resetBoard();
+    expect((boardApi as any).board.state.viewOnly).toBe(false);
+  });
+
+  describe('removing pieces', () => {
+    const renderedKeys = () =>
+      wrapper
+        .findAll('cg-board piece')
+        .map((piece) => (piece.element as any).cgKey);
+    const nextFrame = () =>
+      new Promise((resolve) => requestAnimationFrame(resolve));
+
+    it('removes the piece from the game and the rendered board', async () => {
+      boardApi.setConfig({ animation: { enabled: false } });
+      await nextFrame();
+      expect(renderedKeys()).toContain('e2');
+
+      boardApi.removePiece('e2');
+      await nextFrame();
+      expect(renderedKeys()).not.toContain('e2');
+      expect(boardApi.getSquare('e2')).toBeNull();
+      expect((boardApi as any).board.state.movable.dests.has('e2')).toBe(false);
+    });
+
+    it('removes the piece from the rendered board in free mode', async () => {
+      boardApi.setConfig({
+        animation: { enabled: false },
+        movable: { free: true },
+      });
+      boardApi.removePiece('d1');
+      await nextFrame();
+      expect(renderedKeys()).not.toContain('d1');
+      expect((boardApi as any).board.state.pieces.has('d1')).toBe(false);
+    });
+  });
+
+  describe('editing the board after moves', () => {
+    const editedFen =
+      'rnbqkbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1';
+
+    it('removes the destination of the last move', () => {
+      boardApi.move('e4');
+      expect(() => boardApi.removePiece('e4')).not.toThrow();
+      expect(boardApi.getFen()).toBe(editedFen);
+      expect(boardApi.getHistory()).toHaveLength(0);
+      expect(boardApi.getLastMove()).toBeUndefined();
+    });
+
+    it('puts a piece on the destination of the last move', () => {
+      boardApi.move('e4');
+      boardApi.putPiece({ type: 'q', color: 'b' }, 'e4');
+      expect(boardApi.getHistory()).toHaveLength(0);
+      expect(boardApi.getSquare('e4')).toEqual({ type: 'q', color: 'b' });
+    });
+
+    it('keeps the pgn headers and sets the edited position as the starting position', () => {
+      boardApi.setPgnInfo({ White: 'Deep Blue' });
+      boardApi.move('e4');
+      boardApi.removePiece('e4');
+      const pgn = boardApi.getPgn();
+      expect(pgn).toContain('[White "Deep Blue"]');
+      expect(pgn).toContain(`[FEN "${editedFen}"]`);
+    });
+
+    it('closes the history viewer', () => {
+      boardApi.move('e4');
+      boardApi.viewStart();
+      boardApi.removePiece('e4');
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+    });
+  });
+
+  it('returns whether a free move moved a piece', () => {
+    boardApi.setConfig({ movable: { free: true } });
+    // illegal in chess, the queen jumps over the d2 pawn
+    expect(boardApi.move({ from: 'd1', to: 'd5' })).toBe(true);
+    expect((boardApi as any).board.state.pieces.get('d5')?.role).toBe('queen');
+    // d4 is empty
+    expect(boardApi.move({ from: 'd4', to: 'd6' })).toBe(false);
+  });
+
   it('adds a pgn header and checks if it is added', () => {
     boardApi.setPgnInfo({
       White: 'Deep Blue',

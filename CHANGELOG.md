@@ -2,38 +2,38 @@
 
 ### Breaking
 
-- the `vue` peer dependency is `^3.3.0` instead of `^3.2.47`. The published component types use Vue 3.3's `DefineComponent` signature and failed to type-check on Vue 3.2
-
-The package bundles chess.js and chessground, so their updates (see Other) change these behaviors:
-
-- the move objects in the `move` event, `getLastMove()` and `getHistory(true)` are instances of chess.js's `Move` class instead of plain objects. They always have `captured` and `promotion` keys, and they have helpers such as `isCapture()`. Because chess.js is bundled, `instanceof Move` with a `Move` imported from your own `chess.js` is `false`
-- `setPosition()`, `loadPgn()` with a `FEN` tag, and a `fen` in the board config throw on FENs with pawns on the first or eighth rank. `setConfig()` now checks the `fen` before it applies any other option, so an invalid `fen` leaves the board unchanged
+- requires Vue 3.3 or newer
+- move objects in the `move` event, `getLastMove()` and `getHistory(true)` are chess.js `Move` class instances instead of plain objects. They have helpers such as `isCapture()`
+- `setPosition()`, `loadPgn()` and the `fen` config option throw on FENs with pawns on the first or eighth rank
 - `addDimensionsCssVarsTo` sets `---cg-width` and `---cg-height` instead of `--cg-width` and `--cg-height`
-- the default `purple` brush uses the key `purple` instead of `purp`
+- the `purple` brush key is `purple` instead of `purp`
+- `putPiece()` and `removePiece()` erase the move history and start a new game from the edited position, keeping the PGN headers. `putPiece()` with `movable.free` is unchanged. Before, the kept history no longer matched the board, and `getHistory()`, `undoLastMove()` and the PGN could crash, change pieces or show positions that never happened
 
 ### Features
 
-- added the `coordinatesOnSquares` board config option, which shows the coordinate on every square instead of along the board edges. It requires `coordinates: true`
-- the `BrushColor` type includes the `purple`, `pink` and `white` brushes
+- added the `coordinatesOnSquares` config option, which shows a coordinate on every square. It requires `coordinates: true`
+- added the `purple`, `pink` and `white` brushes to the `BrushColor` type
 
 ### Bug fixes
 
-- fixed the history viewer for games loaded from a PGN with a custom starting position ([#274](https://github.com/qwerty084/vue3-chessboard/pull/274))
-- fixed a crash when undoing the only move while viewing the start position ([#274](https://github.com/qwerty084/vue3-chessboard/pull/274))
-- the board now highlights check when you view a starting position that is in check ([#275](https://github.com/qwerty084/vue3-chessboard/pull/275))
-- the published type declarations keep their JSDoc tags, such as `@param` and `@returns` ([#269](https://github.com/qwerty084/vue3-chessboard/pull/269))
-- removed the `require` export, which pointed to a CommonJS build that no longer exists. The exports map now lists the `types` condition first ([#270](https://github.com/qwerty084/vue3-chessboard/pull/270))
-- `getSquare()` returns `null` for an empty square, as documented, instead of `false`
-- the `draw` event no longer fires on every move after a threefold repetition. It fires only when the current position has occurred three times (chess.js)
-- board config merging ignores `__proto__` and `constructor` keys (chessground)
-- board config merging keeps Maps and DOM elements, which were turned into empty objects when the config was filled with defaults (on mount, `resetBoard()` and `setConfig(config, true)`). `movable.rookCastle: false` and `highlight.custom` no longer crash the board, `movable.dests` and `premovable.customDests` keep their entries, and `addDimensionsCssVarsTo` keeps its element. With `reactiveConfig`, a Map only counts as changed when its entries change
-- `resetBoard()` and `setConfig(config, true)` reset `highlight.custom`, `premovable.customDests` and `drawable.onChange` to their defaults
+- the history viewer works with custom starting positions, highlights check, and no longer crashes when you undo the only move ([#274](https://github.com/qwerty084/vue3-chessboard/pull/274), [#275](https://github.com/qwerty084/vue3-chessboard/pull/275))
+- moves and undos made while viewing history emit `check`, `checkmate`, `stalemate` and `draw`, and closing the history viewer no longer emits them again
+- navigating history right after an en passant capture or a promotion no longer jumps back to the latest position
+- castling by dropping the king onto its own rook works, as `movable.rookCastle` documents
+- `loadPgn()`, `setPosition()` and `clearBoard()` no longer leave the board view-only after viewing history
+- the `draw` event no longer fires on every move after a threefold repetition
+- config options that take a Map or DOM element, such as `highlight.custom`, `premovable.customDests` and `addDimensionsCssVarsTo`, keep their values, and `movable.rookCastle: false` no longer crashes the board
+- `resetBoard()` resets `highlight.custom`, `premovable.customDests` and `drawable.onChange`
+- `setConfig()` with an invalid `fen` leaves the board unchanged
+- `removePiece()` updates the board right away
+- `move()` returns `true` for moves made with `movable.free`
+- `getSquare()` returns `null` for an empty square, as documented
+- the type declarations keep their JSDoc tags ([#269](https://github.com/qwerty084/vue3-chessboard/pull/269))
+- removed the `require` export, which pointed to a missing CommonJS build ([#270](https://github.com/qwerty084/vue3-chessboard/pull/270))
 
 ### Other
 
-- updated chess.js from 1.0.0-beta.6 to the stable 1.1.0 release
-- updated chessground from 9.0.2 to 9.2.1, the last release of the unscoped `chessground` package
-- removed the unused `@types/chess.js` dev dependency, chess.js ships its own types
+- updated chess.js to 1.1.0 and chessground to 9.2.1
 
 ## v1.3.4 (2026-10-03)
 

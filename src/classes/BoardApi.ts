@@ -3,8 +3,11 @@ import {
   getThreats,
   isCheck,
   isPromotion,
+  kingCastlingDest,
   chessJSPieceToLichessPiece,
   possibleMoves,
+  recountPositions,
+  setRookCastleDests,
   shortToLongColor,
 } from '../helper/Board';
 import { defaultBoardConfig } from '../helper/DefaultConfig';
@@ -69,7 +72,7 @@ export class BoardApi {
    * syncs chess.js state with the board
    * @private
    */
-  private updateGameState({ updateFen = true } = {}): void {
+  private updateGameState({ updateFen = true, emitEvents = true } = {}): void {
     if (!this.boardState.historyViewerState.isEnabled) {
       if (updateFen) {
         this.board.set({ fen: this.game.fen() });
@@ -83,7 +86,7 @@ export class BoardApi {
       } else {
         this.board.state.movable.color =
           this.props.playerColor || this.board.state.turnColor;
-        this.board.state.movable.dests = possibleMoves(this.game);
+        this.board.state.movable.dests = this.legalDests();
       }
 
       this.displayInCheck(this.game.inCheck(), this.board.state.turnColor);
@@ -93,7 +96,21 @@ export class BoardApi {
       }
     }
 
-    this.emitEvents();
+    if (emitEvents) {
+      this.emitEvents();
+    }
+  }
+
+  /**
+   * The legal destinations for the board. Lists the rook's square for castling only when chessground
+   * moves the rook itself, which needs both movable.rookCastle and autoCastle.
+   * @private
+   */
+  private legalDests(): Map<Key, Key[]> {
+    return possibleMoves(
+      this.game,
+      this.board.state.movable.rookCastle && this.board.state.autoCastle
+    );
   }
 
   /**
@@ -114,14 +131,42 @@ export class BoardApi {
   }
 
   /**
+   * Closes the history viewer without showing the current position, for methods that replace the game.
+   * Restores the viewOnly setting the board had before the viewer opened.
+   * @private
+   */
+  private closeHistoryViewer(): void {
+    if (this.boardState.historyViewerState.isEnabled) {
+      this.board.set({ viewOnly: this.boardState.historyViewerState.viewOnly });
+    }
+    this.boardState.historyViewerState = { isEnabled: false };
+  }
+
+  /**
+   * Starts a new game from the current position, keeping the pgn headers. Call this after editing the board,
+   * because chess.js replays the history to read it and fails once an edit changes a square a move used.
+   * @private
+   */
+  private restartFromCurrentPosition(): void {
+    // edited positions can be invalid, for example without kings
+    this.game.load(this.game.fen(), {
+      skipValidation: true,
+      preserveHeaders: true,
+    });
+    recountPositions(this.game);
+    this.closeHistoryViewer();
+  }
+
+  /**
    * emits neccessary events
    * @private
    */
   private emitEvents(): void {
     if (this.game.inCheck()) {
+      // use the game's turn, because updateGameState doesn't update the board's turnColor while viewing history
       this.emit(
         this.game.isCheckmate() ? 'checkmate' : 'check',
-        this.board.state.turnColor
+        this.getTurnColor()
       );
     }
 
@@ -156,7 +201,11 @@ export class BoardApi {
 
     this.move({
       from: orig,
-      to: dest,
+      // chessground castles a king dropped onto its own rook only with autoCastle. Without it, the king
+      // took the rook's square on the board, so keep the destination as a free mode move
+      to: this.board.state.autoCastle
+        ? kingCastlingDest(this.game, orig, dest)
+        : dest,
       promotion: selectedPromotion,
     });
   }
@@ -196,6 +245,9 @@ export class BoardApi {
       this.board.state.lastMove = lastMove
         ? [lastMove?.from, lastMove?.to]
         : undefined;
+    } else {
+      // while viewing history, updateGameState only emits the game events, eg. check
+      this.updateGameState({ updateFen: false });
     }
   }
 
@@ -327,7 +379,8 @@ export class BoardApi {
    * @param move either a string in Standard Algebraic Notation (SAN), eg. 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
    * or an object of shape { from: string; to: string; promotion?: string; }, eg. { from: 'g8', to: 'f6' } or
    * { from: 'e7', to: 'e8', promotion: 'q'}
-   * @returns true if the move was made, false if the move was illegal
+   * @returns true if it made the move, false if the move is illegal. With `movable.free`, it moves the piece
+   * on the board even if the move is illegal, and returns true if there was a piece to move
    */
   move(move: string | Move): boolean {
     let moveEvent: MoveEvent;
@@ -336,8 +389,11 @@ export class BoardApi {
       moveEvent = this.game.move(move);
     } catch {
       if (typeof move === 'object' && this.board.state.movable.free) {
+        const moved =
+          move.from !== move.to && this.board.state.pieces.has(move.from);
         this.board.move(move.from, move.to);
         this.updateGameState({ updateFen: false });
+        return moved;
       }
       return false;
     }
@@ -357,17 +413,24 @@ export class BoardApi {
 
       // if move was a promotion or en passant capture, update position
       if (moveEvent.isEnPassant() || moveEvent.isPromotion()) {
-        // if animating, wait until after the animation to update position
+        // if animating, wait until after the animation to update position. Show the game's current
+        // position, because the game may have changed since, eg. by an undo or a loaded PGN
         setTimeout(
-          () => this.board.set({ fen: moveEvent.after }),
+          () => {
+            if (!this.boardState.historyViewerState.isEnabled) {
+              this.board.set({ fen: this.game.fen() });
+            }
+          },
           this.board.state.animation.current
             ? this.board.state.animation.duration
             : 0
         );
       }
-      this.updateGameState({ updateFen: false });
       nextTick(this.board.playPremove);
     }
+
+    // while viewing history, updateGameState only emits the game events, eg. check
+    this.updateGameState({ updateFen: false });
 
     return true;
   }
@@ -527,13 +590,15 @@ export class BoardApi {
    */
   setPosition(fen: string): void {
     this.game.load(fen);
-    this.boardState.historyViewerState = { isEnabled: false };
+    recountPositions(this.game);
+    this.closeHistoryViewer();
     this.updateGameState();
   }
 
   /**
    * puts a piece on a given square on the board
    * returns true on success, else false
+   * Caution: outside free mode this erases the game history, the edited position becomes the starting position
    */
   putPiece(piece: Piece, square: Square): boolean {
     // @TODO using putPiece with the same piece and square twice is buggy in movable: false in chess.js state
@@ -548,6 +613,7 @@ export class BoardApi {
     } else {
       const result = this.game.put(piece, square);
       if (result) {
+        this.restartFromCurrentPosition();
         this.updateGameState();
       }
       return result;
@@ -556,12 +622,18 @@ export class BoardApi {
 
   /**
    * Removes a piece from the board.
+   * Caution: this erases the game history, the edited position becomes the starting position
    * @param square - The square where the piece is located.
    */
   removePiece(square: Square): void {
-    const pieces = this.board.state.pieces;
-    pieces.delete(square);
     this.game.remove(square);
+    this.restartFromCurrentPosition();
+    if (this.board.state.movable.free) {
+      // setPieces also redraws the board
+      this.board.setPieces(new Map([[square, undefined]]));
+    } else {
+      this.updateGameState({ emitEvents: false });
+    }
   }
 
   /**
@@ -569,7 +641,8 @@ export class BoardApi {
    */
   clearBoard(): void {
     this.game.clear();
-    this.boardState.historyViewerState = { isEnabled: false };
+    recountPositions(this.game);
+    this.closeHistoryViewer();
     this.updateGameState();
   }
 
@@ -587,7 +660,8 @@ export class BoardApi {
    */
   loadPgn(pgn: string): void {
     this.game.loadPgn(pgn);
-    this.boardState.historyViewerState = { isEnabled: false };
+    recountPositions(this.game);
+    this.closeHistoryViewer();
     this.updateGameState();
 
     // show last move if there is one
@@ -643,7 +717,7 @@ export class BoardApi {
    * false the unprovided options will remain unchanged.
    */
   setConfig(config: BoardConfig, fillDefaults = false): void {
-    // throw on an invalid fen before any other option is applied, so the board isn't left half updated
+    // throw on an invalid fen before applying any other option, so a failed call leaves the board unchanged
     if (config.fen) new Chess(config.fen);
 
     if (fillDefaults) {
@@ -665,8 +739,28 @@ export class BoardApi {
     }
 
     const { fen, ...configWithoutFen } = config;
+    // a new position replaces the game, so close the history viewer first. Closing it restores the
+    // viewer's saved viewOnly setting, which would otherwise override the config
+    if (fen) this.closeHistoryViewer();
     this.board.set(configWithoutFen);
-    if (fen) this.setPosition(fen);
+    if (fen) {
+      this.setPosition(fen);
+    } else if (
+      (config.autoCastle !== undefined ||
+        config.movable?.rookCastle !== undefined) &&
+      !config.movable?.dests &&
+      this.board.state.movable.dests &&
+      !this.board.state.movable.free &&
+      !this.boardState.historyViewerState.isEnabled
+    ) {
+      // the castling options change whether the rook's square is a destination. Only update the rook
+      // squares, so dests the caller restricted with an earlier setConfig stay restricted
+      this.board.state.movable.dests = setRookCastleDests(
+        this.board.state.movable.dests,
+        this.game,
+        this.board.state.movable.rookCastle && this.board.state.autoCastle
+      );
+    }
     this.board.redrawAll();
   }
 
@@ -734,7 +828,8 @@ export class BoardApi {
         });
 
         this.boardState.historyViewerState = { isEnabled: false };
-        this.updateGameState({ updateFen: false });
+        // moves made while viewing history already emitted their events, so don't emit them again
+        this.updateGameState({ updateFen: false, emitEvents: false });
       }
     }
 

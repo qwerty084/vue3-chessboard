@@ -29,7 +29,14 @@ export function shortToLongColor(color: 'w' | 'b'): Color {
   return color === 'w' ? 'white' : 'black';
 }
 
-export function possibleMoves(game: Chess): Map<Key, Key[]> {
+/**
+ * The legal destinations per square. With rookCastle, castling moves also list the rook's square,
+ * because chessground castles when the user drops the king onto its own rook.
+ */
+export function possibleMoves(
+  game: Chess,
+  rookCastle = false
+): Map<Key, Key[]> {
   const dests: Map<Key, Key[]> = new Map();
 
   for (const square of SQUARES) {
@@ -43,7 +50,79 @@ export function possibleMoves(game: Chess): Map<Key, Key[]> {
     }
   }
 
-  return dests;
+  return rookCastle ? setRookCastleDests(dests, game, true) : dests;
+}
+
+/**
+ * Adds the rook's square to the king's dests for each castling move the dests allow, or removes it.
+ * Keeps all other dests as they are.
+ */
+export function setRookCastleDests(
+  dests: Map<Key, Key[]>,
+  game: Chess,
+  rookCastle: boolean
+): Map<Key, Key[]> {
+  const result = new Map(dests);
+  for (const m of game.moves({ verbose: true })) {
+    if (!m.isKingsideCastle() && !m.isQueensideCastle()) continue;
+
+    const rookSquare = `${m.isKingsideCastle() ? 'h' : 'a'}${m.from[1]}` as Key;
+    const kingDests = (result.get(m.from) ?? []).filter(
+      (key) => key !== rookSquare
+    );
+    if (rookCastle && kingDests.includes(m.to)) kingDests.push(rookSquare);
+    if (result.has(m.from)) result.set(m.from, kingDests);
+  }
+
+  return result;
+}
+
+/**
+ * The square chess.js expects as the king's destination. When the user castles by dropping the king
+ * onto its own rook, chessground reports the rook's square, which chess.js doesn't accept.
+ */
+export function kingCastlingDest(game: Chess, orig: Key, dest: Key): Key {
+  const king = game.get(orig as Square);
+  const rook = game.get(dest as Square);
+  if (
+    king?.type !== 'k' ||
+    rook?.type !== 'r' ||
+    rook.color !== king.color ||
+    orig[1] !== dest[1]
+  ) {
+    return dest;
+  }
+
+  // translate only castling moves. A free mode king drop onto its rook from another square keeps its dest
+  const kingDest = `${dest[0] > orig[0] ? 'g' : 'c'}${orig[1]}`;
+  const isCastling = game
+    .moves({ square: orig as Square, verbose: true })
+    .some(
+      (m) =>
+        m.to === kingDest && (m.isKingsideCastle() || m.isQueensideCastle())
+    );
+  return isCastling ? (kingDest as Key) : dest;
+}
+
+/**
+ * Recounts the positions chess.js uses to detect threefold repetition. chess.js counts a loaded fen as
+ * given, even if fen() drops its en passant square, and doesn't count positions changed by put or
+ * remove. Call this after loading a game or editing the board.
+ */
+export function recountPositions(game: Chess): void {
+  const history = game.history({ verbose: true });
+  const positions = [
+    history[0]?.before ?? game.fen(),
+    ...history.map((move) => move.after),
+  ];
+
+  const counts: Record<string, number> = {};
+  for (const fen of positions) {
+    // chess.js ignores the halfmove and fullmove fields when comparing positions
+    const position = fen.split(' ').slice(0, 4).join(' ');
+    counts[position] = (counts[position] ?? 0) + 1;
+  }
+  game['_positionCount'] = counts;
 }
 
 export function isPromotion(dest: Key, piece?: Piece | null): boolean {
@@ -96,8 +175,8 @@ export function getPossiblePromotions(legalMoves: Move[]): Move[] {
 }
 
 /**
- * Whether the value is a plain object, eg. a config section. Other objects, such as Maps, arrays,
- * functions and DOM elements, are config values and are copied and compared as a whole.
+ * Whether the value is a plain object, eg. a config section. The config helpers merge plain objects key
+ * by key and treat other objects, such as Maps, arrays, functions and DOM elements, as single values.
  */
 export function isObject(value: unknown): boolean {
   if (typeof value !== 'object' || value === null) {
