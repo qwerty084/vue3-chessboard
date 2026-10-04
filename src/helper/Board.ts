@@ -95,16 +95,34 @@ export function getPossiblePromotions(legalMoves: Move[]): Move[] {
   return legalMoves.filter((move) => move.promotion);
 }
 
+/**
+ * Whether the value is a plain object, eg. a config section. Other objects, such as Maps, arrays,
+ * functions and DOM elements, are config values and are copied and compared as a whole.
+ */
 export function isObject(value: unknown): boolean {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+}
+
+function isEqualMap(a: unknown, b: unknown): boolean {
   return (
-    Boolean(value) &&
-    value instanceof Object &&
-    !(value instanceof Array) &&
-    !(value instanceof Function)
+    a instanceof Map &&
+    b instanceof Map &&
+    a.size === b.size &&
+    [...a].every(([key, value]) => b.has(key) && b.get(key) === value)
   );
 }
 
 export function deepCopy<T>(value: T): T {
+  // copy Maps, eg. movable.dests, so chessground can't modify the caller's or the default Map
+  if (value instanceof Map) {
+    return new Map(value) as T;
+  }
+
   return isObject(value)
     ? (Object.fromEntries(
         Object.entries(value as object).map(([key, val]) => [
@@ -139,7 +157,11 @@ export function deepDiffConfig<T>(oldConfig: T, newConfig: T): DeepPartial<T> {
         newConfig[key]
       ) as T[keyof T] extends object ? DeepPartial<T[keyof T]> : never; // sometimes I like typescript, others I dont...
       if (Object.keys(subDiff).length > 0) diff[key as keyof T] = subDiff;
-    } else if (oldConfig?.[key] !== newConfig[key]) {
+    } else if (
+      oldConfig?.[key] !== newConfig[key] &&
+      // deepCopy copies Maps, so compare their entries instead
+      !isEqualMap(oldConfig?.[key], newConfig[key])
+    ) {
       diff[key] = newConfig[key];
     }
   }
