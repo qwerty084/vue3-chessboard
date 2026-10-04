@@ -712,6 +712,31 @@ describe('Test the board API', () => {
     expect(board.state.movable.dests.get('e1')).toContain('h1');
   });
 
+  it('keeps custom dests when the castling options change', () => {
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const board = (boardApi as any).board;
+    boardApi.setConfig({ movable: { dests: new Map([['e1', ['g1']]]) } });
+
+    boardApi.setConfig({ autoCastle: false });
+    expect([...board.state.movable.dests]).toEqual([['e1', ['g1']]]);
+    boardApi.setConfig({ autoCastle: true });
+    expect([...board.state.movable.dests]).toEqual([['e1', ['g1', 'h1']]]);
+  });
+
+  it('does not castle a king dropped onto its rook in free mode with autoCastle disabled', async () => {
+    boardApi.setConfig({ autoCastle: false, movable: { free: true } });
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const board = (boardApi as any).board;
+
+    board.selectSquare('e1');
+    board.selectSquare('h1');
+    // chessground calls movable.events.after in a timeout
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(board.state.pieces.get('h1')?.role).toBe('king');
+    expect(boardApi.getHistory()).toHaveLength(0);
+    expect(wrapper.emitted('move') ?? []).toHaveLength(0);
+  });
+
   it('keeps the viewed position after an en passant capture', async () => {
     boardApi.setPosition(
       'rnbqkbnr/pppppppp/8/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'

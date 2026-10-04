@@ -43,18 +43,38 @@ export function possibleMoves(
     const moves = game.moves({ square, verbose: true });
 
     if (moves.length) {
-      const squareDests: Key[] = moves.map((m) => m.to);
-      if (rookCastle) {
-        for (const m of moves) {
-          if (m.isKingsideCastle()) squareDests.push(`h${m.from[1]}` as Key);
-          if (m.isQueensideCastle()) squareDests.push(`a${m.from[1]}` as Key);
-        }
-      }
-      dests.set(moves[0].from, squareDests);
+      dests.set(
+        moves[0].from,
+        moves.map((m) => m.to)
+      );
     }
   }
 
-  return dests;
+  return rookCastle ? setRookCastleDests(dests, game, true) : dests;
+}
+
+/**
+ * Adds the rook's square to the king's dests for each castling move the dests allow, or removes it.
+ * Keeps all other dests as they are.
+ */
+export function setRookCastleDests(
+  dests: Map<Key, Key[]>,
+  game: Chess,
+  rookCastle: boolean
+): Map<Key, Key[]> {
+  const result = new Map(dests);
+  for (const m of game.moves({ verbose: true })) {
+    if (!m.isKingsideCastle() && !m.isQueensideCastle()) continue;
+
+    const rookSquare = `${m.isKingsideCastle() ? 'h' : 'a'}${m.from[1]}` as Key;
+    const kingDests = (result.get(m.from) ?? []).filter(
+      (key) => key !== rookSquare
+    );
+    if (rookCastle && kingDests.includes(m.to)) kingDests.push(rookSquare);
+    if (result.has(m.from)) result.set(m.from, kingDests);
+  }
+
+  return result;
 }
 
 /**

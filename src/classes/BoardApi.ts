@@ -6,6 +6,7 @@ import {
   kingCastlingDest,
   chessJSPieceToLichessPiece,
   possibleMoves,
+  setRookCastleDests,
   shortToLongColor,
 } from '../helper/Board';
 import { defaultBoardConfig } from '../helper/DefaultConfig';
@@ -184,7 +185,11 @@ export class BoardApi {
 
     this.move({
       from: orig,
-      to: kingCastlingDest(this.game, orig, dest),
+      // chessground only castles a king dropped onto its rook with autoCastle, otherwise the king
+      // captured the rook on the board, which is a free mode move
+      to: this.board.state.autoCastle
+        ? kingCastlingDest(this.game, orig, dest)
+        : dest,
       promotion: selectedPromotion,
     });
   }
@@ -718,11 +723,17 @@ export class BoardApi {
       (config.autoCastle !== undefined ||
         config.movable?.rookCastle !== undefined) &&
       !config.movable?.dests &&
+      this.board.state.movable.dests &&
       !this.board.state.movable.free &&
       !this.boardState.historyViewerState.isEnabled
     ) {
-      // the castling options change whether the rook's square is a destination
-      this.board.state.movable.dests = this.legalDests();
+      // the castling options change whether the rook's square is a destination. Only update the rook
+      // squares, so dests the caller restricted with an earlier setConfig stay restricted
+      this.board.state.movable.dests = setRookCastleDests(
+        this.board.state.movable.dests,
+        this.game,
+        this.board.state.movable.rookCastle && this.board.state.autoCastle
+      );
     }
     this.board.redrawAll();
   }
