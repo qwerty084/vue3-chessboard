@@ -114,14 +114,27 @@ export class BoardApi {
   }
 
   /**
+   * Closes the history viewer without moving the board to the current position, eg. because the game
+   * is replaced. Restores the viewOnly setting from before the viewer was opened.
+   * @private
+   */
+  private closeHistoryViewer(): void {
+    if (this.boardState.historyViewerState.isEnabled) {
+      this.board.set({ viewOnly: this.boardState.historyViewerState.viewOnly });
+    }
+    this.boardState.historyViewerState = { isEnabled: false };
+  }
+
+  /**
    * emits neccessary events
    * @private
    */
   private emitEvents(): void {
     if (this.game.inCheck()) {
+      // the game's turn, the board's turnColor isn't updated while viewing history
       this.emit(
         this.game.isCheckmate() ? 'checkmate' : 'check',
-        this.board.state.turnColor
+        this.getTurnColor()
       );
     }
 
@@ -327,7 +340,8 @@ export class BoardApi {
    * @param move either a string in Standard Algebraic Notation (SAN), eg. 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
    * or an object of shape { from: string; to: string; promotion?: string; }, eg. { from: 'g8', to: 'f6' } or
    * { from: 'e7', to: 'e8', promotion: 'q'}
-   * @returns true if the move was made, false if the move was illegal
+   * @returns true if the move was made, false if the move was illegal. With `movable.free`, a move object
+   * is made on the board even if it is illegal, and true is returned if there was a piece to move
    */
   move(move: string | Move): boolean {
     let moveEvent: MoveEvent;
@@ -336,8 +350,11 @@ export class BoardApi {
       moveEvent = this.game.move(move);
     } catch {
       if (typeof move === 'object' && this.board.state.movable.free) {
+        const moved =
+          move.from !== move.to && this.board.state.pieces.has(move.from);
         this.board.move(move.from, move.to);
         this.updateGameState({ updateFen: false });
+        return moved;
       }
       return false;
     }
@@ -365,9 +382,11 @@ export class BoardApi {
             : 0
         );
       }
-      this.updateGameState({ updateFen: false });
       nextTick(this.board.playPremove);
     }
+
+    // while viewing history this only emits the game events, eg. check
+    this.updateGameState({ updateFen: false });
 
     return true;
   }
@@ -527,7 +546,7 @@ export class BoardApi {
    */
   setPosition(fen: string): void {
     this.game.load(fen);
-    this.boardState.historyViewerState = { isEnabled: false };
+    this.closeHistoryViewer();
     this.updateGameState();
   }
 
@@ -559,9 +578,13 @@ export class BoardApi {
    * @param square - The square where the piece is located.
    */
   removePiece(square: Square): void {
-    const pieces = this.board.state.pieces;
-    pieces.delete(square);
     this.game.remove(square);
+    if (this.board.state.movable.free) {
+      // setPieces also redraws the board
+      this.board.setPieces(new Map([[square, undefined]]));
+    } else {
+      this.updateGameState();
+    }
   }
 
   /**
@@ -569,7 +592,7 @@ export class BoardApi {
    */
   clearBoard(): void {
     this.game.clear();
-    this.boardState.historyViewerState = { isEnabled: false };
+    this.closeHistoryViewer();
     this.updateGameState();
   }
 
@@ -587,7 +610,7 @@ export class BoardApi {
    */
   loadPgn(pgn: string): void {
     this.game.loadPgn(pgn);
-    this.boardState.historyViewerState = { isEnabled: false };
+    this.closeHistoryViewer();
     this.updateGameState();
 
     // show last move if there is one

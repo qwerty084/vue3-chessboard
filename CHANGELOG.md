@@ -28,6 +28,10 @@ The package bundles chess.js and chessground, so their updates (see Other) chang
 - board config merging ignores `__proto__` and `constructor` keys (chessground)
 - board config merging keeps Maps and DOM elements, which were turned into empty objects when the config was filled with defaults (on mount, `resetBoard()` and `setConfig(config, true)`). `movable.rookCastle: false` and `highlight.custom` no longer crash the board, `movable.dests` and `premovable.customDests` keep their entries, and `addDimensionsCssVarsTo` keeps its element. With `reactiveConfig`, a Map only counts as changed when its entries change
 - `resetBoard()` and `setConfig(config, true)` reset `highlight.custom`, `premovable.customDests` and `drawable.onChange` to their defaults
+- a move made while viewing history emits `check`, `checkmate`, `stalemate` and `draw`, and `check`/`checkmate` carry the color of the side to move
+- `loadPgn()`, `setPosition()` and `clearBoard()` while viewing history no longer leave the board view-only
+- `removePiece()` removes the piece from the rendered board right away and, outside `movable.free`, updates the legal moves
+- with `movable.free`, `move()` returns `true` when it moves a piece, even if the move is illegal in chess
 
 ### Other
 

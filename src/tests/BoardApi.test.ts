@@ -621,6 +621,89 @@ describe('Test the board API', () => {
     expect(boardApi.getHistory()).toEqual([]);
   });
 
+  it('emits check for a move made while viewing history', () => {
+    boardApi.move('e4');
+    boardApi.move('f6');
+    boardApi.viewStart();
+    boardApi.move('Qh5');
+    expect(wrapper.emitted('check')).toEqual([['black']]);
+  });
+
+  it('emits checkmate for a move made while viewing history', () => {
+    boardApi.move('f3');
+    boardApi.move('e5');
+    boardApi.move('g4');
+    boardApi.viewStart();
+    boardApi.move('Qh4');
+    expect(wrapper.emitted('checkmate')).toEqual([['white']]);
+  });
+
+  it.each(['loadPgn', 'setPosition', 'clearBoard'] as const)(
+    'restores viewOnly when %s replaces the game while viewing history',
+    (method) => {
+      boardApi.move('e4');
+      boardApi.move('e5');
+      boardApi.viewStart();
+      if (method === 'loadPgn') boardApi.loadPgn('1. d4 d5');
+      else if (method === 'setPosition') boardApi.setPosition(initialPos);
+      else boardApi.clearBoard();
+
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+      expect((boardApi as any).board.state.viewOnly).toBe(false);
+    }
+  );
+
+  it('keeps a viewOnly board viewOnly when the game is replaced while viewing history', () => {
+    boardApi.setConfig({ viewOnly: true });
+    boardApi.move('e4');
+    boardApi.viewStart();
+    boardApi.setPosition(initialPos);
+    expect((boardApi as any).board.state.viewOnly).toBe(true);
+  });
+
+  describe('removing pieces', () => {
+    const renderedKeys = () =>
+      wrapper
+        .findAll('cg-board piece')
+        .map((piece) => (piece.element as any).cgKey);
+    const nextFrame = () =>
+      new Promise((resolve) => requestAnimationFrame(resolve));
+
+    it('removes the piece from the game and the rendered board', async () => {
+      boardApi.setConfig({ animation: { enabled: false } });
+      await nextFrame();
+      expect(renderedKeys()).toContain('e2');
+
+      boardApi.removePiece('e2');
+      await nextFrame();
+      expect(renderedKeys()).not.toContain('e2');
+      expect(boardApi.getSquare('e2')).toBeNull();
+      expect((boardApi as any).board.state.movable.dests.has('e2')).toBe(false);
+    });
+
+    it('removes the piece from the rendered board in free mode', async () => {
+      boardApi.setConfig({
+        animation: { enabled: false },
+        movable: { free: true },
+      });
+      boardApi.removePiece('d1');
+      await nextFrame();
+      expect(renderedKeys()).not.toContain('d1');
+      expect((boardApi as any).board.state.pieces.has('d1')).toBe(false);
+    });
+  });
+
+  it('returns whether a free move was made', () => {
+    boardApi.setConfig({ movable: { free: true } });
+    // illegal in chess, the queen jumps over the d2 pawn
+    expect(boardApi.move({ from: 'd1', to: 'd5' })).toBe(true);
+    expect((boardApi as any).board.state.pieces.get('d5')?.role).toBe('queen');
+    // no piece on d4
+    expect(boardApi.move({ from: 'd4', to: 'd6' })).toBe(false);
+  });
+
   it('adds a pgn header and checks if it is added', () => {
     boardApi.setPgnInfo({
       White: 'Deep Blue',
