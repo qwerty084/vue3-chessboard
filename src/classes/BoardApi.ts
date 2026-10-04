@@ -182,7 +182,7 @@ export class BoardApi {
     if (
       this.boardState.historyViewerState.isEnabled &&
       this.boardState.historyViewerState.plyViewing ===
-        this.getCurrentPlyNumber()
+        this.game.history().length
     ) {
       this.stopViewingHistory();
     }
@@ -397,6 +397,10 @@ export class BoardApi {
   }
 
   /**
+   * Returns the current ply number, calculated from the move number in the FEN. For a game loaded
+   * from a custom FEN, this number includes the moves played before that FEN, so it can be larger
+   * than `getHistory().length`. Use `getHistory().length` for the number of moves since the starting
+   * position.
    *
    * @returns the current ply number
    * @example e4 e5 Nf3 -> ply number is 3
@@ -662,8 +666,10 @@ export class BoardApi {
   /**
    * Views the position at the given ply number in the game's history.
    *
-   * @param ply - the ply number of the position to be viewed, where 0 is the initial position, 1 is
-   * after white's first move, 2 is after black's first move and so on.
+   * @param ply - the index of the position to view in this game's history. 0 is the starting
+   * position, 1 is the position after the first move, and `getHistory().length` is the current
+   * position. The index counts from the starting position even for a game loaded from a custom FEN,
+   * so it can differ from `getCurrentPlyNumber()`.
    */
   viewHistory(ply: number): void {
     const history = this.getHistory(true);
@@ -711,12 +717,12 @@ export class BoardApi {
     } else {
       // else ply is current position, so stop viewing history
       if (this.boardState.historyViewerState.isEnabled) {
-        const lastMove = history.at(-1) as MoveEvent;
+        const lastMove = history.at(-1);
 
         this.board.set({
-          fen: lastMove.after,
+          fen: this.game.fen(),
           viewOnly: this.boardState.historyViewerState.viewOnly,
-          lastMove: [lastMove.from, lastMove.to],
+          lastMove: lastMove ? [lastMove.from, lastMove.to] : undefined,
         });
 
         this.boardState.historyViewerState = { isEnabled: false };
@@ -733,7 +739,7 @@ export class BoardApi {
    */
   stopViewingHistory(): void {
     if (this.boardState.historyViewerState.isEnabled) {
-      this.viewHistory(this.getCurrentPlyNumber());
+      this.viewHistory(this.game.history().length);
     }
   }
 
@@ -761,7 +767,7 @@ export class BoardApi {
   viewPrevious(): void {
     const ply = this.boardState.historyViewerState.isEnabled
       ? this.boardState.historyViewerState.plyViewing
-      : this.getCurrentPlyNumber();
+      : this.game.history().length;
     this.viewHistory(ply - 1);
   }
 }

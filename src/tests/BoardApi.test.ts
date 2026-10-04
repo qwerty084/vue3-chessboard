@@ -434,6 +434,121 @@ describe('Test the board API', () => {
     expect((boardApi as any).board.state.animation.enabled).toBe(true);
   });
 
+  describe('history viewer with a custom starting position', () => {
+    const startFen =
+      'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3';
+    const pgn = `[SetUp "1"]\n[FEN "${startFen}"]\n\n3... a6 4. Ba4 Nf6`;
+    const currentFen =
+      'r1bqkb1r/1ppp1ppp/p1n2n2/4p3/B3P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 2 5';
+
+    beforeEach(() => boardApi.loadPgn(pgn));
+
+    it('keeps the ply number relative to the FEN move number', () => {
+      expect(boardApi.getHistory()).toHaveLength(3);
+      expect(boardApi.getCurrentPlyNumber()).toBe(8);
+    });
+
+    it('views the previous move when not viewing history', () => {
+      boardApi.viewPrevious();
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        true
+      );
+      expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(
+        2
+      );
+      expect((boardApi as any).board.state.fen).toBe(
+        boardApi.getHistory(true)[2].before
+      );
+    });
+
+    it('views the start position', () => {
+      boardApi.viewStart();
+      expect((boardApi as any).board.state.fen).toBe(startFen);
+    });
+
+    it('returns to the current position with viewNext', () => {
+      boardApi.viewPrevious();
+      boardApi.viewNext();
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+      expect((boardApi as any).board.state.fen).toBe(currentFen);
+    });
+
+    it('stops viewing history', () => {
+      boardApi.viewStart();
+      boardApi.stopViewingHistory();
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+      expect((boardApi as any).board.state.fen).toBe(currentFen);
+    });
+
+    it('stops viewing history when undoing to the viewed position', () => {
+      boardApi.viewPrevious();
+      boardApi.undoLastMove();
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+      expect(boardApi.getHistory()).toHaveLength(2);
+    });
+
+    it('restores the starting position when undoing the only move', () => {
+      boardApi.loadPgn(`[SetUp "1"]\n[FEN "${startFen}"]\n\n3... a6`);
+      boardApi.viewStart();
+      boardApi.undoLastMove();
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+      expect(boardApi.getHistory()).toHaveLength(0);
+      expect((boardApi as any).board.getFen()).toBe(startFen.split(' ')[0]);
+      expect((boardApi as any).board.state.viewOnly).toBe(false);
+    });
+  });
+
+  describe('history viewer with a custom starting position, white to move', () => {
+    const startFen =
+      'r1bqkbnr/1ppp1ppp/p1n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4';
+    const pgn = `[SetUp "1"]\n[FEN "${startFen}"]\n\n4. Ba4 Nf6 5. O-O`;
+
+    beforeEach(() => boardApi.loadPgn(pgn));
+
+    it('navigates back and forth and returns to the current position', () => {
+      const history = boardApi.getHistory(true);
+      boardApi.viewPrevious();
+      boardApi.viewPrevious();
+      expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(
+        1
+      );
+      expect((boardApi as any).board.getFen()).toBe(
+        history[1].before.split(' ')[0]
+      );
+
+      boardApi.viewNext();
+      expect((boardApi as any).boardState.historyViewerState.plyViewing).toBe(
+        2
+      );
+
+      boardApi.viewNext();
+      expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+        false
+      );
+      expect((boardApi as any).board.getFen()).toBe(
+        boardApi.getFen().split(' ')[0]
+      );
+    });
+  });
+
+  it('stops viewing history when undoing the only move', () => {
+    boardApi.move('e4');
+    boardApi.viewStart();
+    boardApi.undoLastMove();
+    expect((boardApi as any).boardState.historyViewerState.isEnabled).toBe(
+      false
+    );
+    expect((boardApi as any).board.state.fen).toBe(initialPos);
+  });
+
   it('adds a pgn header and checks if it is added', () => {
     boardApi.setPgnInfo({
       White: 'Deep Blue',
