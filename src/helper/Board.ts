@@ -29,21 +29,51 @@ export function shortToLongColor(color: 'w' | 'b'): Color {
   return color === 'w' ? 'white' : 'black';
 }
 
-export function possibleMoves(game: Chess): Map<Key, Key[]> {
+/**
+ * The legal destinations per square. With rookCastle, castling moves also list the rook's square,
+ * because chessground castles when the king is dropped onto its own rook.
+ */
+export function possibleMoves(
+  game: Chess,
+  rookCastle = false
+): Map<Key, Key[]> {
   const dests: Map<Key, Key[]> = new Map();
 
   for (const square of SQUARES) {
     const moves = game.moves({ square, verbose: true });
 
     if (moves.length) {
-      dests.set(
-        moves[0].from,
-        moves.map((m) => m.to)
-      );
+      const squareDests: Key[] = moves.map((m) => m.to);
+      if (rookCastle) {
+        for (const m of moves) {
+          if (m.isKingsideCastle()) squareDests.push(`h${m.from[1]}` as Key);
+          if (m.isQueensideCastle()) squareDests.push(`a${m.from[1]}` as Key);
+        }
+      }
+      dests.set(moves[0].from, squareDests);
     }
   }
 
   return dests;
+}
+
+/**
+ * The square chess.js expects as the king's destination. When the user castles by dropping the king
+ * onto its own rook, chessground reports the rook's square, which chess.js doesn't accept.
+ */
+export function kingCastlingDest(game: Chess, orig: Key, dest: Key): Key {
+  const king = game.get(orig as Square);
+  const rook = game.get(dest as Square);
+  if (
+    king?.type !== 'k' ||
+    rook?.type !== 'r' ||
+    rook.color !== king.color ||
+    orig[1] !== dest[1]
+  ) {
+    return dest;
+  }
+
+  return `${dest[0] > orig[0] ? 'g' : 'c'}${orig[1]}` as Key;
 }
 
 export function isPromotion(dest: Key, piece?: Piece | null): boolean {

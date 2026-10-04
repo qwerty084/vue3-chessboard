@@ -3,6 +3,7 @@ import {
   getThreats,
   isCheck,
   isPromotion,
+  kingCastlingDest,
   chessJSPieceToLichessPiece,
   possibleMoves,
   shortToLongColor,
@@ -69,7 +70,7 @@ export class BoardApi {
    * syncs chess.js state with the board
    * @private
    */
-  private updateGameState({ updateFen = true } = {}): void {
+  private updateGameState({ updateFen = true, emitEvents = true } = {}): void {
     if (!this.boardState.historyViewerState.isEnabled) {
       if (updateFen) {
         this.board.set({ fen: this.game.fen() });
@@ -83,7 +84,10 @@ export class BoardApi {
       } else {
         this.board.state.movable.color =
           this.props.playerColor || this.board.state.turnColor;
-        this.board.state.movable.dests = possibleMoves(this.game);
+        this.board.state.movable.dests = possibleMoves(
+          this.game,
+          this.board.state.movable.rookCastle
+        );
       }
 
       this.displayInCheck(this.game.inCheck(), this.board.state.turnColor);
@@ -93,7 +97,9 @@ export class BoardApi {
       }
     }
 
-    this.emitEvents();
+    if (emitEvents) {
+      this.emitEvents();
+    }
   }
 
   /**
@@ -169,7 +175,7 @@ export class BoardApi {
 
     this.move({
       from: orig,
-      to: dest,
+      to: kingCastlingDest(this.game, orig, dest),
       promotion: selectedPromotion,
     });
   }
@@ -374,9 +380,14 @@ export class BoardApi {
 
       // if move was a promotion or en passant capture, update position
       if (moveEvent.isEnPassant() || moveEvent.isPromotion()) {
-        // if animating, wait until after the animation to update position
+        // if animating, wait until after the animation to update position. Show the game's current
+        // position, because the game may have changed since, eg. by an undo or a loaded PGN
         setTimeout(
-          () => this.board.set({ fen: moveEvent.after }),
+          () => {
+            if (!this.boardState.historyViewerState.isEnabled) {
+              this.board.set({ fen: this.game.fen() });
+            }
+          },
           this.board.state.animation.current
             ? this.board.state.animation.duration
             : 0
@@ -583,7 +594,7 @@ export class BoardApi {
       // setPieces also redraws the board
       this.board.setPieces(new Map([[square, undefined]]));
     } else {
-      this.updateGameState();
+      this.updateGameState({ emitEvents: false });
     }
   }
 
@@ -760,7 +771,8 @@ export class BoardApi {
         });
 
         this.boardState.historyViewerState = { isEnabled: false };
-        this.updateGameState({ updateFen: false });
+        // moves made while viewing history already emitted their events, so don't emit them again
+        this.updateGameState({ updateFen: false, emitEvents: false });
       }
     }
 

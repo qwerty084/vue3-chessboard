@@ -638,6 +638,72 @@ describe('Test the board API', () => {
     expect(wrapper.emitted('checkmate')).toEqual([['white']]);
   });
 
+  it('emits check once when the history viewer closes after a checking move', () => {
+    boardApi.move('e4');
+    boardApi.move('f6');
+    boardApi.viewStart();
+    boardApi.move('Qh5');
+    boardApi.stopViewingHistory();
+    expect(wrapper.emitted('check')).toHaveLength(1);
+  });
+
+  it('does not emit checkmate again when navigating history', () => {
+    boardApi.move('f3');
+    boardApi.move('e5');
+    boardApi.move('g4');
+    boardApi.move('Qh4');
+    boardApi.viewPrevious();
+    boardApi.viewNext();
+    expect(wrapper.emitted('checkmate')).toHaveLength(1);
+  });
+
+  it('does not emit game events when removing a piece', () => {
+    boardApi.move('e4');
+    boardApi.move('f6');
+    boardApi.move('Qh5');
+    boardApi.removePiece('a7');
+    expect(wrapper.emitted('check')).toHaveLength(1);
+  });
+
+  it('castles when the king is moved onto its own rook', async () => {
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const board = (boardApi as any).board;
+    expect(board.state.movable.dests.get('e1')).toEqual(
+      expect.arrayContaining(['g1', 'h1', 'c1', 'a1'])
+    );
+
+    board.selectSquare('e1');
+    board.selectSquare('h1');
+    // chessground calls movable.events.after in a timeout
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(boardApi.getFen()).toBe('r3k2r/8/8/8/8/8/8/R4RK1 b kq - 1 1');
+    expect(boardApi.getLastMove()?.san).toBe('O-O');
+  });
+
+  it('does not list the rook square with movable.rookCastle disabled', () => {
+    boardApi.setConfig({ movable: { rookCastle: false } });
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const dests = (boardApi as any).board.state.movable.dests.get('e1');
+    expect(dests).toEqual(expect.arrayContaining(['g1', 'c1']));
+    expect(dests).not.toContain('h1');
+    expect(dests).not.toContain('a1');
+  });
+
+  it('keeps the viewed position after an en passant capture', async () => {
+    boardApi.setPosition(
+      'rnbqkbnr/pppppppp/8/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
+    );
+    boardApi.move('d5');
+    boardApi.move('exd6');
+    boardApi.viewPrevious();
+    const viewedFen = (boardApi as any).board.getFen();
+
+    // wait for the position update after the capture animation
+    const { duration } = (boardApi as any).board.state.animation;
+    await new Promise((resolve) => setTimeout(resolve, duration + 50));
+    expect((boardApi as any).board.getFen()).toBe(viewedFen);
+  });
+
   it.each(['loadPgn', 'setPosition', 'clearBoard'] as const)(
     'restores viewOnly when %s replaces the game while viewing history',
     (method) => {
