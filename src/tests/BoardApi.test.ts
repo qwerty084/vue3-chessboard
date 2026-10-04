@@ -689,6 +689,29 @@ describe('Test the board API', () => {
     expect(dests).not.toContain('a1');
   });
 
+  it('does not list the rook square with autoCastle disabled', () => {
+    boardApi.setConfig({ autoCastle: false });
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const dests = (boardApi as any).board.state.movable.dests.get('e1');
+    expect(dests).toEqual(expect.arrayContaining(['g1', 'c1']));
+    expect(dests).not.toContain('h1');
+    expect(dests).not.toContain('a1');
+  });
+
+  it('updates the rook square destinations when the castling options change', () => {
+    boardApi.setPosition('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+    const board = (boardApi as any).board;
+
+    boardApi.setConfig({ movable: { rookCastle: false } });
+    expect(board.state.movable.dests.get('e1')).not.toContain('h1');
+    boardApi.setConfig({ movable: { rookCastle: true } });
+    expect(board.state.movable.dests.get('e1')).toContain('h1');
+    boardApi.setConfig({ autoCastle: false });
+    expect(board.state.movable.dests.get('e1')).not.toContain('h1');
+    boardApi.setConfig({ autoCastle: true });
+    expect(board.state.movable.dests.get('e1')).toContain('h1');
+  });
+
   it('keeps the viewed position after an en passant capture', async () => {
     boardApi.setPosition(
       'rnbqkbnr/pppppppp/8/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'

@@ -84,10 +84,7 @@ export class BoardApi {
       } else {
         this.board.state.movable.color =
           this.props.playerColor || this.board.state.turnColor;
-        this.board.state.movable.dests = possibleMoves(
-          this.game,
-          this.board.state.movable.rookCastle
-        );
+        this.board.state.movable.dests = this.legalDests();
       }
 
       this.displayInCheck(this.game.inCheck(), this.board.state.turnColor);
@@ -100,6 +97,18 @@ export class BoardApi {
     if (emitEvents) {
       this.emitEvents();
     }
+  }
+
+  /**
+   * The legal destinations for the board. Lists the rook's square for castling only when chessground
+   * moves the rook itself, which needs both movable.rookCastle and autoCastle.
+   * @private
+   */
+  private legalDests(): Map<Key, Key[]> {
+    return possibleMoves(
+      this.game,
+      this.board.state.movable.rookCastle && this.board.state.autoCastle
+    );
   }
 
   /**
@@ -703,7 +712,18 @@ export class BoardApi {
     // viewer's saved viewOnly setting, which would otherwise override the config
     if (fen) this.closeHistoryViewer();
     this.board.set(configWithoutFen);
-    if (fen) this.setPosition(fen);
+    if (fen) {
+      this.setPosition(fen);
+    } else if (
+      (config.autoCastle !== undefined ||
+        config.movable?.rookCastle !== undefined) &&
+      !config.movable?.dests &&
+      !this.board.state.movable.free &&
+      !this.boardState.historyViewerState.isEnabled
+    ) {
+      // the castling options change whether the rook's square is a destination
+      this.board.state.movable.dests = this.legalDests();
+    }
     this.board.redrawAll();
   }
 
