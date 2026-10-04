@@ -6,6 +6,7 @@ import {
   kingCastlingDest,
   chessJSPieceToLichessPiece,
   possibleMoves,
+  recountPositions,
   setRookCastleDests,
   shortToLongColor,
 } from '../helper/Board';
@@ -574,6 +575,7 @@ export class BoardApi {
    */
   setPosition(fen: string): void {
     this.game.load(fen);
+    recountPositions(this.game);
     this.closeHistoryViewer();
     this.updateGameState();
   }
@@ -595,6 +597,7 @@ export class BoardApi {
     } else {
       const result = this.game.put(piece, square);
       if (result) {
+        recountPositions(this.game);
         this.updateGameState();
       }
       return result;
@@ -607,6 +610,7 @@ export class BoardApi {
    */
   removePiece(square: Square): void {
     this.game.remove(square);
+    recountPositions(this.game);
     if (this.board.state.movable.free) {
       // setPieces also redraws the board
       this.board.setPieces(new Map([[square, undefined]]));
@@ -620,6 +624,7 @@ export class BoardApi {
    */
   clearBoard(): void {
     this.game.clear();
+    recountPositions(this.game);
     this.closeHistoryViewer();
     this.updateGameState();
   }
@@ -638,6 +643,7 @@ export class BoardApi {
    */
   loadPgn(pgn: string): void {
     this.game.loadPgn(pgn);
+    recountPositions(this.game);
     this.closeHistoryViewer();
     this.updateGameState();
 

@@ -54,6 +54,40 @@ describe('Test the board events', () => {
     expect(wrapper.emitted('draw')).toHaveLength(1);
   });
 
+  describe('emits draw event on threefold repetition of the starting position', () => {
+    const repeat = (): void =>
+      ['Nf3', 'Nf6', 'Ng1', 'Ng8', 'Nf3', 'Nf6', 'Ng1', 'Ng8'].forEach((move) =>
+        boardApi.move(move)
+      );
+    // fen() drops the e6 en passant square, because no white pawn can capture on e6
+    const epFen =
+      'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2';
+
+    it('after removePiece', () => {
+      boardApi.removePiece('a2');
+      repeat();
+      expect(wrapper.emitted('draw')).toHaveLength(1);
+    });
+
+    it('after putPiece', () => {
+      boardApi.putPiece({ type: 'q', color: 'w' }, 'd4');
+      repeat();
+      expect(wrapper.emitted('draw')).toHaveLength(1);
+    });
+
+    it('after setPosition with an en passant square', () => {
+      boardApi.setPosition(epFen);
+      repeat();
+      expect(wrapper.emitted('draw')).toHaveLength(1);
+    });
+
+    it('after loadPgn with an en passant square', () => {
+      boardApi.loadPgn(`[SetUp "1"]\n[FEN "${epFen}"]\n\n*`);
+      repeat();
+      expect(wrapper.emitted('draw')).toHaveLength(1);
+    });
+  });
+
   it('emits move event', () => {
     boardApi.move('e4');
     expect(wrapper.emitted('move')).toHaveLength(1);
