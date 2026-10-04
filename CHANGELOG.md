@@ -1,8 +1,18 @@
 ## Unreleased (v1.4.0)
 
+### Breaking
+
+The package bundles chess.js and chessground, so their updates (see Other) change these behaviors:
+
+- the move objects in the `move` event, `getLastMove()` and `getHistory(true)` are instances of chess.js's `Move` class instead of plain objects. They always have `captured` and `promotion` keys, and they have helpers such as `isCapture()`. Because chess.js is bundled, `instanceof Move` with a `Move` imported from your own `chess.js` is `false`
+- `setPosition()`, `loadPgn()` with a `FEN` tag, and a `fen` in the board config throw on FENs with pawns on the first or eighth rank. `setConfig()` now checks the `fen` before it applies any other option, so an invalid `fen` leaves the board unchanged
+- `addDimensionsCssVarsTo` sets `---cg-width` and `---cg-height` instead of `--cg-width` and `--cg-height`
+- the default `purple` brush uses the key `purple` instead of `purp`
+
 ### Features
 
-- added the `coordinatesOnSquares` board config option, which shows the coordinate on every square instead of along the board edges
+- added the `coordinatesOnSquares` board config option, which shows the coordinate on every square instead of along the board edges. It requires `coordinates: true`
+- the `BrushColor` type includes the `purple`, `pink` and `white` brushes
 
 ### Bug fixes
 
@@ -19,11 +29,7 @@
 
 - updated chess.js from 1.0.0-beta.6 to the stable 1.1.0 release
 - updated chessground from 9.0.2 to 9.2.1, the last release of the unscoped `chessground` package
-- the package bundles both libraries, so their changes reach the board:
-  - the move objects in the `move` event, `getLastMove()` and `getHistory(true)` are instances of chess.js's `Move` class. They always have `captured` and `promotion` keys, and they have helpers such as `isCapture()`
-  - `setPosition()` and a `fen` in the board config throw on FENs with pawns on the first or eighth rank
-  - `addDimensionsCssVarsTo` sets `---cg-width` and `---cg-height` instead of `--cg-width` and `--cg-height`
-  - the default `purple` brush uses the key `purple` instead of `purp`
+- removed the unused `@types/chess.js` dev dependency, chess.js ships its own types
 
 ## v1.3.4 (2026-10-03)
 

@@ -43,6 +43,17 @@ describe('Test the board events', () => {
     expect(wrapper.emitted('check')?.length).toBeGreaterThanOrEqual(1);
   });
 
+  it('emits draw event once on threefold repetition', () => {
+    ['Nf3', 'Nf6', 'Ng1', 'Ng8', 'Nf3', 'Nf6', 'Ng1', 'Ng8'].forEach((move) =>
+      boardApi.move(move)
+    );
+    expect(wrapper.emitted('draw')).toHaveLength(1);
+
+    // the repeated position is left, so the game continues without draw events
+    boardApi.move('e4');
+    expect(wrapper.emitted('draw')).toHaveLength(1);
+  });
+
   it('emits move event', () => {
     boardApi.move('e4');
     expect(wrapper.emitted('move')).toHaveLength(1);

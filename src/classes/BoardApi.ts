@@ -144,7 +144,7 @@ export class BoardApi {
     _: MoveMetadata
   ): Promise<void> {
     let selectedPromotion: Promotion | undefined = undefined;
-    if (isPromotion(dest, this.game.get(orig as Square) ?? null)) {
+    if (isPromotion(dest, this.game.get(orig as Square))) {
       selectedPromotion = await new Promise((resolve) => {
         this.boardState.promotionDialogState = {
           isEnabled: true,
@@ -356,7 +356,7 @@ export class BoardApi {
       this.board.move(moveEvent.from, moveEvent.to);
 
       // if move was a promotion or en passant capture, update position
-      if (moveEvent.flags === 'e' || moveEvent?.promotion) {
+      if (moveEvent.isEnPassant() || moveEvent.isPromotion()) {
         // if animating, wait until after the animation to update position
         setTimeout(
           () => this.board.set({ fen: moveEvent.after }),
@@ -614,7 +614,7 @@ export class BoardApi {
   getPgnInfo(): {
     [key: string]: string | undefined;
   } {
-    return this.game.header();
+    return this.game.getHeaders();
   }
 
   /**
@@ -625,7 +625,10 @@ export class BoardApi {
   setPgnInfo(changes: { [key: string]: string }): {
     [key: string]: string | undefined;
   } {
-    return this.game.header(...Object.entries(changes).flat());
+    for (const [key, value] of Object.entries(changes)) {
+      if (typeof value === 'string') this.game.setHeader(key, value);
+    }
+    return this.game.getHeaders();
   }
 
   /**
@@ -640,6 +643,9 @@ export class BoardApi {
    * false the unprovided options will remain unchanged.
    */
   setConfig(config: BoardConfig, fillDefaults = false): void {
+    // throw on an invalid fen before any other option is applied, so the board isn't left half updated
+    if (config.fen) new Chess(config.fen);
+
     if (fillDefaults) {
       config = deepMergeConfig(defaultBoardConfig, config);
       this.board.state.selected = undefined;
