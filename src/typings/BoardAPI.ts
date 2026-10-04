@@ -53,7 +53,10 @@ export type BrushColor =
   | 'yellow'
   | 'paleGreen'
   | 'paleRed'
-  | 'paleGrey';
+  | 'paleGrey'
+  | 'purple'
+  | 'pink'
+  | 'white';
 
 export interface DrawShape {
   orig: Key;

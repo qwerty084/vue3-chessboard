@@ -46,7 +46,7 @@ export function possibleMoves(game: Chess): Map<Key, Key[]> {
   return dests;
 }
 
-export function isPromotion(dest: Key, piece: Piece | null): boolean {
+export function isPromotion(dest: Key, piece?: Piece | null): boolean {
   if (piece?.type !== 'p') {
     return false;
   }

@@ -310,17 +310,67 @@ coords coord {
   flex: 1 1 auto;
 }
 
+coords.squares {
+  bottom: 0;
+  left: 0;
+  text-transform: uppercase;
+  text-align: right;
+  flex-flow: column-reverse;
+  height: 100%;
+  width: 12.5%;
+}
+
+coords.squares.black {
+  flex-flow: column;
+}
+
+coords.squares coord {
+  padding: 6% 4%;
+}
+
+coords.squares.rank2 {
+  transform: translateX(100%);
+}
+
+coords.squares.rank3 {
+  transform: translateX(200%);
+}
+
+coords.squares.rank4 {
+  transform: translateX(300%);
+}
+
+coords.squares.rank5 {
+  transform: translateX(400%);
+}
+
+coords.squares.rank6 {
+  transform: translateX(500%);
+}
+
+coords.squares.rank7 {
+  transform: translateX(600%);
+}
+
+coords.squares.rank8 {
+  transform: translateX(700%);
+}
+
 .orientation-white .files coord:nth-child(2n + 1),
 .orientation-white .ranks coord:nth-child(2n),
 .orientation-black .files coord:nth-child(2n),
-.orientation-black .ranks coord:nth-child(2n + 1) {
+.orientation-black .ranks coord:nth-child(2n + 1),
+coords.squares:nth-of-type(odd) coord:nth-child(odd),
+coords.squares:nth-of-type(even) coord:nth-child(even) {
   color: #f0d9b5;
 }
 
 .orientation-white .files coord:nth-child(2n),
 .orientation-white .ranks coord:nth-child(2n + 1),
 .orientation-black .files coord:nth-child(2n + 1),
-.orientation-black .ranks coord:nth-child(2n) {
+.orientation-black .ranks coord:nth-child(2n),
+coords.squares:nth-of-type(odd) coord:nth-child(even),
+coords.squares:nth-of-type(even) coord:nth-child(odd) {
   color: #946f51;
 }
 

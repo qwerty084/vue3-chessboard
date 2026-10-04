@@ -178,7 +178,8 @@ describe('Test the board API', () => {
   it('should return the last move', () => {
     expect(boardApi.getLastMove()).toBe(undefined);
     boardApi.move('e4');
-    expect(boardApi.getLastMove()).toStrictEqual({
+    // chess.js returns a Move instance with undefined captured and promotion keys, which toStrictEqual rejects
+    expect(boardApi.getLastMove()).toEqual({
       color: 'w',
       piece: 'p',
       from: 'e2',
@@ -190,7 +191,7 @@ describe('Test the board API', () => {
       after: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
     });
     boardApi.move('e5');
-    expect(boardApi.getLastMove()).toStrictEqual({
+    expect(boardApi.getLastMove()).toEqual({
       color: 'b',
       piece: 'p',
       from: 'e7',
@@ -213,6 +214,7 @@ describe('Test the board API', () => {
       type: 'p',
       color: 'w',
     });
+    expect(boardApi.getSquare('e3')).toBeNull();
     expect(boardApi.getTurnColor()).toBe('white');
     expect(boardApi.getCurrentTurnNumber()).toBe(2);
     expect(boardApi.move('d7')).toBeFalsy();
@@ -581,6 +583,44 @@ describe('Test the board API', () => {
     expect((boardApi as any).board.state.fen).toBe(initialPos);
   });
 
+  it('resets coordinatesOnSquares to its default', () => {
+    const state = (boardApi as any).board.state;
+    boardApi.setConfig({ coordinates: true, coordinatesOnSquares: true });
+    expect(state.coordinatesOnSquares).toBe(true);
+    boardApi.setConfig({}, true);
+    expect(state.coordinatesOnSquares).toBe(false);
+  });
+
+  it('renders coordinates on squares only together with coordinates', () => {
+    boardApi.setConfig({ coordinatesOnSquares: true });
+    expect(wrapper.findAll('coords')).toHaveLength(0);
+
+    boardApi.setConfig({ coordinates: true });
+    const columns = wrapper.findAll('coords.squares');
+    expect(columns).toHaveLength(8);
+    expect(columns[0].text()).toBe('a1a2a3a4a5a6a7a8');
+  });
+
+  it('leaves the board unchanged when setConfig gets an invalid fen', () => {
+    const state = (boardApi as any).board.state;
+    const fen = boardApi.getFen();
+    expect(() =>
+      boardApi.setConfig({
+        orientation: 'black',
+        fen: '4P1k1/8/8/8/8/8/8/4K3 w - - 0 1',
+      })
+    ).toThrow();
+    expect(state.orientation).toBe('white');
+    expect(boardApi.getFen()).toBe(fen);
+  });
+
+  it('rejects null moves', () => {
+    const fen = boardApi.getFen();
+    expect(boardApi.move('--')).toBe(false);
+    expect(boardApi.getFen()).toBe(fen);
+    expect(boardApi.getHistory()).toEqual([]);
+  });
+
   it('adds a pgn header and checks if it is added', () => {
     boardApi.setPgnInfo({
       White: 'Deep Blue',
@@ -590,6 +630,11 @@ describe('Test the board API', () => {
     expect(boardApi.getPgn()).toContain('[White "Deep Blue"]');
     expect(boardApi.getPgn()).toContain('[Black "Kasparov"]');
     expect(boardApi.getPgn()).toContain('[Date "1997.05.11"]');
+    expect(boardApi.getPgnInfo()).toEqual({
+      White: 'Deep Blue',
+      Black: 'Kasparov',
+      Date: '1997.05.11',
+    });
   });
 });
 
