@@ -70,6 +70,12 @@ describe.concurrent('Test isObject', () => {
     { value: { foo: 1, bar: false }, result: true },
     // test nested object
     { value: { foo: { foo: 0 }, bar: { bar: 1 } }, result: true },
+    { value: Object.create(null), result: true },
+    // test other objects, which are config values rather than config sections
+    { value: null, result: false },
+    { value: new Map([['e2', ['e4']]]), result: false },
+    { value: new Date(0), result: false },
+    { value: document.createElement('div'), result: false },
   ])('isObject($value) -> $result', ({ value, result }) => {
     expect(isObject(value)).toBe(result);
   });
@@ -106,6 +112,20 @@ describe.concurrent('Test deepCopy', () => {
     expect(copy.b.d).not.toBe(obj.b.d);
     expect(copy.b.d).toEqual(obj.b.d);
   });
+
+  it('copies Maps and keeps other objects', () => {
+    const dests = new Map([['e2', ['e3', 'e4']]]);
+    const element = document.createElement('div');
+    const copy = deepCopy({
+      movable: { dests },
+      addDimensionsCssVarsTo: element,
+    });
+
+    expect(copy.movable.dests).toBeInstanceOf(Map);
+    expect(copy.movable.dests).not.toBe(dests);
+    expect([...copy.movable.dests]).toEqual([...dests]);
+    expect(copy.addDimensionsCssVarsTo).toBe(element);
+  });
 });
 
 describe.concurrent('Test deepMergeConfig', () => {
@@ -130,6 +150,14 @@ describe.concurrent('Test deepMergeConfig', () => {
     const merge = deepMergeConfig(target, source);
     expect(merge).toEqual({ a: 1, b: { c: 2, d: { e: 3, d: 4 } } });
   });
+
+  it('keeps Map values intact', () => {
+    const target = { movable: { dests: new Map([['b1', ['a3', 'c3']]]) } };
+    const source = { movable: { dests: new Map([['e2', ['e4']]]) } };
+    const merge = deepMergeConfig(target, source);
+    expect([...merge.movable.dests]).toEqual([['e2', ['e4']]]);
+    expect([...target.movable.dests]).toEqual([['b1', ['a3', 'c3']]]);
+  });
 });
 
 describe.concurrent('Test deepDiffConfig', () => {
@@ -153,6 +181,20 @@ describe.concurrent('Test deepDiffConfig', () => {
     const newConfig = { a: 1, b: { d: { e: 3, d: 4 } } };
     const diff = deepDiffConfig(oldConfig, newConfig);
     expect(diff).toEqual({ b: { d: { e: 3, d: 4 } } });
+  });
+
+  it('compares Maps by their entries', () => {
+    const e4 = ['e4'];
+    const oldConfig = { movable: { dests: new Map([['e2', e4]]) } };
+
+    expect(
+      deepDiffConfig(oldConfig, { movable: { dests: new Map([['e2', e4]]) } })
+    ).toEqual({});
+
+    const changed = new Map([['d2', ['d4']]]);
+    expect(deepDiffConfig(oldConfig, { movable: { dests: changed } })).toEqual({
+      movable: { dests: changed },
+    });
   });
 });
 

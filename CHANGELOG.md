@@ -26,6 +26,7 @@ The package bundles chess.js and chessground, so their updates (see Other) chang
 - `getSquare()` returns `null` for an empty square, as documented, instead of `false`
 - the `draw` event no longer fires on every move after a threefold repetition. It fires only when the current position has occurred three times (chess.js)
 - board config merging ignores `__proto__` and `constructor` keys (chessground)
+- board config merging keeps Maps and DOM elements, which were turned into empty objects when the config was filled with defaults (on mount, `resetBoard()` and `setConfig(config, true)`). `movable.rookCastle: false` and `highlight.custom` no longer crash the board, `movable.dests` and `premovable.customDests` keep their entries, and `addDimensionsCssVarsTo` keeps its element. With `reactiveConfig`, a Map only counts as changed when its entries change
 
 ### Other
 

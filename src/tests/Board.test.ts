@@ -65,6 +65,45 @@ describe('Test the board', () => {
   });
 });
 
+describe('Test Map and element config values', () => {
+  function mountWith(boardConfig: BoardConfig) {
+    const wrapper = mount(TheChessboard, { props: { boardConfig } });
+    return {
+      wrapper,
+      boardApi: wrapper.emitted<BoardApi[]>('boardCreated')?.[0][0] as BoardApi,
+    };
+  }
+
+  it('mounts with movable.rookCastle disabled', () => {
+    const { boardApi } = mountWith({ movable: { rookCastle: false } });
+    expect((boardApi as any).board.state.movable.rookCastle).toBe(false);
+    expect((boardApi as any).board.state.movable.dests).toBeInstanceOf(Map);
+  });
+
+  it('applies highlight.custom from the board config', async () => {
+    const { wrapper } = mountWith({
+      highlight: { custom: new Map([['e4', 'marked']]) },
+    });
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    expect(wrapper.find('cg-board square.marked').exists()).toBe(true);
+  });
+
+  it('keeps premovable.customDests when filling defaults', () => {
+    const { boardApi } = mountWith({});
+    const customDests = new Map([['e7', ['e5']]]);
+    boardApi.setConfig({ premovable: { customDests } }, true);
+    const state = (boardApi as any).board.state;
+    expect(state.premovable.customDests).toBeInstanceOf(Map);
+    expect(state.premovable.customDests.get('e7')).toEqual(['e5']);
+  });
+
+  it('passes the addDimensionsCssVarsTo element through', () => {
+    const element = document.createElement('div');
+    const { boardApi } = mountWith({ addDimensionsCssVarsTo: element });
+    expect((boardApi as any).board.state.addDimensionsCssVarsTo).toBe(element);
+  });
+});
+
 describe('Test reactiveConfig prop option', () => {
   let config: BoardConfig;
   let wrapper;
