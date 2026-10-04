@@ -7,6 +7,7 @@
 - `setPosition()`, `loadPgn()` and the `fen` config option throw on FENs with pawns on the first or eighth rank
 - `addDimensionsCssVarsTo` sets `---cg-width` and `---cg-height` instead of `--cg-width` and `--cg-height`
 - the `purple` brush key is `purple` instead of `purp`
+- `putPiece()` and `removePiece()` erase the move history and start a new game from the edited position, keeping the PGN headers. `putPiece()` with `movable.free` is unchanged. Before, the kept history no longer matched the board, and `getHistory()`, `undoLastMove()` and the PGN could crash, change pieces or show positions that never happened
 
 ### Features
 
