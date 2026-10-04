@@ -31,7 +31,7 @@ export function shortToLongColor(color: 'w' | 'b'): Color {
 
 /**
  * The legal destinations per square. With rookCastle, castling moves also list the rook's square,
- * because chessground castles when the king is dropped onto its own rook.
+ * because chessground castles when the user drops the king onto its own rook.
  */
 export function possibleMoves(
   game: Chess,
@@ -93,7 +93,7 @@ export function kingCastlingDest(game: Chess, orig: Key, dest: Key): Key {
     return dest;
   }
 
-  // only castling moves, eg. not a free mode king drop onto its rook from another square
+  // translate only castling moves. A free mode king drop onto its rook from another square keeps its dest
   const kingDest = `${dest[0] > orig[0] ? 'g' : 'c'}${orig[1]}`;
   const isCastling = game
     .moves({ square: orig as Square, verbose: true })

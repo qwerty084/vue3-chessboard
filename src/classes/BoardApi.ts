@@ -148,7 +148,7 @@ export class BoardApi {
    */
   private emitEvents(): void {
     if (this.game.inCheck()) {
-      // use the game's turn, updateGameState doesn't update the board's turnColor while viewing history
+      // use the game's turn, because updateGameState doesn't update the board's turnColor while viewing history
       this.emit(
         this.game.isCheckmate() ? 'checkmate' : 'check',
         this.getTurnColor()
@@ -186,8 +186,8 @@ export class BoardApi {
 
     this.move({
       from: orig,
-      // chessground only castles a king dropped onto its rook with autoCastle, otherwise the king
-      // captured the rook on the board, which is a free mode move
+      // chessground castles a king dropped onto its own rook only with autoCastle. Without it, the king
+      // took the rook's square on the board, so keep the destination as a free mode move
       to: this.board.state.autoCastle
         ? kingCastlingDest(this.game, orig, dest)
         : dest,
@@ -364,8 +364,8 @@ export class BoardApi {
    * @param move either a string in Standard Algebraic Notation (SAN), eg. 'e4', 'exd5', 'O-O', 'Nf3' or 'e8=Q'
    * or an object of shape { from: string; to: string; promotion?: string; }, eg. { from: 'g8', to: 'f6' } or
    * { from: 'e7', to: 'e8', promotion: 'q'}
-   * @returns true if it made the move, false if the move is illegal. With `movable.free`, it makes a move
-   * object on the board even if the move is illegal, and returns true if there was a piece to move
+   * @returns true if it made the move, false if the move is illegal. With `movable.free`, it moves the piece
+   * on the board even if the move is illegal, and returns true if there was a piece to move
    */
   move(move: string | Move): boolean {
     let moveEvent: MoveEvent;
