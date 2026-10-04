@@ -229,6 +229,9 @@ export class BoardApi {
       this.board.state.lastMove = lastMove
         ? [lastMove?.from, lastMove?.to]
         : undefined;
+    } else {
+      // while viewing history, updateGameState only emits the game events, eg. check
+      this.updateGameState({ updateFen: false });
     }
   }
 

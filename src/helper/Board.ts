@@ -93,7 +93,15 @@ export function kingCastlingDest(game: Chess, orig: Key, dest: Key): Key {
     return dest;
   }
 
-  return `${dest[0] > orig[0] ? 'g' : 'c'}${orig[1]}` as Key;
+  // only castling moves, eg. not a free mode king drop onto its rook from another square
+  const kingDest = `${dest[0] > orig[0] ? 'g' : 'c'}${orig[1]}`;
+  const isCastling = game
+    .moves({ square: orig as Square, verbose: true })
+    .some(
+      (m) =>
+        m.to === kingDest && (m.isKingsideCastle() || m.isQueensideCastle())
+    );
+  return isCastling ? (kingDest as Key) : dest;
 }
 
 export function isPromotion(dest: Key, piece?: Piece | null): boolean {

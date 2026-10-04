@@ -16,7 +16,7 @@
 ### Bug fixes
 
 - the history viewer works with custom starting positions, highlights check, and no longer crashes when you undo the only move ([#274](https://github.com/qwerty084/vue3-chessboard/pull/274), [#275](https://github.com/qwerty084/vue3-chessboard/pull/275))
-- moves made while viewing history emit `check`, `checkmate`, `stalemate` and `draw`, and closing the history viewer no longer emits them again
+- moves and undos made while viewing history emit `check`, `checkmate`, `stalemate` and `draw`, and closing the history viewer no longer emits them again
 - navigating history right after an en passant capture or a promotion no longer jumps back to the latest position
 - castling by dropping the king onto its own rook works, as `movable.rookCastle` documents
 - `loadPgn()`, `setPosition()` and `clearBoard()` no longer leave the board view-only after viewing history
