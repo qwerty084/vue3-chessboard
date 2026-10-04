@@ -1,3 +1,30 @@
+## Unreleased (v1.4.0)
+
+### Features
+
+- added the `coordinatesOnSquares` board config option, which shows the coordinate on every square instead of along the board edges
+
+### Bug fixes
+
+- fixed the history viewer for games loaded from a PGN with a custom starting position ([#274](https://github.com/qwerty084/vue3-chessboard/pull/274))
+- fixed a crash when undoing the only move while viewing the start position ([#274](https://github.com/qwerty084/vue3-chessboard/pull/274))
+- the board now highlights check when you view a starting position that is in check ([#275](https://github.com/qwerty084/vue3-chessboard/pull/275))
+- the published type declarations keep their JSDoc tags, such as `@param` and `@returns` ([#269](https://github.com/qwerty084/vue3-chessboard/pull/269))
+- removed the `require` export, which pointed to a CommonJS build that no longer exists. The exports map now lists the `types` condition first ([#270](https://github.com/qwerty084/vue3-chessboard/pull/270))
+- `getSquare()` returns `null` for an empty square, as documented, instead of `false`
+- the `draw` event no longer fires on every move after a threefold repetition. It fires only when the current position has occurred three times (chess.js)
+- board config merging ignores `__proto__` and `constructor` keys (chessground)
+
+### Other
+
+- updated chess.js from 1.0.0-beta.6 to the stable 1.1.0 release
+- updated chessground from 9.0.2 to 9.2.1, the last release of the unscoped `chessground` package
+- the package bundles both libraries, so their changes reach the board:
+  - the move objects in the `move` event, `getLastMove()` and `getHistory(true)` are instances of chess.js's `Move` class. They always have `captured` and `promotion` keys, and they have helpers such as `isCapture()`
+  - `setPosition()` and a `fen` in the board config throw on FENs with pawns on the first or eighth rank
+  - `addDimensionsCssVarsTo` sets `---cg-width` and `---cg-height` instead of `--cg-width` and `--cg-height`
+  - the default `purple` brush uses the key `purple` instead of `purp`
+
 ## v1.3.4 (2026-10-03)
 
 ### Security

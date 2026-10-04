@@ -22,6 +22,7 @@ export const defaultBoardConfig: BoardConfig = {
   orientation: 'white',
   turnColor: 'white',
   coordinates: false,
+  coordinatesOnSquares: false,
   autoCastle: true,
   viewOnly: false,
   disableContextMenu: false,

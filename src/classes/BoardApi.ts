@@ -144,7 +144,7 @@ export class BoardApi {
     _: MoveMetadata
   ): Promise<void> {
     let selectedPromotion: Promotion | undefined = undefined;
-    if (isPromotion(dest, this.game.get(orig as Square))) {
+    if (isPromotion(dest, this.game.get(orig as Square) ?? null)) {
       selectedPromotion = await new Promise((resolve) => {
         this.boardState.promotionDialogState = {
           isEnabled: true,
@@ -518,7 +518,7 @@ export class BoardApi {
    * Returns the piece on the square or null if there is no piece
    */
   getSquare(square: Square): Piece | null {
-    return this.game.get(square);
+    return this.game.get(square) ?? null;
   }
 
   /**

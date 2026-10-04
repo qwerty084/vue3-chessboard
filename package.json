@@ -54,8 +54,8 @@
     "lint:check": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "chess.js": "^1.0.0-beta.6",
-    "chessground": "^9.0.2"
+    "chess.js": "~1.1.0",
+    "chessground": "^9.2.1"
   },
   "peerDependencies": {
     "vue": "^3.2.47"
