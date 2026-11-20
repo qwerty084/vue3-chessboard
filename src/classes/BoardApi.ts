@@ -72,7 +72,7 @@ export class BoardApi {
   private updateGameState({ updateFen = true } = {}): void {
     if (!this.boardState.historyViewerState.isEnabled) {
       if (updateFen) {
-        this.board.set({ fen: this.game.fen() });
+        this.board.set({ fen: this.game.fen(), lastMove: undefined });
       }
 
       this.board.state.turnColor = this.getTurnColor();
@@ -666,7 +666,10 @@ export class BoardApi {
 
     const { fen, ...configWithoutFen } = config;
     this.board.set(configWithoutFen);
-    if (fen) this.setPosition(fen);
+    if (fen) {
+      this.setPosition(fen);
+      if (config.lastMove) this.board.set({ lastMove: config.lastMove });
+    }
     this.board.redrawAll();
   }
 
