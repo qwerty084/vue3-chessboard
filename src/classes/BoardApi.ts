@@ -73,6 +73,7 @@ export class BoardApi {
     if (!this.boardState.historyViewerState.isEnabled) {
       if (updateFen) {
         this.board.set({ fen: this.game.fen() });
+        this.board.cancelPremove();
       }
 
       this.board.state.turnColor = this.getTurnColor();
